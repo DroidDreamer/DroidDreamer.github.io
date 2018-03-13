@@ -4,7 +4,7 @@
   <title><![CDATA[iginkgo在路上]]></title>
   <link href="iginkgo.cn/atom.xml" rel="self"/>
   <link href="iginkgo.cn/"/>
-  <updated>2018-03-13T17:21:31+08:00</updated>
+  <updated>2018-03-13T19:23:31+08:00</updated>
   <id>iginkgo.cn/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -13,84 +13,2795 @@
   <generator uri="http://www.mweb.im/">MWeb</generator>
   
   <entry>
-    <title type="html"><![CDATA[iOS  元编程]]></title>
-    <link href="iginkgo.cn/15030624381800.html"/>
-    <updated>2017-08-18T21:20:38+08:00</updated>
-    <id>iginkgo.cn/15030624381800.html</id>
+    <title type="html"><![CDATA[代码观]]></title>
+    <link href="iginkgo.cn/15209408940888.html"/>
+    <updated>2018-03-13T19:34:54+08:00</updated>
+    <id>iginkgo.cn/15209408940888.html</id>
     <content type="html"><![CDATA[
-<p>能写代码的代码-&gt; 元编程</p>
+<p>即使觉得很平庸的现在，我也想在写代码的路上继续走下去。</p>
 
-<p><img src="media/15030624381800/15030625368268.jpg" alt=""/></p>
+<span id="more"></span><!-- more -->
 
-<p>元编程：<br/>
-  程序运行前 进行的 元编程<br/>
-  程序运行中 的元编程</p>
+<p>最近写东西，常常拘泥于具体的实现、功能、以及在框架的基础之上可以实现的各种功能。对于框架不支持的东西，想当然的放弃、甚至没有想到过要去尝试思考一下如何去实现。好多东西觉得不会了，就完全是摸不到头脑，不知道什么情况，不知道怎么个定位了。<br/>
+然而实际上，同一个体系/世界观下面的不同事物都是有关联的。在Coursera的课程《Learn how to learn》的课程中，更是讲到学习要利用类似的概念，首先确定一个“锚点”之后，每次的学习甚至知识的获取都要在前者的基础之上进行把控，这样不同的知识点之间就会建立“连接”、“突触”，知识点也会通过稳固的“连接”到达有关联的知识点的位置，大量的连接之后就会形成一个知识的网络体系，最终经过强化形成知识块。<br/>
+然而在我这里呢，连接大部分不同体系的 枢纽（计算机核心基本知识）这个枢纽点感觉建立的有些问题，在上层的分支上出现问题时，不同沿着主脉络 向核心枢纽来进行坐标的定位（对应到基本的计算机问题，当前这样的一个问题是一个什么样的问题？能否实现。）<br/>
+借用《被讨厌的勇气中》介绍的 阿尔弗雷德 的理念，看待事情，是否可以跳出当前的圈子，从一个更大的圈子里来看待这个问题。一旦产生这样的想法，以前的很多视角就都会不一样了。</p>
 
-<p>为什么要元编程：<br/>
-  形成领域专属语言，脱离语言的本体。<br/>
-  简介</p>
+<p>昨天 听 臧成威 讲 在代码的写作方面，关于术和道之间的关系。虽然听着有点悬，但实际来说还真是这么个事情。  大概的意思也就是一个本质和表象的问题。他的这个论点跟我要开的这个帖子的立意是很相近的。</p>
 
-<p>podfile是一个ruby 的程序</p>
-
-<p><img src="media/15030624381800/15030629482108.jpg" alt=""/></p>
-
-<p><img src="media/15030624381800/15030630034175.jpg" alt=""/></p>
-
-<p><img src="media/15030624381800/15030642996048.jpg" alt=""/></p>
+<p>然后突然有个感受是，老天其实是个很奇妙的东西。它可能在你有些灵感、想法的时候，会给你一些引发你共鸣的东西，加深你的这一灵感。  我之前也遇到过这类的事情，比如说在 预编译阶段的相关东西 这里，在我很感兴趣，刚刚开始深入之时，有个大牛写了篇类似的blog，引发了我深深的共鸣。觉得老天真是有意思。   然后，也就没有然后了，我也没有紧紧抓住那个感觉搞起来。<br/>
+有灵感的时候，紧紧的捉住吧，毕竟这个世界上，最后能够引起你兴趣的事情并不多。</p>
 
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[给老婆聊IOS之一：我对IOS的认识]]></title>
-    <link href="iginkgo.cn/14819656504986.html"/>
-    <updated>2016-12-17T17:07:30+08:00</updated>
-    <id>iginkgo.cn/14819656504986.html</id>
+    <title type="html"><![CDATA[Xcode提速]]></title>
+    <link href="iginkgo.cn/15209408664766.html"/>
+    <updated>2018-03-13T19:34:26+08:00</updated>
+    <id>iginkgo.cn/15209408664766.html</id>
     <content type="html"><![CDATA[
-<p>看到微博上有个很有意思的对话：<br/>
-<code><br/>
-一个后台和一个移动开发者聊天：<br/>
-后端: 移动开发有什么技术含量，不就是一个view么<br/>
-移动开发: 后端有什么了不起，不就是sql么<br/>
-</code><br/>
-透过表象看实质，猛地一看还真没觉得这话有什么不合适。可我转念一想，我当当搞开发搞了这么久，就像这对话里简简单单说的么？</p>
+<p>如何更加快速的使用Xcode</p>
 
-<p>每一个系统、平台，都是凝聚了无数人的心血以及心思的东西。</p>
+<span id="more"></span><!-- more -->
 
-<h3 id="toc_0">那么，我对IOS是怎么看待的呢？</h3>
+<h2 id="toc_0">1.把DeriveData放在内存中</h2>
 
-<p>首先，这是苹果公司基于其生态环境所构建的不可或缺的一个环节。苹果当前销量最大的几个产品，Iphone ，watchOS， Mac语言系列都跟它有重要的关系。（这话也不晓得对不对）</p>
+<p><a href="http://blog.csdn.net/qq_30513483/article/details/70600301">相关地址</a></p>
 
-<p>人一深入下来就真的会发现很多东西。所以说，实践出真知。我做了许久的IOS，却从未想过，IOS一些存在性的问题。它的意义、价值，它所存在的体系。<br/>
-不经常进行表述的人，真的很难精炼的提炼自己的语言，尤其是在本人也不知道要说些什么的时候。因而日常的积累还是真的很重要的呢。</p>
+<p>相关思路<br/>
+1. 配置ram，让ram开辟出一块内存专门供Xcode使用<br/>
+2. 连接Xcode，让Xcode连接到我们开辟出的专属内存中</p>
+
+<p>方案<br/>
+1.创建<code>.sh</code>文件</p>
+
+<pre><code>#!/bin/bash
+RAMDISK=”ramdisk”
+SIZE=1024         #size in MB for ramdisk.
+diskutil erasevolume HFS+ $RAMDISK \
+     `hdiutil attach -nomount ram://$[SIZE*2048]`
+</code></pre>
+
+<p>2.命令行中执行 <code>./ramdisk.sh</code>命令，执行该脚本</p>
+
+<pre><code>//注意：如果出现`Permission denied`的情况，使用
+chmod 777 aa.sh
+</code></pre>
+
+<p>3.发现 ./Volume/ 下出现了一个新的内存空间</p>
+
+<p>4.Xcode-&gt;Preference-&gt;Locations-&gt;Location Tab中 <br/>
+DeriveData 目录选定为 Custom，然后路径为 /Volumes/“ramdisk”/DeriveData</p>
 
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[序：给老婆聊IOS]]></title>
-    <link href="iginkgo.cn/14819579336686.html"/>
-    <updated>2016-12-17T14:58:53+08:00</updated>
-    <id>iginkgo.cn/14819579336686.html</id>
+    <title type="html"><![CDATA[Xcode基本操作]]></title>
+    <link href="iginkgo.cn/15209407678838.html"/>
+    <updated>2018-03-13T19:32:47+08:00</updated>
+    <id>iginkgo.cn/15209407678838.html</id>
     <content type="html"><![CDATA[
-<p>作为一名被老婆领上码农道路的IOS developer兼胖子，时常被老婆鄙视是一件非常痛苦的事情，因而在这里，写下IOS的一系列相关文章，跟老婆聊一聊IOS的相关工作</p>
+<p>Xcode的基本操作、快捷键、调试</p>
+
+<span id="more"></span><!-- more -->
+
+<p>注意：<a href="http://www.cocoachina.com/ios/20141225/10761.html">原地址在此</a>,下面部分纯粹为个人记忆摘抄。</p>
+
+<ul>
+<li>
+<a href="#toc_0">偏好设置</a>
+</li>
+<li>
+<a href="#toc_1">代码阅读(快捷键)</a>
+<ul>
+<li>
+<ul>
+<li>
+<a href="#toc_2">View Navigator</a>
+</li>
+<li>
+<a href="#toc_3">View Editor Organization</a>
+</li>
+<li>
+<a href="#toc_4">Focus Switch</a>
+</li>
+<li>
+<a href="#toc_5">Symbol Jump</a>
+</li>
+<li>
+<a href="#toc_6">Symbol Navigator</a>
+</li>
+<li>
+<a href="#toc_7">Help</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_8">代码编辑</a>
+<ul>
+<li>
+<ul>
+<li>
+<a href="#toc_9">File | New</a>
+</li>
+<li>
+<a href="#toc_10">Text Editing</a>
+</li>
+<li>
+<a href="#toc_11">Eidtor Window/Tab Switch</a>
+</li>
+<li>
+<a href="#toc_12">Code Folding</a>
+</li>
+<li>
+<a href="#toc_13">Console &amp; Scheme</a>
+</li>
+<li>
+<a href="#toc_14">Gutter &amp; Ribbon</a>
+</li>
+<li>
+<a href="#toc_15">Auto Completion</a>
+</li>
+<li>
+<a href="#toc_16">Find &amp; Replace</a>
+</li>
+<li>
+<a href="#toc_17">辅助编辑（Assistant Editor）</a>
+</li>
+<li>
+<a href="#toc_18">环境变量（Build Setting Macros）</a>
+<ul>
+<li>
+<a href="#toc_19">（1）查看环境变量宏</a>
+</li>
+<li>
+<a href="#toc_20">（2）Xcode5(Mac OS X 10.9)的部分环境变量</a>
+</li>
+<li>
+<a href="#toc_21">（3）设置环境变量</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_22">运行调试</a>
+</li>
+<li>
+<a href="#toc_23">Watch</a>
+</li>
+<li>
+<a href="#toc_24">lldb调试命令：</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_25">参考</a>
+</li>
+</ul>
+
+
+<p><img src="media/15209407678838/Xcode%E7%95%8C%E9%9D%A2.png" alt="Xcode界面"/></p>
+
+<h2 id="toc_0">偏好设置</h2>
+
+<p>通过“command+,”快捷键或”Xcode|Preferences”菜单呼出偏好设置。</p>
+
+<p>（1）主题及字体（Preferences-&gt;Fonts &amp; Colors）</p>
+
+<p>选中一种主题（theme），例如“Midnight”，然后shift选择Source Editor/Console中的所有项，点击Fonts设置字体。Xcode默认字体为menlo，可选Consolas、Monaco等其他等宽字体。</p>
+
+<p>（2）文本编辑配置（Preferences-&gt;Text Editing）<br/>
+<img src="media/15209407678838/Editing.png" alt="Editing"/></p>
+
+<ul>
+<li>Show Line Numbers：在gutter中显示行号。</li>
+<li>Code folding ribbon：显示折叠ribbon。</li>
+<li>Page guide at column：显示一行最多支持80个字符的提示分割线。
+Indentation：</li>
+</ul>
+
+<p>Prefer indent using：Spaces（为保持一致的视觉呈现和行末注释对齐，建议使用空格）<br/>
+Tab width：4 spaces（tabexpand，1个tab=4个空格）<br/>
+Indent width：4 spaces（自动缩进步长=4个空格）<br/>
+（3）SCM（Preferences-&gt;Source Control）</p>
+
+<p>Enable Source Control：启用/禁用XCode自带Source Control Manager(SCM)。</p>
+
+<p>（4）SDK/Simulator（Preferences-&gt;Downloads）</p>
+
+<p>Downloads-&gt;Components：可下载SDK和Simulator。</p>
+
+<p>（5）构建输出目录（Preferences-&gt;Locations-&gt;Locations）</p>
+
+<ul>
+<li>当选择为Default时，Derived Data的目录为~/Library/Developer/Xcode/DerivedData。</li>
+<li>当选择为Relative时，Derived Data的目录为当前.xcodeproj所在的目录。</li>
+<li>当选择为Custom时，Derived Data的目录需自定义。</li>
+</ul>
+
+<p>不建议使用绝对路径，因为写死之后，换环境或换平台，又要重新修改路径，建议使用相对路径（Relative）。</p>
+
+<h2 id="toc_1">代码阅读(快捷键)</h2>
+
+<h4 id="toc_2">View Navigator</h4>
+
+<p>command+0：Show/Hide left tool panel</p>
+
+<p>command+1-8：Project/Symbol/Find/Issue/Test/Debug/Breakpoint/Log Navigator</p>
+
+<p>option+command+0：Show/Hide right tool panel</p>
+
+<p>option+command+1/2：show the file/quick help inspector</p>
+
+<h4 id="toc_3">View Editor Organization</h4>
+
+<p>control+1：Show Related Items（例如Superclasses/Subclasses、Callers/Callees、Protocol Implementor/Implemented、Includes/Included By）。可输入实时搜索匹配。</p>
+
+<p>control+2/3：Show Previous/Next History。可输入实时搜索匹配。</p>
+
+<p>control+4：Show Top Level Items。</p>
+
+<p>control+5：Show Group Files（当前文件夹内的所有文件）。可输入实时搜索匹配。</p>
+
+<p>control+6：Show Document Items（当前文件的Symbols）。可输入实时搜索匹配。</p>
+
+<p>可直接选中符号，然后“Navigate-&gt;Reveal in Symbol Navigator”，打开该接口的符号列表。</p>
+
+<h4 id="toc_4">Focus Switch</h4>
+
+<p>command+J：焦点切换（Move Focus），可配合鼠标和方向键。带‘+’的“Move focus to a new assistant editor”可以快速在辅助编辑窗口中打开头文件（<em>.h）/实现文件（</em>.m，*.mm）。</p>
+
+<p>shift+command+J：在项目导航中定位当前文件（Reveal in Project Navigator）。</p>
+
+<h4 id="toc_5">Symbol Jump</h4>
+
+<p>control+command+↑/↓：切换头文件/实现文件（switch between a source file (.m,<em>.mm,</em>.cc) and the associated header file(.h)）。</p>
+
+<p>shift+command+O：Open Quickly，可快速查找文件、符号。</p>
+
+<p>command+点击Editor中选中的符号：跳转到符号定义（jump to definition）。</p>
+
+<p>control+command+J：跳转到指定符号的定义处或实现处（Go to Declaration/Definition）。有时工程正在Loading、Indexing或Processing files时，“command+点击”无法响应，此时可试试control+command+J。</p>
+
+<p>在Project Navigator中选中文件右键或通过菜单“File-&gt;Show in Finder”：在Finder中定位该文件。</p>
+
+<h4 id="toc_6">Symbol Navigator</h4>
+
+<p>command+点击Editor中选中的非单一层次定义符号：Show in Symbol Navigator:</p>
+
+<p>filter0：底部输入符号（show symbols with matching name）= filter1 result+filter3 result</p>
+
+<p>filter1：show only class and protocol symbols (hide other global symbol types)，包括project和system层次。</p>
+
+<p>filter2：show only project-defined symbols，过滤显示当前工程中的符号。filter2的结果是filter1的子集，较常用。</p>
+
+<p>filter3：show only containers(hide members)，过滤显示包含该单词的符号。</p>
+
+<h4 id="toc_7">Help</h4>
+
+<p>option+点按：查看选中符号的帮助提示（Quick Help for Selected Item）。</p>
+
+<p>option+双击：打开选中符号的帮助文档。</p>
+
+<h2 id="toc_8">代码编辑</h2>
+
+<h4 id="toc_9">File | New</h4>
+
+<p>control+command+N：File | New | Workspace</p>
+
+<p>shift+command+N：File | New | Project</p>
+
+<h4 id="toc_10">Text Editing</h4>
+
+<p>command+[/]：向前/向后缩进</p>
+
+<p>option+command+[/]：Move Line Up/Down</p>
+
+<p>command+/：注释选中的代码</p>
+
+<p>Parentheses/Brackets/Braces Matching：双击某个分隔符（如()、[]、{} 等），Xcode会选中匹配代码块。</p>
+
+<h4 id="toc_11">Eidtor Window/Tab Switch</h4>
+
+<p>command+shift+[/]：切换标签页</p>
+
+<p>单指左右滑动（control+command+←/→）：在单标签页打开的多个文件间切换</p>
+
+<h4 id="toc_12">Code Folding</h4>
+
+<p>option+command+←/→：折叠当前代码块</p>
+
+<p>option+shift+command+←/→：折叠该文件内所有代码块（方法/函数）</p>
+
+<h4 id="toc_13">Console &amp; Scheme</h4>
+
+<p>shift+command+Y：显示控制台（Show/Hide the debug area）</p>
+
+<p>option+command+R：编辑配置（Edit Scheme）</p>
+
+<h4 id="toc_14">Gutter &amp; Ribbon</h4>
+
+<p><img src="media/15209407678838/Gutter-Ribbon.png" alt="Gutter-Ribbon"/></p>
+
+<p>焦点列：灰色深度与代码嵌套深度相关，鼠标悬停可突出显示右侧相应代码块，鼠标单击可折叠右侧相应代码块（Code Folding）。</p>
+
+<p>说明：从左到右，依次是“导航窗格（Navigator）-&gt;边列（Gutter）-&gt;焦点列（Focus</p>
+
+<p>Ribbon）-&gt;代码编辑窗口（Standard Editor）”。</p>
+
+<h4 id="toc_15">Auto Completion</h4>
+
+<p>esc（command+.）：就当前输入上下文呼出/隐藏Auto</p>
+
+<p>Completion提示：上下方向键在提示中选择选项，enter(return)选中，tab可一截一截匹配；tab可在各个占位符之间移动。</p>
+
+<p>输入Objective-C对象及 ]，自动完成中缀符(infixnatation)包围。</p>
+
+<h4 id="toc_16">Find &amp; Replace</h4>
+
+<p>command+F：当前文件查找。</p>
+
+<p>option+command+F：当前文件替换。</p>
+
+<p>Find：可指定查找内容（Text/References/Definitions/Regular Expression）；<br/>
+放大镜：下拉可查看最近查找历史；<br/>
+In Project：查找范围（可指定Group）；<br/>
+Text：匹配规则（可指定Containing，Matching，Starting with，Ending with）；<br/>
+Case：是否区分大小写（可指定 Matching/Ignoring）。<br/>
+shift+command+F（command+3）：全局查找。也可以在选择符号后，右键（control+点击）-&gt;Find Selected Text in workspace...</p>
+
+<p>option+shift+command+F：全局替换。</p>
+
+<p>Replace：逐个替换；<br/>
+All：所有替换；<br/>
+Done：替换完成。</p>
+
+<h4 id="toc_17">辅助编辑（Assistant Editor）</h4>
+
+<p>Assistant Editor有点类似VC中的Code Definition Window。</p>
+
+<p>option+command+enter：打开Assistant Editor。</p>
+
+<p>command+enter：关闭Assistant Editor。</p>
+
+<p>使用快捷键进行切换或跳转动作时，若同时按下option可以在辅助编辑窗口中打开相应文件或符号（For optional navigation (Option-clicking or Option-choosing a file), opens the file in a new Assistant editor pane.）。若在辅助窗口中操作，则在主窗口（Standard Editor）中打开。</p>
+
+<ul>
+<li>option+点击Project Navigator中选中的文件：在辅助编辑窗口中打开选中文件。</li>
+<li>option+command+点击Editor中选中的符号：在辅助编辑窗口中打开符号定义（jump to definition in assistant editor）。</li>
+<li>option+control+command+↑/↓：在辅助窗口中打开对应的头文件（<em>.h）/实现文件（</em>.m,<em>.mm,</em>.cc）。
+点击查看shift+command+O、shift+command+F（command+3）选中的文件或符号时，可同时按下option在辅助编辑窗口中打开。</li>
+</ul>
+
+<p>在control+1~6中打开选择结果时，均可同时按下option在辅助编辑窗口中打开。</p>
+
+<p>若在按下option的同时按下shift通常会出现一个导航窗格，可选择在new window/tab/assistant-editor显示打开。</p>
+
+<p>ForOption-Shift navigation (Option-Shift-click or Option-Shift-choose a file), Xcode displays a graphical navigation chooser showing the current layout. The chooserprompts you to open the file in anyopen editor pane in any window and tab, or to open the file in anew editor pane, window, or tab.</p>
+
+<p>20140219220929453.png</p>
+
+<h4 id="toc_18">环境变量（Build Setting Macros）</h4>
+
+<h5 id="toc_19">（1）查看环境变量宏</h5>
+
+<p>命令行进入HelloWorld工程目录，执行xcodebuild命令并带上“-showBuildSettings”参数：</p>
+
+<p>$ xcodebuild -project HelloWorld.xcodeproj -target HelloWorld -configuration Debug -showBuildSettings &gt; xcodebuild_showBuildSettings.txt</p>
+
+<p>则xcodebuild_showBuildSettings.txt中保存了Build settings for action build and target &quot;HelloWorld”，其中dump了所有的环境变量。</p>
+
+<h5 id="toc_20">（2）Xcode5(Mac OS X 10.9)的部分环境变量</h5>
+
+<p>约定1：~=当前账户的HOME目录，例如“/Users/faner”。</p>
+
+<p>约定2：build构建基础路径：BUILD_PATH = ~/Library/Developer/Xcode/DerivedData/Build。可通过“File-&gt;Project Settings”查看Derived Data Location。</p>
+
+<p>约定3：环境变量宏（Build Setting Macros）引用格式：${MACRO}，同Build Phases Run Script中的语法。</p>
+
+<p>下面是摘选自xcodebuild_showBuildSettings.txt的部分常用环境变量。</p>
+
+<p><strong>(a) ARCH &amp; PLATFORM &amp; SDK</strong><br/>
+ARCHS = i386</p>
+
+<p>CURRENT_ARCH = i386</p>
+
+<p>PLATFORM_DIR = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform</p>
+
+<p>PLATFORM_NAME = macosx</p>
+
+<p>SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk</p>
+
+<p>SDK_DIR = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk</p>
+
+<p>SDK_NAME = macosx10.9</p>
+
+<p><strong>(b) PROJECT &amp; SOURCE</strong></p>
+
+<p>PROJECT = HelloWorld</p>
+
+<p>PROJECT_DIR =~/Projects/Learn Objective-C/HelloWorld</p>
+
+<p>PROJECT_FILE_PATH =${PROJECT_DIR}/HelloWorld.xcodeproj</p>
+
+<p>PROJECT_NAME = HelloWorld</p>
+
+<p>SOURCE_ROOT =${PROJECT_DIR}</p>
+
+<p>SRCROOT =${PROJECT_DIR}</p>
+
+<p><strong>(c) BUILD &amp; CONFIGURATION</strong></p>
+
+<p>BUILD_DIR =BUILD_PATH/Products</p>
+
+<p>BUILD_ROOT =BUILD_PATH/Products</p>
+
+<p>BUILT_PRODUCTS_DIR =BUILD_PATH/Products/Debug</p>
+
+<p>CONFIGURATION = Debug</p>
+
+<p>CONFIGURATION_BUILD_DIR =BUILD_PATH/Products/Debug</p>
+
+<p>CONFIGURATION_TEMP_DIR =BUILD_PATH/Intermediates/HelloWorld.build/Debug</p>
+
+<p><strong>(d) PRODUCT &amp; TARGET</strong></p>
+
+<p>PRODUCT_NAME = HelloWorld</p>
+
+<p>PRODUCT_TYPE = com.apple.product-type.tool// Project Template: Command Line Tool</p>
+
+<p>TARGET_BUILD_DIR =BUILD_PATH/Products/Debug</p>
+
+<p>TARGET_NAME = HelloWorld</p>
+
+<h5 id="toc_21">（3）设置环境变量</h5>
+
+<p>Product -&gt; Edit Scheme（option+command+R）-&gt;Arguments-&gt;Environment Variables中可以添加自定义环境变量（Name为名称，Value为值）。</p>
+
+<h4 id="toc_22">运行调试</h4>
+
+<p>（1）Console</p>
+
+<p>shift+command+Y：显示控制台（Show/Hide the debug area）</p>
+
+<p>shift + command + K：清除控制台（Clean）</p>
+
+<p>（2）Build</p>
+
+<p>Product -&gt; Edit Scheme（option+command+R）-&gt;Info-&gt;Build Configuration：选择生成版本（Debug or Release）</p>
+
+<p>command + B：构建（Buid）</p>
+
+<p>（3）Target</p>
+
+<p>一个Target是指在一个Project中构建的一个产品，它包含了构建该产品的所有文件，以及如何构建该产品的配置。</p>
+
+<p>一个定义好构建过程的Target成为一个Scheme，可在Scheme中定义Target的六种构建过程：Build/Run/Test/Profile/Analyze/Archive。</p>
+
+<p>Product -&gt; Edit Scheme（option+command+R）-&gt;Manage Schemes可对Scheme的六种构建过程进行配置（可配置项包括Info、Arguments、Options）。</p>
+
+<p>在Project Navigator中选中某个xcodeproj（例如QQ.xcodeproj），将进入Project Setting页面，可点击左侧图标show/hide project and targets list：</p>
+
+<p>0012.png</p>
+
+<p>点击targets项可分别设置各target的Build Settings；右击可对target进行delete。</p>
+
+<p>（4）Issue &amp; Errors</p>
+
+<p>编译错误（error）和警告（warning）过多时，只显示编译错误：</p>
+
+<p>0013.png</p>
+
+<p>点击底端的感叹号，即可只显示编译错误，忽略编译警告：</p>
+
+<p>0014.png</p>
+
+<p>（5）Run</p>
+
+<p>command + R：运行（Run），可能会先编译。若按下control直接运行上次build的product（Run Without Building）。</p>
+
+<p>command + .：停止运行（Stop）</p>
+
+<p>（6）Breakpoint</p>
+
+<p>command + \：当前行设置/取消断点；通过鼠标点击蓝色断点来启用/禁用当前行断点。</p>
+
+<p>command + Y：全局激活或禁用所有的断点，激活进入调试模式（此时断点蓝色可见）。</p>
+
+<p>边列（Gutter）中的断点/警告可右键呼出Reveal in Breakpoint/Issue Navigator。</p>
+
+<p>trick：编辑断点（Edit Breakpoint）：</p>
+
+<p>Condition：设置断点的触发条件，例如“i==3”（注意不能有空格）表示当i等于3时该断点才会被触发。<br/>
+Ignore：设置断点需要被忽略多少次才会中断，若设置成5则表示第6次遇到该断点时才触发。<br/>
+Action：设置断点触发时的动作，可以为Debugger Command、Log Message、Shell Command或Sound。<br/>
+例如可设置以下Debugger Command：</p>
+
+<p>（1）读取std::string sig的内存buffer值：mem read sig.c_str() -c sig.size()；</p>
+
+<p>（2）打印NSData实例sig：po sig</p>
+
+<p>（7）Debug</p>
+
+<p>F6：下一步（Step Over），逐过程单步调试，不进入函数体。</p>
+
+<p>(fn+)F7：进入（Step Into）函数体。可能与多媒体键有冲突，故需要fn辅助。</p>
+
+<p>(fn+)F8：跳出（Step Out）函数体。可能与多媒体键有冲突，例如呼叫iTunes，故需要fn辅助。</p>
+
+<p>control+command+Y：逐断点（continue）继续执行。</p>
+
+<p>trick：移动指令指针（Move the instruction pointer）：</p>
+
+<p>0015.png</p>
+
+<p>断点调试运行时，可以将绿色指针箭头（Line 47）移动到其他行（Line 49）或其他断点（Line 51）实现跳转执行。</p>
+
+<h4 id="toc_23">Watch</h4>
+
+<p>shift+command+M：Debug Workflow-&gt;View Memory。</p>
+
+<p>command+K：Debug Workflow-&gt;Clear Console。</p>
+
+<p>Debug Workflow-&gt;ShowDisassembly When Debugging，可进行汇编指令级调试。</p>
+
+<p>trick：修改变量内存值（change memory value while debugging）：</p>
+
+<p>调试运行时，可以在底部的调试窗口（Debug Area，可通过Shift+Command+Y呼出）右键某个变量，除了可以进行View Memory/View Value As之外，还可以选择Edit Value运行时编辑内存变量的值。</p>
+
+<p>这种手动设置指定值，在调试某些难以复现的bug或进行边界测试非常有用，可以避免在验证某个问题时反复改值重新编译。</p>
+
+<h4 id="toc_24">lldb调试命令：</h4>
+
+<p>n/next：step over；<br/>
+s/step：step into；<br/>
+finish：step out；<br/>
+c/continue：goto next breakpoint；<br/>
+expr/expression：Evaluate a C/ObjC/C++ expression（动态执行C/ObjC/C++表达式）；<br/>
+p/print/expr/expression：print as a C/C++ basic variable；<br/>
+po/expr -O/expression -O：Print as an Objective-C object；<br/>
+call：调用。其实上述p/po后接表达式(expression)也有调用的功能，一般只在不需要显式输出，或是无返回值时使用call，用于动态调试插入调用代码。<br/>
+    例如可以在viewDidLoad:里面设置断点，然后在程序中断的时候输入以下命令：</p>
+
+<pre><code>  call [self.view setBackgroundColor:[UIColor redColor]]
+</code></pre>
+
+<p>继续运行程序，view的背景颜色将变成红色！</p>
+
+<p>bt（backtrace），打印当前调用堆栈（crash堆栈），“bt all”可打印所有thread的堆栈（相当于command+6的Debug Session Navigation）。<br/>
+image：可用于寻址，有多个组合命令，比较实用的一种用法是寻找栈地址对应的代码（行）位置。<br/>
+例如某个UITableView总共有2个section，当其引用的currentSection.index≥2时将会引起[UITableView rectForHeaderInSection:]调用异常，可使用expr动态改值制造crash场景模拟调试。</p>
+
+<p>此时crash时的控制台bt显示异常出现在应用层代码“0x00d055b8 - [FACategoryTableView FACategorySectionHeaderDidTouched:] + 744”处（其中0x00d055b8为当前栈(代码段)偏移量，744为栈帧偏移量——PC指针相对函数入口的偏移）。</p>
+
+<p>那么具体是FACategoryTableView.m文件哪一行代码调用引起的异常呢？此时通过“image lookup --address”后接bt的call stack中的代码段偏移地址（0x00d055b8）即可定位出异常调用的代码行位置。</p>
+
+<p>x/memory read：dump指定地址的内存（Read from the memory of the process being debugged），后接起止地址或-c指定count加起始地址。可help mem read查看帮助：<br/>
+Syntax:</p>
+
+<pre><code> memory read[]
+</code></pre>
+
+<p>Command Options Usage:</p>
+
+<pre><code>size指定内存块（block/item）的大小，默认为1byte。
+
+--size)：The size in bytes to use when displaying with the selected format.
+</code></pre>
+
+<p>count指定内存块（block/item）的个数，可配合起始地址使用。</p>
+
+<p>-c( --count)：The number of total items to display.</p>
+
+<p>format指定内容显示格式，格式符同print：c-char，s-string，d-decimal，x-hex。</p>
+
+<p>-f( --format)：Specify a format to be used for display.</p>
+
+<p>Command Samples:</p>
+
+<p>（a）起止地址</p>
+
+<p>(lldb)mem read 0x10b88f0c 0x10b88f0c+9</p>
+
+<pre><code>0x10b88f0c: 39 38 37 36 35 34 33 32 31                       987654321
+</code></pre>
+
+<p>（b）起始地址+内存块count</p>
+
+<p>(lldb)mem read 0x10b88f0c -c 9</p>
+
+<pre><code>0x10b88f0c: 39 38 37 36 35 34 33 32 31                       987654321
+</code></pre>
+
+<p>（c）起始地址+内存块size+内存块count（dump hex format）</p>
+
+<p>(lldb)memory read -s 1 -f x -c 9 0x10b88f0c</p>
+
+<p>0x10b88f0c: 0x39 0x38 0x37 0x36 0x35 0x34 0x33 0x32</p>
+
+<p>0x10b88f14: 0x31</p>
+
+<p>（d）起始地址+内存块size+内存块count（dump char format）</p>
+
+<p>(lldb)memory read -s 1 -f c -c 9 0x10b88f0c</p>
+
+<p>0x10b88f0c: 987654321</p>
+
+<p>（e）起始地址+内存块size+内存块count（dump string format）</p>
+
+<p>(lldb)mem read 0x10b5cf2c -f s -c 1</p>
+
+<p>0x10b88f0c: &quot;987654321&quot;</p>
+
+<p>（f）起始地址+内存块size+内存块count（dump int format）</p>
+
+<p>(lldb)memory read -s 4 -f x -c 3 0x10b88f0c</p>
+
+<p>0x10b88f0c: 0x36373839 0x32333435 0x109f0031</p>
+
+<p>memory write：改写指定地址的内存（Write to the memory of the process being debugged）。可help mem write查看帮助：<br/>
+   Syntax: memory write</p>
+
+<p>[[...]]<br/>
+（10）启用NSZombieEnabled调试EXC_BAD_ACCESS</p>
+
+<p>当你对已释放的对象发送消息（90%的可能是对引用计数为0的对象再release）或release那些autorelease对象时，就会出现报EXC_BAD_ACCESS这样的错误。</p>
+
+<p>默认设置下 Xcode不会给你定位具体是哪一行代码不该去使用已释放的对象，或者release用错了。</p>
+
+<p>Product -&gt; Edit Scheme（option+command+R） -&gt; Diagnostics ，勾选“Objective-C”之后的“Enable Zombie Objects”。</p>
+
+<p>设置NSZombieEnabled环境变量后，一个对象销毁时会被转化为_NSZombie；设置NSZombieEnabled后，当你向一个已经释放的对象发送消息，这个对象就不只是报EXC_BAD_ACCESS Crash，还会放出一个错误消息，然后以一种可预测的可以产生debug断点的方式消失， 因此我们可以找到具体或者大概是哪个对象被错误的释放或引用了。</p>
+
+<p>注意：NSZombieEnabled只能在调试的时候使用，千万不要忘记在产品发布的时候去掉，因为NSZombieEnabled不会真正去释放dealloc对象的内存，一直开启后果自负！</p>
+
+<h2 id="toc_25">参考</h2>
+
+<p><a href="https://developer.apple.com/library/content/documentation/IDEs/Conceptual/xcode_help-command_shortcuts/Introduction/Introduction.html">《Xcode Keyboard Shortcuts and Gestures》</a></p>
+
+<p><a href="http://www.cocoachina.com/ios/20140225/7882.html">《Xcode Key Bindings &amp; Gestures》</a><br/>
+<a href="http://www.cocoachina.com/industry/20140613/8816.html">《提升Xcode效率的小技巧》</a></p>
+
+<p><a href="http://blog.csdn.net/shinancao666/article/details/13627979">《Xcode的文件组织》</a></p>
+
+<p><a href="http://www.cnblogs.com/xiaodao/archive/2012/03/28/2422091.html">《Xcode环境变量及路径设置》</a><br/>
+<a href="http://blog.csdn.net/fengsh998/article/details/8868871">《Xcode构建输出目录》</a></p>
+
+<p><a href="https://developer.apple.com/library/content/documentation/IDEs/Conceptual/gdb_to_lldb_transition_guide/document/lldb-basics.html">《LLDB Quick Start Guide》</a><br/>
+<a href="http://lldb.llvm.org/lldb-gdb.html">《LLDB to GDB Command Map》</a><br/>
+<a href="http://blog.163.com/jin_yuanwen/blog/static/19757915220131238104514">《Xcode gdb/lldb调试命令》</a></p>
+
+<p><a href="http://blog.sina.com.cn/s/blog_6dce99b10101gwwo.html">《Xcode LLDB Debug教程》</a><a href="http://www.starfelix.com/blog/2014/03/17/lldbdiao-shi-ming-ling-chu-tan/">《LLDB调试命令初探》</a><a href="http://blog.csdn.net/cuiweijie3/article/details/8778198">《iOS应用崩溃日志揭秘》</a><a href="http://www.cnblogs.com/alario/archive/2012/03/27/2419710.html">《经营你的iOS应用日志》</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[viewController的生命周期]]></title>
+    <link href="iginkgo.cn/15209406714961.html"/>
+    <updated>2018-03-13T19:31:11+08:00</updated>
+    <id>iginkgo.cn/15209406714961.html</id>
+    <content type="html"><![CDATA[
+<span id="more"></span><!-- more -->
+
+<p>在开发中遇到这样一个问题， viewControllerA向viewControllerB进行切换时，我需要在离开viewControllerA时，关闭全局控制器managerPlayer， 然后进入viewControllerB后，再次开启。返回之后继续进行使用managerPlayer进行视频播放。</p>
+
+<p>因此我需要在 viewWillAppear()<br/>
+           viewWillDisapper()进行设定。</p>
+
+<p>突发好奇，我想整理一下，两个viewController进行切换时，其生命周期的调用情况，以及两者的生命周期在调用时的对应关系。</p>
+
+<p>先发一下打印信息</p>
+
+<pre><code>viewControllerA  viewDidLoad()
+viewControllerA  viewWillAppear()
+viewControllerA  viewWillLayoutSubviews()
+viewControllerA  viewDidLayoutSubviews()
+viewControllerA  viewDidAppear()
+
+此处点击进行controller切换
+
+viewControllerB  viewDidLoad()
+viewControllerA  viewWillDisappear()
+viewControllerB  viewWillAppear()
+viewControllerB  viewWillLayoutSubViews()
+viewControllerB  viewDidLayoutSubviews()
+viewControllerA  viewDidDisappear()
+viewControllerB  viewDidAppear()
+
+</code></pre>
+
+<p>然后考虑一下对于一个viewController中完整的生命周期</p>
+
+<p><img src="media/15209406714961/life.png" alt="life"/></p>
+
+<p>对于整个生命周期的方法进行总结</p>
+
+<p><code>init</code> 进行整体的初始化<br/>
+<code>loadView</code> 对于页面中的view进行了初始化,之后可以获取self.view的实例<br/>
+<code>viewDidLoad</code>此时可以获取view以及其子类view，但是superView还没有。<br/>
+<code>viewWillAppear</code> view即将显示的节点。每次显示该页面之前都会进入该时间节点   这里的尺寸已经都是实际的了么？<br/>
+<code>viewDidAppear</code> view已经显示。（被加到另外一个view中）</p>
+
+<p><code>viewWillDisappear</code> view即将消失 此时还没有调用 removeFromSuperView<br/>
+<code>viewDidDisappear</code> view已经从superView中移除<br/>
+<code>viewDidUnload</code> 干啥？</p>
+
+<p>viewController主要负责的职能：<br/>
+1. 该努力内部view的加载、显示、卸载<br/>
+2. 负责与其他viewController的通信和协调</p>
+
+<p>注意：</p>
+
+<blockquote>
+<p>Note: When overriding the loadView method to create your views programmatically, you should not call super. Doing so initiates the default view-loading behavior and usually just wastes CPU cycles. Your own implementation of the loadView method should do all the work that is needed to create a root view and subviews for your view controller.</p>
+
+<p>注意： 如果需要重写loadView方法来创建你的view时，在loadView方法中不应该调用super，如果调用该方法的话可能会影响CPU性能。</p>
+</blockquote>
+
+<p>loadView与viewDidload的区别是 ，loadView时view还没有生成， viewDidLoad时，view已经生成了。loadView只会被调用一次，但是viewDidLoad可能会被调用多次（view可能多次加载），当view被添加到其他view中之前，会调用viewWillAppear。 当view不再使用时，收到内存警告时，viewController会将view释放并将其指向为nil。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[tools]]></title>
+    <link href="iginkgo.cn/15209405889264.html"/>
+    <updated>2018-03-13T19:29:48+08:00</updated>
+    <id>iginkgo.cn/15209405889264.html</id>
+    <content type="html"><![CDATA[
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">code</h2>
+
+<p><a href="http://asciiflow.com/">使用注释画图</a><br/>
+<a href="https://www.processon.com/login">绘制流程图</a><br/>
+<a href="https://www.appsight.io/">Find SDKs &amp; services used by iOS mobile apps</a><br/>
+<a href="https://aso100.com/">iOS app排名</a></p>
+
+<h2 id="toc_1">life</h2>
+
+<p><a href="http://ip.taobao.com/index.php">ip地址查询</a><br/>
+<a href="http://app2.sfda.gov.cn/datasearchp/gzcxSearch.do?formRender=cx&amp;page=1">药监局查询正品</a><br/>
+<a href="http://sswz.spb.gov.cn/">快递投诉</a><br/>
+<a href="https://github.com/cn">中国资料数据库 github开源</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[《被讨厌的勇气》]]></title>
+    <link href="iginkgo.cn/15209404638621.html"/>
+    <updated>2018-03-13T19:27:43+08:00</updated>
+    <id>iginkgo.cn/15209404638621.html</id>
+    <content type="html"><![CDATA[
+<p>中文名《被讨厌的勇气》</p>
+
+<span id="more"></span><!-- more -->
+
+<p>大约花了3天的时间，25-30个番茄时钟的时间细细读完了日本作家岸建一郎的书《被讨厌的勇气》, 刷了一遍自己的认知。<br/>
+<img src="https://img1.doubanio.com/lpic/s29237648.jpg" alt="被讨厌的勇气"/></p>
+
+<p>全书大体是一个 “目的论”为核心的思想，提倡充分发挥自己的主观能动性、利他但是不以他人的期待为约束，不拘泥过去，不过度关注未来，活在当下。<br/>
+现做一下大体的总结，第一次阅读比较粗陋，今后还会继续修缮。</p>
+
+<p><img src="media/15209404638621/TheCourageToBeHated.png" alt="TheCourageToBeHated"/></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[selfControl list]]></title>
+    <link href="iginkgo.cn/15209404077015.html"/>
+    <updated>2018-03-13T19:26:47+08:00</updated>
+    <id>iginkgo.cn/15209404077015.html</id>
+    <content type="html"><![CDATA[
+<p>如何进行个人与知识的自我筛查</p>
+
+<span id="more"></span><!-- more -->
+
+<ul>
+<li>
+<a href="#toc_0">题记</a>
+</li>
+<li>
+<a href="#toc_1">无聊时的List</a>
+</li>
+<li>
+<a href="#toc_2">看书时的List</a>
+</li>
+<li>
+<a href="#toc_3">揣摩问题/掌握一个问题要做的List</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">题记</h2>
+
+<p>这是自己从各种书籍看到、总结的，让自己在遇到/死磕/解决一个问题的时候需要顺序过滤一遍，让自己变的更好的事项清单。</p>
+
+<h2 id="toc_1">无聊时的List</h2>
+
+<p>最近学到过什么<br/>
+锻炼</p>
+
+<h2 id="toc_2">看书时的List</h2>
+
+<p>1.问题<br/>
+2.方案<br/>
+3.例子</p>
+
+<p>或者是<br/>
+1.现象<br/>
+2.解释<br/>
+3.支撑该解释的理由<br/>
+4.例子</p>
+
+<h2 id="toc_3">揣摩问题/掌握一个问题要做的List</h2>
+
+<ul>
+<li>为什么是这样（为什么这样是好的）？</li>
+<li>为什么不是那样（有其他做法吗/有更好的做法吗）？</li>
+<li>这么做是最好的吗（为什么/能证明吗）？</li>
+<li>这个做法与其他的做法有什么本质联系吗？</li>
+<li>这个跟那个的区别是什么？</li>
+<li>问题的本质是什么？</li>
+<li>这个做法的本质有事什么？</li>
+<li>到底本质上是什么东西导致了这个做法如此**？</li>
+<li>与这个问题类似的还有其他问题吗？</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Macros_2]]></title>
+    <link href="iginkgo.cn/15209403224294.html"/>
+    <updated>2018-03-13T19:25:22+08:00</updated>
+    <id>iginkgo.cn/15209403224294.html</id>
+    <content type="html"><![CDATA[
+<span id="more"></span><!-- more -->
+
+<p>宏的展开顺序</p>
+
+<p>遇到宏名后(1)<br/><br/>
+检查对应的宏体中是否含有#和##运算符<br/>
+无——处理宏参数（实参）<br/>
+    遇到宏名，回到(1)<br/>
+    没有遇到，在宏体中用实参字符串替换形式参数，再检查是否遇到宏名(4)<br/>
+ ...<br/>
+有——不检查宏参数，在宏体中用实参字符串替换形式参数，再检查是否含有宏名(3)<br/>
+    遇到宏名，回到(1)<br/>
+    没有遇到，结束(5)</p>
+
+<h2 id="toc_0">短路表达式</h2>
+
+<p><a href="http://blog.163.com/m13591120447_1/blog/static/21637918920137811837285/">参考资料</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Macros_1]]></title>
+    <link href="iginkgo.cn/15209402816526.html"/>
+    <updated>2018-03-13T19:24:41+08:00</updated>
+    <id>iginkgo.cn/15209402816526.html</id>
+    <content type="html"><![CDATA[
+<p>宏 第一部分</p>
 
 <!--more-->
 
+<h3 id="toc_0">宏的基本概念</h3>
+
+<p>*注意：本文中讲述的宏以及相关例子都是在iOS环境下使用的。<br/>
+百度定义</p>
+
 <blockquote>
-<p>只要有良好的编码基础，学习一门语言也是一件很容易的事情 --BY 老婆</p>
+<p>一种批量处理的成为。它是一种规则或者模式，用于说明输入如何根据预定义的规则转换为对应的输出。</p>
 </blockquote>
 
-<h2 id="toc_0">然后</h2>
+<p>WikiPedia定义</p>
 
-<p>希望在这里给自己的老婆开一个系列，讲一讲iOS的一些事，顺便也作为自己只是的回顾，查漏补缺。有一种小黄鸭调试法，说的是当你遇到一个问题，抓耳挠腮百思不得其解之时，试着在身边放一个玩具小黄鸭，然后对着它一行一行讲解你的代码。通常而言，你会自己发现问题所在。 这也是大家时长说的，对一件事情的学习掌握程度，通常效率从低级到高级分别是学习、实践、教授(输出)。 其中的教授、输出这一项就是效率最高的学习方法，它让你能够把了解学习到的东西在脑海中变成自己的并且成功的进行表达出来。</p>
+<blockquote>
+<p>一种批量处理的称谓。宏是一种抽象，根据一系列预定义的规则替换一定的文本。</p>
+</blockquote>
 
-<p>不知道什么时候起，我似乎从一个爱钻研的小孩变成一个在学习的问题上得过且过的成年人了。<br/>
-小的时候，遇到问题，好奇的时候会直接举手问老师为什么，或者私下里自己想一想原因。到了后来，似乎直接掌握了书中的定理和结论就可以了，没什么心情去更深一步的东西，这足以让自己在成绩上变得不错了。再后来上了大学，似乎更懒了。能偷懒就偷懒，实在躲不过去才会去做事情，得过且过这样的事情似乎更是成为了常态。<br/>
-整个人，变得更加的懒散了。<br/>
-希望自己能够成为一个有深度，有积累的胖子。也让聪明的老婆，通过我的系列，能够对于IOS的开发，能够有一个很直接的认识。</p>
+<p>在我本人看来，宏是在<strong>预处理</strong>阶段，根据相应规则进行文本替换的一套机制。<br/>
+&lt;!--more--&gt;</p>
 
-<h2 id="toc_1">老婆万岁</h2>
+<h3 id="toc_1">宏的基本用途</h3>
+
+<ul>
+<li>署名</li>
+<li>宏展开</li>
+<li>预编译判断</li>
+</ul>
+
+<p>宏的署名算是在OC编写iOS代码时，使用非常广泛的一种宏的应用了。可以用来定义一定的常量或者字符串，用于进行全局调用。</p>
+
+<pre><code>#define M_PI  3.14159265358979323846264338327950288
+</code></pre>
+
+<p>宏展开的实例</p>
+
+<pre><code>#define TRUE_AND_LOG(condition)         \
+    do {                                \
+        if(condition) {                 \
+          NSLog(@&quot;your condition&#39;&quot;#condition&quot;&#39; is true&quot;);\
+        }                               \
+     }while(0)   
+     
+
+TRUE_AND_LOG(1 + 1 == 2);     
+#最后会输出  “your condition 1 + 1 == 2 is true”
+</code></pre>
+
+<p>预编译判断的实例</p>
+
+<pre><code>#静态判断   IF(判断条件)(为真时候的表达式)(为假时候的表达式)
+#define IF(CONDITION) _CONCAT(_IF, CONDITION)
+#define _CONSUME(...)  
+#define _expand(...) __VA_ARGS__
+#define _IF1(...) __VA_ARGS__ _CONSUME
+#define _IF0(...) _EXPEND
+</code></pre>
+
+<p>本例实现的效果是，在判断条件为1(真)时，返回‘为真的表达式’。判断条件为0(假)时，返回<code>为假的表达式</code></p>
+
+<h3 id="toc_2">宏中的基本符号</h3>
+
+<ul>
+<li><code>#</code></li>
+<li><code>##</code></li>
+<li><code>__FILE__</code> 和 <code>__LINE__</code> </li>
+<li><code>...</code> 以及 <code>__VA_ARGS__</code></li>
+<li><code>##__VA_ARGS__</code></li>
+</ul>
+
+<p>下面具体讲解一下各种符号的具体用法：</p>
+
+<hr/>
+
+<p><code>#</code>符号是用于把宏的参数字符串化。例如：</p>
+
+<pre><code>#define NUMBER_ONE 1
+#define STRINGFY(PARA)  # PARA
+
+ STRINGFY(NUMBER_ONE)  //调用代码
+ //结果  “NUMBER_ONE”
+</code></pre>
+
+<p>很多人质疑为何返回的结果不是 “1”，其实这与宏的展开方式有关系，详细请大家看 这二篇文章。</p>
+
+<hr/>
+
+<p><code>##</code>符号表示把左右两边的宏进行文本上的连接。</p>
+
+<pre><code>#define DEF_VAR(type, name) type type##_##name
+
+DEF_VAR(int， a) = 5
+NSLog(@&quot;%d&quot;, int_a)
+
+</code></pre>
+
+<p>上述相当于 <code>int##_##a</code> 得到 <code>int_a</code>。</p>
+
+<hr/>
+
+<p><code>...</code>和<code>__VA_ARGS__</code><br/>
+其中<code>...</code>用于在函数声明部分表示可变参数。它只会作为参数出现在小括号中。<br/>
+<code>__VA_ARGS__</code>则用于函数的解释部分，同样表示 <code>...</code>所代表的可变参数<br/>
+例如</p>
+
+<pre><code>#define TOTO(NAME, ...)  NAME[__VA_ARGS__]
+</code></pre>
+
+<p><code>...</code>只能出现在函数的声明部分，<code>__VA_ARGS__</code>只能出现在右侧的解释部分。二者共同表示可变参数。</p>
+
+<hr/>
+
+<p>在OC语言环境下，有一些预定义好的默认宏，用于表示当前的环境</p>
+
+<p><code>__FILE__</code> 表示当前代码所处的文件全路径 <br/>
+<code>__LINE__</code> 表示当前代码所处的行号 <br/>
+<code>__DATE__</code> 表示预编译时的日期<br/>
+<code>__TIME__</code> 表示预编译时的时间<br/>
+<code>__TIMESTAMP__</code> 预编译的时间戳<br/>
+<code>__FUNCTION__</code> 当前函数</p>
+
+<hr/>
+
+<p><code>##__VA_ARGS__</code>用于可变参数个数为0时，去除前面的逗号<br/>
+例如</p>
+
+<pre><code>#define ABC(format, ...)    print(format, __VA_ARGS__);
+</code></pre>
+
+<p>如果上述可变参数个数为0时，则会出现<br/>
+<code>ABC(&quot;%S&quot;)</code> -&gt; <code>print(&quot;%s&quot;,);</code>这样的情况，出现bug。<br/>
+使用 <code>##__VA_ARGS__</code>可以去除前面的逗号，避免出现这个问题。</p>
+
+<p><strong>文章粗陋，如有疏漏，希望可以联系笔者交流。</strong></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Macros]]></title>
+    <link href="iginkgo.cn/15209397332611.html"/>
+    <updated>2018-03-13T19:15:33+08:00</updated>
+    <id>iginkgo.cn/15209397332611.html</id>
+    <content type="html"><![CDATA[
+<p>在使用OC开发的项目中，宏是一个绕不开的话题。一个简单易用的宏库能够极大的提高生产力。</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">介绍</h2>
+
+<h3 id="toc_1">定义</h3>
+
+<p>百度百科：</p>
+
+<blockquote>
+<p>一种批量处理的称谓。它是一种规则或者模式，用于说明 输入如何根据预定义的规则转换为对应的输出。</p>
+</blockquote>
+
+<p>Wikipedia</p>
+
+<blockquote>
+<p>一种批量处理的称谓。宏是一种抽象，根据一系列预定义的规则替换一定的文本模式。</p>
+</blockquote>
+
+<p>在港澳台又被称作 “巨集”</p>
+
+<h3 id="toc_2">项目中的预定义宏</h3>
+
+<h3 id="toc_3">基本示例</h3>
+
+<p>项目中已有的，自定义的宏 都是一些比较基础的  比如</p>
+
+<pre><code>#define DataManager ([SADataManager sharedManager])
+#define SA_COLLECT_MODEL_CHANGED             @&quot;sa_collect_model&quot;
+#define SA_COLLECT_NEWS_CHANGED              @&quot;sa_collect_news&quot;
+
+</code></pre>
+
+<h2 id="toc_4">操作符</h2>
+
+<p>宏的高级语法(OC中用的不多)</p>
+
+<ul>
+<li>&quot;#&quot;</li>
+<li>&quot;##&quot;</li>
+<li>&quot;__FILE__&quot; 和  &quot;__LINE__&quot;</li>
+<li>&quot;...&quot; 和 &quot;__VA_ARGS__&quot;</li>
+<li>&quot;##__VA_ARGS&quot;</li>
+</ul>
+
+<p>1.<code>...</code>表示可变参数。如例子</p>
+
+<pre><code>#define TOTO(NAME, ...)  NAME[__VA_ARGS__]
+</code></pre>
+
+<p>宏可以接受一个参数列表作为参数。这个参数列表具体的参数可能有很多。<br/>
+在宏中，这个列表被定义为 <code>...</code> ， 这个参数列表在展开后 使用 <code>__VA_ARGS__</code>来表示。</p>
+
+<p>2.<code>#</code> 符号表示 把宏的一个参数变为字符串(相当于生成一个带引号的字符串) <br/>
+具体看下图示例：</p>
+
+<pre><code>#define NUMBER_ONE 1
+#define STRINGFY(A)  #A
+    STRINGFY(NUMBER_ONE) #结果是 A   这个例子不对
+</code></pre>
+
+<p>3.<code>##</code>表示把前后两个宏进行字符串连接</p>
+
+<pre><code>#define DEF_VAR(type, name)  type type##_##name
+    
+DEF_VAR(int, a) = 5
+NSLog(@&quot;%d&quot;, int_a)     
+</code></pre>
+
+<pre><code>#define NAME_1  @&quot;William&quot;
+#define NAME_2  @&quot;John&quot;
+#define NAME_3  @&quot;Hugo&quot;
+
+#define NAME_WITH(i)  NAME_##i
+
+NSLog(@&quot;Name is %@&quot;, NAME_WITH(1));
+</code></pre>
+
+<pre><code>#define CONCAT(A, B)   A ## B
+#define IS_EQ(A,B)   CONCAT(_IS_EQ, A)(B)
+#define _IS_EQ1(B)   1
+#define _IS_EQ2(B)   0
+#define _IS_EQ3(B)   0 
+</code></pre>
+
+<pre><code>IS_EQ(2,3)  #=&gt;
+_IS_EQ2(3)  #=&gt;
+ #结果为2
+</code></pre>
+
+<p>4.<code>__FILE__</code>和<code>__LINE__</code><br/>
+<code><br/>
+__FILE__        文件全路径<br/>
+__LINE__        行号   <br/>
+__DATE__        预编译时的日期<br/>
+__TIME__        预编译时的时间<br/>
+__TIMESTAMP__   预编译日期和时间(时间戳)<br/>
+__FUNCTION__    当前函数<br/>
+</code><br/><br/>
+其中，在swift中2.2之前会使用 <code>__FILE__</code> . <code>__LINE</code>. <code>__COLUMN__</code>.<code>__FUNCTION__</code>  在2.2之后被分别更换为<code>#file</code>,<code>#line</code>,<code>#column</code>,<code>#function</code> </p>
+
+<p>5.<code>...</code>和<code>__VA_ARGS__</code><br/>
+ <code>...</code>出现在宏定义的参数中，表示可变参数<br/>
+ <code>__VA_ARGS__</code>则与之相对的，出现在宏的解释（实现）部分，用于表示参数中的可变参数。</p>
+
+<p>6<code>##__VA_ARGS__</code> 表示在可变参数个数为0时，去除前面的逗号。</p>
+
+<pre><code>#define ABC(format, ...) printf(format, __VA_ARGS__);
+</code></pre>
+
+<p>上述如果可变参数个数为0，则会出现<br/>
+<code>ABC(&quot;%s&quot;)</code> -&gt; <code>printf(&quot;%s&quot;,);</code> <br/>
+ 使用 <code>##__VA_ARGS__</code> 可以有效的避免这个问题。</p>
+
+<h2 id="toc_5">宏体现的三个重要的作用</h2>
+
+<ul>
+<li>署名</li>
+<li>宏展开</li>
+<li>预编译判断</li>
+</ul>
+
+<pre><code>#宏署名的例子
+#define M_PI        3.14159265358979323846264338327950288
+</code></pre>
+
+<pre><code>#宏展开的例子1
+#define TRUE_AND_LOG(condition)                                 \
+    do {                                                        \
+        if(condition) {                                         \
+            NSLog(@&quot;your condition&#39;&quot;#condition&quot;&#39; is true&quot;);     \
+        }                                                       \
+    } while(0)
+    
+TRUE_AND_LOG(1 + 1 == 2);    
+</code></pre>
+
+<pre><code>#宏展开简化代码结构的例子2
+#define TYPE_FLAG_LIST(_)                                       \
+    _(TYPE_A)                                                   \
+    _(TYPE_B)                                                   \
+    _(TYPE_C)                                                   \
+    _(TYPE_D)                                                   \
+    _(TYPE_E)                                                   \
+    _(TYPE_F)                                                   
+    
+
+#define ENUM_ELEMENT(FLAG)     FLAG,
+
+typedef enum : NSUInteger {
+        TYPE_FLAG_LIST(ENUM_ELEMENT)
+        TYPE_TOTAL
+} EnumTypeNum;
+</code></pre>
+
+<h4 id="toc_6">短路表达式与语法提示</h4>
+
+<pre><code>#define KEY_PATH(CLASS, PATH)   \
+    (((void)(NO &amp;&amp; ((void)[CLASS new].PATH, NO)), @# PATH))
+</code></pre>
+
+<pre><code>@implementation SomeClass 
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+     KEY_PATH(SomeClass, property1): @&quot;property_1&quot;,
+     KEY_PATH(SomeClass, property2): @&quot;property_2&quot;,
+     KEY_PATH(SomeClass, property3): @&quot;property_3&quot;,
+    };
+ }
+</code></pre>
+
+<p>上述单个公式展开后</p>
+
+<pre><code>(((void)(NO &amp;&amp; ((void)[SomeClass new].property1, NO)), @&quot;property1&quot;)):@&quot;property_1&quot;
+</code></pre>
+
+<p>[class new].path是编译通过的。因而使用后续会出现语法提示。<br/>
+<code>NO</code>和任意的布尔型进行判断， 肯定为空。 所以一般后面会屏蔽掉。</p>
+
+<blockquote>
+<p>逗号表达式：从左到右计算每一个表达式的值。<br/>
+逗号运算符总表达式的值为最后一个数。</p>
+</blockquote>
+
+<p>整个方法的目的是：1.语法提示<br/>
+               2.防止使用字符串的时候，输入错误。</p>
+
+<p>预编译判断的例子</p>
+
+<pre><code>#define ARG_AT(INDEX, ...) _ARG_AT##INDEX(__VA_ARGS__)
+
+#define _ARG_AT0(_0, ...) _0
+#define _ARG_AT1(_0, _1, ...) _1
+#define _ARG_AT2(_0, _1, _2, ...) _2
+#define _ARG_AT3(_0, _1, _2, _3, ...) _3
+#define _ARG_AT4(_0, _1, _2, _3, _4, ...) _4
+#define _ARG_AT5(_0, _1, _2, _3, _4, _5, ...) _5
+
+int value = ARG_AT(3, 100, 200 ,300, 400)   #实际调用
+</code></pre>
+
+<pre><code>#静态判断   IF(判断条件)(为真时候的表达式)(为假时候的表达式)
+#define IF(CONDITION) _CONCAT(_IF, CONDITION)
+#define _CONSUME(...)  
+#define _expand(...) __VA_ARGS__
+#define _IF1(...) __VA_ARGS__ _CONSUME
+#define _IF0(...) _EXPEND
+</code></pre>
+
+<p>宏 静态处理的缺陷：<br/>
+ 无法处理动态变量。<br/>
+ 举例：比如  处理 IF(a) 这样的情况，由于a是动态变量，在进行展开后得到 _IFa  然后就无法处理了。</p>
+
+<h4 id="toc_7">c语言的预制宏(只能在OC中使用)</h4>
+
+<h3 id="toc_8">对于Xcode，预处理或者预编译阶段是可以直接查看的</h3>
+
+<p><img src="media/15209397332611/6D38A307046CC527055E9706C086E1E0.jpg" alt="6D38A307046CC527055E9706C086E1E0"/></p>
+
+<p>注意：<br/>
+1. 不同阶段的Preprocessed可能不同，要根据你的目标去选择预处理的条件。<br/>
+2.宏经过预编译后出来的代码，可以检测宏写的是否正确，但是无法看到宏被展开的过程。 </p>
+
+<h3 id="toc_9">ReactiveCocoa中的元宏（例子）</h3>
+
+<p>作者定义了一些基础的宏，成为“元宏”，它们是构成之后复杂宏的基础。<br/>
+1.metamacro_stringify(VALUE)</p>
+
+<pre><code>#define metamacro_stringify(VALUE) \
+        metamacro_stringify_(VALUE)
+        
+#define metamacro_stringify_(VALUE)    # VALUE
+</code></pre>
+
+<p>表示把宏的参数转换为字符串。</p>
+
+<p>2.metamacro_concat(A,B)</p>
+
+<pre><code>#define metamacro_concat(A,B)   \
+        metamacro_concat_(A,B)
+#define metamacro_concat_(A, B)  A ## B
+</code></pre>
+
+<p>合并A，B参数到一起。</p>
+
+<p>3.metamacro_argcount(...)和 metamacro_at(N, ...)<br/>
+获取参数个数                  获取参数第N个元素</p>
+
+<pre><code>#define metamacro_argcount(...) \
+        metamacro_at(20, __VA_ARGS__, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+</code></pre>
+
+<p>注意：在预编译阶段处理，而非在运行时获取。</p>
+
+<pre><code>#define metamacro_at(N, ...) \
+        metamacro_concat(metamacro_at, N)(__VA_ARGS__)
+</code></pre>
+
+<p>继续展开，得到</p>
+
+<pre><code>#define metamacro_at(N, ...) \
+        metamacro_atN(__VA_ARGS__)
+</code></pre>
+
+<p>继续</p>
+
+<pre><code>#define metamacro_at0(...) metamacro_head(__VA_ARGS__)
+#define metamacro_at1(_0, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at2(_0, _1, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at3(_0, _1, _2, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at4(_0, _1, _2, _3, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at5(_0, _1, _2, _3, _4, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at6(_0, _1, _2, _3, _4, _5, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at7(_0, _1, _2, _3, _4, _5, _6, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at8(_0, _1, _2, _3, _4, _5, _6, _7, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at9(_0, _1, _2, _3, _4, _5, _6, _7, _8, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at10(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at11(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at12(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at13(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at14(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at15(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at16(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at17(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at18(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at19(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, ...) metamacro_head(__VA_ARGS__)
+#define metamacro_at20(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, ...) metamacro_head(__VA_ARGS__)
+
+</code></pre>
+
+<p>可见 N的取值只能从 0 到 20。</p>
+
+<pre><code>#define metamacro_head(...) \
+        metamacro_head_(__VA_ARGS__, 0)
+#define metamacro_head_(FIRST, ...) FIRST
+</code></pre>
+
+<p>逻辑上来说，一个简单的变体如下</p>
+
+<pre><code>define metamacro_head(FIRST, ..., 0)  FIRST
+</code></pre>
+
+<p>可知，这是用于获取后面可变入参的第一个参数。</p>
+
+<p>对于 <strong>metamacro_at(N, ...)</strong></p>
+
+<p>因而，<strong>metamacro_argcount(...)</strong></p>
+
+<pre><code>#define metamacro_argcount(...) \
+        metamacro_at20(__VA_ARGS__, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+</code></pre>
+
+<ol>
+<li>metamacro_head(...)</li>
+</ol>
+
+<pre><code>#define metamacro_head(...) \
+        metamacro_head_(_VA_ARGS_, 0)
+        
+#define metamacro_head_(FIRST, ...) FIRST
+</code></pre>
+
+<p>作用：取出可变参数列表的第一个参数</p>
+
+<ol>
+<li>metamacro_tail(...)</li>
+</ol>
+
+<pre><code>#define metamacro_tail(...) \
+        metamacro_tail_(__VA_ARGS__)
+#define metamacro_tail_(FIRST, ...)  __VA_ARGS__
+</code></pre>
+
+<p>作用 取出可变参数列表除去第一个参数以外的所有参数。<br/>
+限制条件： 可变参数中至少有两个参数。</p>
+
+<ol>
+<li><p>metamacro_take(N, ...)</p>
+
+<pre><code>#define metamacro_take(N, ...)
+        metamacro_concat(metamacro_take, N)(__VA_ARGS__) 
+</code></pre>
+
+<p>函数会展开为</p></li>
+</ol>
+
+<pre><code>    metamacro_takeN(__VA_ARGS__)
+</code></pre>
+
+<pre><code>#define metamacro_take0(...)
+#define metamacro_take1(...) metamacro_head(__VA_ARGS__)
+#define metamacro_take2(...) metamacro_head(__VA_ARGS__), metamacro_take1(metamacro_tail(__VA_ARGS__))
+#define metamacro_take3(...) metamacro_head(__VA_ARGS__), metamacro_take2(metamacro_tail(__VA_ARGS__))
+#define metamacro_take4(...) metamacro_head(__VA_ARGS__), metamacro_take3(metamacro_tail(__VA_ARGS__))
+#define metamacro_take5(...) metamacro_head(__VA_ARGS__), metamacro_take4(metamacro_tail(__VA_ARGS__))
+#define metamacro_take6(...) metamacro_head(__VA_ARGS__), metamacro_take5(metamacro_tail(__VA_ARGS__))
+#define metamacro_take7(...) metamacro_head(__VA_ARGS__), metamacro_take6(metamacro_tail(__VA_ARGS__))
+#define metamacro_take8(...) metamacro_head(__VA_ARGS__), metamacro_take7(metamacro_tail(__VA_ARGS__))
+#define metamacro_take9(...) metamacro_head(__VA_ARGS__), metamacro_take8(metamacro_tail(__VA_ARGS__))
+#define metamacro_take10(...) metamacro_head(__VA_ARGS__), metamacro_take9(metamacro_tail(__VA_ARGS__))
+#define metamacro_take11(...) metamacro_head(__VA_ARGS__), metamacro_take10(metamacro_tail(__VA_ARGS__))
+#define metamacro_take12(...) metamacro_head(__VA_ARGS__), metamacro_take11(metamacro_tail(__VA_ARGS__))
+#define metamacro_take13(...) metamacro_head(__VA_ARGS__), metamacro_take12(metamacro_tail(__VA_ARGS__))
+#define metamacro_take14(...) metamacro_head(__VA_ARGS__), metamacro_take13(metamacro_tail(__VA_ARGS__))
+#define metamacro_take15(...) metamacro_head(__VA_ARGS__), metamacro_take14(metamacro_tail(__VA_ARGS__))
+#define metamacro_take16(...) metamacro_head(__VA_ARGS__), metamacro_take15(metamacro_tail(__VA_ARGS__))
+#define metamacro_take17(...) metamacro_head(__VA_ARGS__), metamacro_take16(metamacro_tail(__VA_ARGS__))
+#define metamacro_take18(...) metamacro_head(__VA_ARGS__), metamacro_take17(metamacro_tail(__VA_ARGS__))
+#define metamacro_take19(...) metamacro_head(__VA_ARGS__), metamacro_take18(metamacro_tail(__VA_ARGS__))
+#define metamacro_take20(...) metamacro_head(__VA_ARGS__), metamacro_take19(metamacro_tail(__VA_ARGS__))
+</code></pre>
+
+<p>使用递归的思想，每次取完头之后，剩下的队列就是此次的tail。然后再递归取下次的head。</p>
+
+<p>metamacro_take(N, ...)的作用就是取出可变参数的前N个数，并把它们组合成新的参数列表。</p>
+
+<ol>
+<li>metamacro_drop(N, ...)</li>
+</ol>
+
+<pre><code>#define metamacro_drop(N, ...)
+        metamacro_concat(metamacro_drop, N)(__VA_ARGS__)
+</code></pre>
+
+<p>展开</p>
+
+<pre><code>metamacro_dropN(__VA_ARGS__)
+</code></pre>
+
+<p>继续展开</p>
+
+<pre><code>#define metamacro_drop0(...) __VA_ARGS__
+#define metamacro_drop1(...) metamacro_tail(__VA_ARGS__)
+#define metamacro_drop2(...) metamacro_drop1(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop3(...) metamacro_drop2(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop4(...) metamacro_drop3(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop5(...) metamacro_drop4(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop6(...) metamacro_drop5(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop7(...) metamacro_drop6(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop8(...) metamacro_drop7(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop9(...) metamacro_drop8(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop10(...) metamacro_drop9(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop11(...) metamacro_drop10(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop12(...) metamacro_drop11(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop13(...) metamacro_drop12(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop14(...) metamacro_drop13(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop15(...) metamacro_drop14(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop16(...) metamacro_drop15(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop17(...) metamacro_drop16(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop18(...) metamacro_drop17(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop19(...) metamacro_drop18(metamacro_tail(__VA_ARGS__))
+#define metamacro_drop20(...) metamacro_drop19(metamacro_tail(__VA_ARGS__))
+</code></pre>
+
+<p><code>metamacro_drop(N, ...)</code>丢掉当前参数列表里的前N位参数</p>
+
+<h1 id="toc_10">注意事项</h1>
+
+<p>1.宏中常出现的do{ }while(0)；</p>
+
+<p>2.对于出现的问题，通常很多方法  比如</p>
+
+<pre><code>#define concat(A, B) concat_(A,B)
+#define concat_(A,B)  A ## B
+</code></pre>
+
+<p>对于一个函数的调用，复合嵌套了一层， 有什么必要性？如果没有这一层会怎么样？<br/>
+单纯的一个连接操作，非要加到concat函数里面，有什么必要性？如果没有concat函数，直接使用会怎么样？<br/>
+3.</p>
+
+<p>了解宏的必要性<br/>
+1.工程配置中，会有一些 预编译宏 ，进行自己一些想要的设定<br/>
+  不同的环境，不同的sdk(模拟器、真机)</p>
+
+<h2 id="toc_11">这里仅需要进行测试</h2>
+
+<p><img src="media/15209397332611/DD36A13FBBDA49DD999A253943A2EA99.jpg" alt="DD36A13FBBDA49DD999A253943A2EA99"/></p>
+
+<p>宏的优缺点：</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center">优点</th>
+<th style="text-align: center">缺点</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td style="text-align: center">不扩大二进制体积</td>
+<td style="text-align: center">晦涩难懂</td>
+</tr>
+<tr>
+<td style="text-align: center">不占用运行时</td>
+<td style="text-align: center">功能严重受限</td>
+</tr>
+<tr>
+<td style="text-align: center">代码简洁</td>
+<td style="text-align: center">排错困难</td>
+</tr>
+<tr>
+<td style="text-align: center">深入理解预处理过程</td>
+<td style="text-align: center">其它语言几乎无法借鉴</td>
+</tr>
+</tbody>
+</table>
+
+<p>启发：<br/>
+* 已用现有的能力拓展不存在的能力<br/>
+* 受限的功能匹配受限的需求（比如说 个数受限 等等）<br/>
+* 分段分析，推演的能力<br/>
+* 冷知识 </p>
+
+<h3 id="toc_12">参考目录</h3>
+
+<p><a href="http://baike.baidu.com/link?url=GfcnklkqhXb6KzPVn-PnkzwM6hCkKXNoLWJbmGEsTiWJut57j7cZDeSW9FbzVjZyNY3tGsD0Qfv3kb59gQ-KkQpE4mY7gUSHT6RRLoYXQi7">百度百科</a><br/>
+<a href="https://en.wikipedia.org/wiki/Fallacy">wikipedia</a><br/>
+<a href="http://www.jianshu.com/p/4c5613e256c8">ReactiveCocoa 中 奇妙无比的“宏”魔法</a> 介绍了常用的基本例子<br/>
+<a href="https://onevcat.com/2014/01/black-magic-in-macro/">宏定义的黑魔法 - 宏菜鸟起飞手册</a></p>
+
+<h1 id="toc_13">老版本SohuAuto的例子</h1>
+
+<p><img src="media/15209397332611/7B0EFF139D6668D04041DBFB997E3FD3.jpg" alt="7B0EFF139D6668D04041DBFB997E3FD3"/></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Mac下的常用命令]]></title>
+    <link href="iginkgo.cn/15209393931542.html"/>
+    <updated>2018-03-13T19:09:53+08:00</updated>
+    <id>iginkgo.cn/15209393931542.html</id>
+    <content type="html"><![CDATA[
+<span id="more"></span><!-- more -->
+
+<p>打开/关闭 显示默认的隐藏文件<br/>
+注意：命令执行后，须重新启动<code>finder</code></p>
+
+<pre><code>//打开
+defaults write com.apple.finder AppleShowAllFiles -bool true
+
+//关闭
+defaults write com.apple.finder AppleShowAllFiles -bool false
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS 中的MVVM]]></title>
+    <link href="iginkgo.cn/15209393092903.html"/>
+    <updated>2018-03-13T19:08:29+08:00</updated>
+    <id>iginkgo.cn/15209393092903.html</id>
+    <content type="html"><![CDATA[
+<!--more-->
+
+<ul>
+<li>
+<a href="#toc_0">介绍</a>
+</li>
+<li>
+<a href="#toc_1">功能</a>
+</li>
+<li>
+<a href="#toc_2">注意事项</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">介绍</h2>
+
+<p>MVVM现在也算是移动端比较火热的一种设计模式了。其全称是model、view、viewModel</p>
+
+<p>与MVC相比，只有 viewModel 以及 viewControl的区别。<br/>
+viewModel： 专门用于处理view的数据功能。不涉及任何的图形关系。</p>
+
+<pre><code>**此处插入关系图**
+</code></pre>
+
+<p>而mvc中的 controller则是处于 model与view之间，作为二者之间的逻辑层。接收一方的信息，然后逻辑处理以后影响另外一方。</p>
+
+<p>许多MVC模式的实现也都使用一个View Model 或 Application Model的概念。 Controller是沟通的媒介，架起领域模型和用户界面之间的桥梁。属于表现层。为了View的简单性，controller负责处理或者将领域模型转换为一个View model，这通常叫做数据传输对象（DTO）</p>
+
+<h2 id="toc_1">功能</h2>
+
+<p>MVVM中，<br/>
+model 是数据源<br/>
+view  作为需要在界面上显示的动画<br/>
+viewModel 则需要实现view显示所需要的数据支撑。当然，最基础的来源是model。</p>
+
+<p>具体来说，<br/>
+view实现的具体功能<br/>
+1. 根据数据控制自身view的转换<br/>
+2. 接收用户通过界面操作传递的数据</p>
+
+<p>viewModel的主要功能<br/>
+1. 为view的实现、界面变化、动画效果提供数据支撑<br/>
+2. 处理view接收到的用户进行的交互操作（手势、传感器、网络请求等）、并进行处理和转换</p>
+
+<p>总结来说，viewModel更像是 针对view进行的 数据处理的终端。<br/>
+与其他模式相比，MVVM一个很大的优点就是 逻辑层与UI层进行了分离，非常易于测试（Testable）</p>
+
+<h2 id="toc_2">注意事项</h2>
+
+<p>viewModel中<br/>
+* 不可持有viewController<br/>
+* 不可import UIKit<br/>
+* 不可持有UIKit下的任何东西<br/>
+* 只应是数据</p>
+
+<p>tips：简单版本的mvvm，凡是通过viewModel中数据改变引起UI改变的，需要进行3步处理。<br/>
+1.在viewModel中进行相关callBack或closure的声明<br/>
+2.在viewModel中数据发生变化后，主动触发定义的callBack<br/>
+3.在view中，由于持有viewModel，对viewModel的callBack进行赋值。相当于数据改变后UI变化的逻辑</p>
+
+<p>在实际使用RxSwift的情况下，由于其本身实现了监听值变化后的主动触发的功能（相当于上方的第二部分），因而只需进行如下步骤<br/>
+1.viewModel中定义RxSwift可以监听的值<br/>
+2.在view/viewController 中对该值进行监听，设置触发后的变化逻辑。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS 事件传递及响应机制]]></title>
+    <link href="iginkgo.cn/15209391761900.html"/>
+    <updated>2018-03-13T19:06:16+08:00</updated>
+    <id>iginkgo.cn/15209391761900.html</id>
+    <content type="html"><![CDATA[
+<span id="more"></span><!-- more -->
+
+<ul>
+<li>
+<a href="#toc_0">简介</a>
+</li>
+<li>
+<a href="#toc_1">事件的处理</a>
+<ul>
+<li>
+<a href="#toc_2">UIView的拖拽</a>
+</li>
+<li>
+<a href="#toc_3">示例</a>
+</li>
+<li>
+<a href="#toc_4">UITouch的作用</a>
+</li>
+<li>
+<a href="#toc_5">UITouch关键属性</a>
+</li>
+<li>
+<a href="#toc_6">UITouch关键方法</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_7">iOS事件的产生与传递</a>
+<ul>
+<li>
+<a href="#toc_8">产生</a>
+</li>
+<li>
+<a href="#toc_9">传递</a>
+<ul>
+<li>
+<a href="#toc_10">寻找合适的视图</a>
+</li>
+<li>
+<a href="#toc_11">UIView不能接受触摸事件的三种情况</a>
+</li>
+<li>
+<a href="#toc_12">寻找合适视图的底层剖析</a>
+<ul>
+<li>
+<a href="#toc_13">拦截事件的处理</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_14">事件的响应过程</a>
+</li>
+<li>
+<a href="#toc_15">事件处理的整个过程</a>
+</li>
+</ul>
+
+
+<ul>
+<li> 触摸事件</li>
+<li> 加速计事件</li>
+<li> 远程控制事件</li>
+</ul>
+
+<h2 id="toc_0">简介</h2>
+
+<p>响应者对象 <code>UIResponder</code><br/>
+ 其继承体系下才能接受并处理事件。<br/>
+ 主要包括</p>
+
+<ul>
+<li> UIApplication</li>
+<li> UIViewController</li>
+<li><p>UIView</p>
+
+<p>原因： <code>UIResponder</code>提供了触摸事件的相应处理方法</p>
+
+<pre><code>func touchesBegan(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
+
+func touchesMoved(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
+
+func touchesEnded(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
+func touchesCancelled(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
+
+</code></pre></li>
+</ul>
+
+<h2 id="toc_1">事件的处理</h2>
+
+<p>对于<code>UIResponder</code>的子类<code>UIView</code>而言</p>
+
+<pre><code> //一根或多根手指开始触摸view，系统自动调用下面方法
+ func touchesBegan(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
+ 
+ //一根或多跟手指在view上移动，系统会自动调用view的下面方法（随着手指的移动会持续调用）
+ func touchesMoved(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
+ 
+ //一根或多根手指离开view，系统会调用view的下面方法
+ func touchesEnded(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
+ 
+ //触摸结束前，某个系统事件（比如电话）会打断触摸过程，系统自动调用下面方法。
+ func touchesCancelled(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
+ 
+</code></pre>
+
+<p>注意：上面的方法是系统自动调用的。所以可以通过重写方法来处理一些事件。</p>
+
+<p>如果两个手指同时触摸一个view，只会调用一次<code>touchesBegan</code>方法，touches参数中有2个<br/>
+ 后台机制UITouch的对象<br/>
+ 如果这两个手指一前一后分别触摸同一个view，那么这个view会分别调用两次<code>touchesBegan</code>方法，每次touches参数只包含一个UITouch对象。<br/>
+ 如果是处理UIView的子类触摸事件，必须要继承UIView，然后在子类中重写上面四个方法。<br/>
+ 如果是处理UIViewController，那么直接在控制器的.m文件中进行重写。</p>
+
+<h3 id="toc_2">UIView的拖拽</h3>
+
+<p>重写<code>func touchesMoved(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)</code>方法。<br/>
+下面简单介绍一下<code>UITouch</code>的属性和方法。</p>
+
+<pre><code>NS_CLASS_AVAILABLE_IOS(2_0) @interface UITouch : NSObject
+
+@property(nonatomic,readonly) NSTimeInterval      timestamp;
+@property(nonatomic,readonly) UITouchPhase        phase;
+@property(nonatomic,readonly) NSUInteger          tapCount;   // touch down within a certain point within a certain amount of time
+
+// majorRadius and majorRadiusTolerance are in points
+// The majorRadius will be accurate +/- the majorRadiusTolerance
+@property(nonatomic,readonly) CGFloat majorRadius NS_AVAILABLE_IOS(8_0);
+@property(nonatomic,readonly) CGFloat majorRadiusTolerance NS_AVAILABLE_IOS(8_0);
+
+@property(nullable,nonatomic,readonly,strong) UIWindow                        *window;
+@property(nullable,nonatomic,readonly,strong) UIView                          *view;
+@property(nullable,nonatomic,readonly,copy)   NSArray &lt;UIGestureRecognizer *&gt; *gestureRecognizers NS_AVAILABLE_IOS(3_2);
+
+- (CGPoint)locationInView:(nullable UIView *)view;
+- (CGPoint)previousLocationInView:(nullable UIView *)view;
+
+// Force of the touch, where 1.0 represents the force of an average touch
+@property(nonatomic,readonly) CGFloat force NS_AVAILABLE_IOS(9_0);
+// Maximum possible force with this input mechanism
+@property(nonatomic,readonly) CGFloat maximumPossibleForce NS_AVAILABLE_IOS(9_0);
+
+</code></pre>
+
+<h3 id="toc_3">示例</h3>
+
+<ul>
+<li>当用户的一根手指接触屏幕时，会出现一个与手指相关的的UITouch对象。</li>
+<li>一根手指对应一个UITouch对象</li>
+<li>如果两个手指同时触摸屏幕，只会触发一次<code>func touchesBegan(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)</code>,参数touches存放两个UITouch对象</li>
+<li>如果一前一后触摸屏幕，则会触发两次<code>func touchesBegan(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)</code>方法，每次调用的参数只会包含一个UITouch对象。</li>
+</ul>
+
+<h3 id="toc_4">UITouch的作用</h3>
+
+<ul>
+<li>保存与手指相关的信息，比如触摸的时间、位置、阶段等等</li>
+<li>当同一个手指移动时，系统会同步更新对应的UITouch，使之能够一直保存该手指在触摸的位置</li>
+<li>当手指离开屏幕时，会销毁相应的UITouch</li>
+</ul>
+
+<h3 id="toc_5">UITouch关键属性</h3>
+
+<pre><code>//触摸产生时所处的窗口
+@property(nonatomic,readonly,retain) UIWindow *window;
+
+//触摸产生时所处的视图
+@property(nonatomic,readonly,retain) UIView *view;
+
+//短时间内点按屏幕的次数，可以根据tapCount判断单击、双击或更多的点击
+@property(nonatomic,readonly) NSUInteger tapCount;
+
+//记录了触摸事件产生或变化时的时间，单位是秒@property(nonatomic,readonly) NSTimeInterval timestamp;
+
+//当前触摸事件所处的状态  TODO:看一下具体的类型是什么
+@property(nonatomic,readonly) UITouchPhase phase;
+</code></pre>
+
+<h3 id="toc_6">UITouch关键方法</h3>
+
+<pre><code>(CGPoint)locationInView:(UIView *)view;
+// 返回值表示触摸在view上的位置
+// 这里返回的位置是针对view的坐标系的（以view的左上角为原点(0, 0)）
+// 调用时传入的view参数为nil的话，返回的是触摸点在UIWindow的位置
+
+(CGPoint)previousLocationInView:(UIView *)view;
+// 该方法记录了前一个触摸点的位置
+
+</code></pre>
+
+<p>实现：</p>
+
+<pre><code>- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event{ 
+    // 想让控件随着手指移动而移动,监听手指移动 
+    // 获取UITouch对象 
+    UITouch *touch = [touches anyObject]; 
+    // 获取当前点的位置 
+    CGPoint curP = [touch locationInView:self]; 
+    // 获取上一个点的位置 
+    CGPoint preP = [touch previousLocationInView:self]; 
+    // 获取它们x轴的偏移量,每次都是相对上一次 
+    CGFloat offsetX = curP.x - preP.x; 
+    // 获取y轴的偏移量 
+    CGFloat offsetY = curP.y - preP.y; 
+    // 修改控件的形变或者frame,center,就可以控制控件的位置 
+    // 形变也是相对上一次形变(平移) 
+    // CGAffineTransformMakeTranslation:会把之前形变给清空,重新开始设置形变参数 
+    // make:相对于最原始的位置形变 
+    // CGAffineTransform t:相对这个t的形变的基础上再去形变 
+    // 如果相对哪个形变再次形变,就传入它的形变 
+    self.transform = CGAffineTransformTranslate(self.transform, offsetX, offsetY);}
+</code></pre>
+
+<h2 id="toc_7">iOS事件的产生与传递</h2>
+
+<h3 id="toc_8">产生</h3>
+
+<p>发生触摸事件后，事件存入由application管理的事件队列中（先进先出的原则）<br/>
+|<br/>
+application从事件队列中取出最前面的事件，并分发下去处理。通常现发给应用程序的主窗口<strong>keywindow</strong><br/>
+|<br/>
+主窗口会在视图层次结构中找到一个最合适的视图来处理事件。<strong>关键</strong><br/>
+|<br/>
+找到合适的控件后，会调用视图控件的touches方法来做具体事件处理。</p>
+
+<h3 id="toc_9">传递</h3>
+
+<p>传递的原则<br/>
+1. 从父控件传递到子控件<br/>
+2. UIApplication -&gt; keyWindow -&gt; 寻找最合适的view</p>
+
+<p>注意：如果父控件不能接受消息，那么子控件肯定也不能接收。</p>
+
+<h4 id="toc_10">寻找合适的视图</h4>
+
+<p>1.判断主窗口keywindow是否接收触摸事件<br/>
+2.判断触摸点是否在自己身上<br/>
+3.子控件数组中从后向前遍历子控件，重复步骤1，2<br/>
+4.找到合适的view后把事件传递给该view，然后对其子view继续进行遍历，直到找不到为止。<br/>
+5.若没有合适的子控件，那么自身控件就是最适合处理事件的控件（View）</p>
+
+<h4 id="toc_11">UIView不能接受触摸事件的三种情况</h4>
+
+<p>不允许交互： userInteractionEnable = NO<br/>
+隐藏： 如果父控件隐藏，子控件也会隐藏。因而不会接受事件<br/>
+透明度： 如果设置一个控件的透明度&lt;0.01，会直接影响子控件的透明度。alpha：0.0~0.01为透明。</p>
+
+<h4 id="toc_12">寻找合适视图的底层剖析</h4>
+
+<pre><code>hitTest:withEvent
+pointInside
+</code></pre>
+
+<p>对于第一个方法<code>hitTest:withEvent</code>,<br/>
+调用时间：事件被分配给view之后<br/>
+作用：查找并返回合适的view</p>
+
+<p><strong>注 意：</strong>不管这个控件能不能处理事件，也不管触摸点在不在这个控件上，事件都会先传递给这个控件，随后再调用hitTest:withEvent:方法</p>
+
+<h5 id="toc_13">拦截事件的处理</h5>
+
+<ul>
+<li>正因为hitTest：withEvent：方法可以返回最合适的view，所以可以通过重写hitTest：withEvent：方法，返回指定的view作为最合适的view。</li>
+<li>不管点击哪里，最合适的view都是hitTest：withEvent：方法中返回的那个view。</li>
+<li>通过重写hitTest：withEvent：，就可以拦截事件的传递过程，想让谁处理事件谁就处理事件。</li>
+</ul>
+
+<pre><code>//hitTest方法的具体实现
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
+    // 1.判断下窗口能否接收事件
+     if (self.userInteractionEnabled == NO || self.hidden == YES ||  self.alpha &lt;= 0.01) return nil; 
+    // 2.判断下点在不在窗口上 
+    // 不在窗口上 
+    if ([self pointInside:point withEvent:event] == NO) return nil; 
+    // 3.从后往前遍历子控件数组 
+    int count = (int)self.subviews.count; 
+    for (int i = count - 1; i &gt;= 0; i--)     { 
+    // 获取子控件
+    UIView *childView = self.subviews[i]; 
+    // 坐标系的转换,把窗口上的点转换为子控件上的点 
+    // 把自己控件上的点转换成子控件上的点 
+    CGPoint childP = [self convertPoint:point toView:childView]; 
+    UIView *fitView = [childView hitTest:childP withEvent:event]; 
+    if (fitView) {
+    // 如果能找到最合适的view 
+    return fitView; 
+    }
+    } 
+    // 4.没有找到更合适的view，也就是没有比自己更合适的view 
+    return self;
+    }
+
+</code></pre>
+
+<p>需要稍微研究下的方法</p>
+
+<pre><code>[view convertPoint: point toView: view]//将某点坐标从自身坐标系转换为 另外一个view
+</code></pre>
+
+<pre><code>pointInside:withEvent:方法判断点在不在方法调用者的坐标系上。
+</code></pre>
+
+<h2 id="toc_14">事件的响应过程</h2>
+
+<p>触摸事件处理的整个过程<br/>
+1.找到合适的视图控件来处理事件<br/>
+2.找到合适的的控件后，调用touchbegan touchmove  touchEnd来处理具体事件<br/>
+3.touch方法的默认方法是将事件顺着响应链向上传递，将事件交给上一个响应者进行处理。</p>
+
+<p>响应者链条：在iOS程序中无论是最后面的UIWindow还是最前面的某个按钮，它们的摆放是有前后关系的，一个控件可以放到另一个控件上面或下面，那么用户点击某个控件时是触发上面的控件还是下面的控件呢，这种先后关系构成一个链条就叫“响应者链”</p>
+
+<p><img src="media/15209391761900/1121.png" alt="1121"/></p>
+
+<p>其中左侧为viewController不包含controller嵌套的。<br/>
+右侧为viewController包含controller符合嵌套的。</p>
+
+<p>响应者对象：能处理事件的对象，也就是继承自UIResponder的对象<br/>
+作用：能很清楚的看见每个响应者之间的联系，并且可以让一个事件多个对象处理。</p>
+
+<p>判断上一个响应者：<br/>
+如果当前view是控制器的view，那么上一个响应者就是控制器<br/>
+如果当前view不是控制器的view，那么上一个控制器就是其父控件</p>
+
+<p>响应者链条的事件传递：<br/>
+1.如果可以，传递给上一个响应者<br/>
+2.在视图层次的最顶级视图，如果不能处理事件，则传递给window对象处理<br/>
+3.window对象不能处理，传递给application处理<br/>
+4.若UIApplication也不能处理，则丢弃。</p>
+
+<h2 id="toc_15">事件处理的整个过程</h2>
+
+<p>1.屏幕产生触摸事件，加入application的事件队列<br/>
+2.application取出队列最前端的事件，把事件传递给主窗口keywindow<br/>
+3.主窗口在层次结构中找到最适合的一个视图View来处理事件<br/>
+4.最适合的view处理事件（默认会不断向上抛）</p>
+
+<pre><code>#import &quot;WSView.h&quot;
+@implementation WSView 
+//只要点击控件,就会调用touchBegin,如果没有重写这个方法,自己处理不了触摸事件
+// 上一个响应者可能是父控件
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{ 
+// 默认会把事件传递给上一个响应者,上一个响应者是父控件,交给父控件处理
+[super touchesBegan:touches withEvent:event]; 
+// 注意不是调用父控件的touches方法，而是调用父类的touches方法
+// super是父类 superview是父控件 
+}
+@end
+</code></pre>
+
+<p><code>注意：事件的响应中，如果某个控件实现了touches...方法，则这个事件将由该控件来接受，如果调用了[supertouches….];就会将事件顺着响应者链条往上传递，传递给上一个响应者；接着就会调用上一个响应者的touches….方法</code></p>
+
+<p><a href="http://www.jianshu.com/p/2e074db792ba">消息/事件传递 机制  参考</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS 调试技巧]]></title>
+    <link href="iginkgo.cn/%E8%B0%83%E8%AF%95.html"/>
+    <updated>2018-03-13T19:04:31+08:00</updated>
+    <id>iginkgo.cn/%E8%B0%83%E8%AF%95.html</id>
+    <content type="html"><![CDATA[
+<p>调试技巧总结</p>
+
+<!--more-->
+
+<p>1 <code>command + 6</code> -&gt; new -&gt; Exception Breakpoint<br/>
+然后在 action选项中选择 <code>debuger command</code> 在对应的输入框里输入 <code>po $arg1</code></p>
+
+<p>效果：会在发生exception（崩溃）前进入断点并进行打印。 <br/>
+这在实际项目中数组越界的错误定位是非常有帮助和的。因为控制台打印的信息是堆栈信息，不能直接定位到这里。</p>
+
+<p>2  <code>command + 6</code> -&gt; new -&gt; Symbolic breakpoint<br/>
+在Symbol中输入 <code>UIViewAlertForUnsatisfiableConstraints</code><br/>
+系统运行时出现 对应Symbol时就会进行剥啄</p>
+
+<p>参考文章<br/>
+ <a href="http://www.cocoachina.com/ios/20150805/12842.html">http://www.cocoachina.com/ios/20150805/12842.html</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS Animation]]></title>
+    <link href="iginkgo.cn/15209389898120.html"/>
+    <updated>2018-03-13T19:03:09+08:00</updated>
+    <id>iginkgo.cn/15209389898120.html</id>
+    <content type="html"><![CDATA[
+<p>最近在梳理一下iOS动画相关方方面的知识，然后来分别进行一下整理和总结，梳理一下每种动画的特点以及常用使用场景。</p>
+
+<span id="more"></span><!-- more -->
+
+<ul>
+<li>
+<a href="#toc_0">基于UIKit的animation</a>
+<ul>
+<li>
+<a href="#toc_1">简单介绍</a>
+<ul>
+<li>
+<a href="#toc_2">animatable 属性</a>
+</li>
+<li>
+<a href="#toc_3">options参数介绍-UIViewAnimationOptions</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_4">动画的弹簧(Springs)效果</a>
+</li>
+<li>
+<a href="#toc_5">view transition</a>
+</li>
+<li>
+<a href="#toc_6">animating view transform</a>
+</li>
+<li>
+<a href="#toc_7">constraint animation</a>
+<ul>
+<li>
+<a href="#toc_8">额外用法</a>
+</li>
+<li>
+<a href="#toc_9">获取constraint的方式</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_10">keyframe animation</a>
+<ul>
+<li>
+<ul>
+<li>
+<a href="#toc_11">UIViewController transition</a>
+</li>
+<li>
+<a href="#toc_12">第一步 实现animator</a>
+</li>
+<li>
+<a href="#toc_13">第二步 viewController设置动画协议</a>
+</li>
+<li>
+<a href="#toc_14">第三步 设置代理</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<p>iOS的动画实现从层面上来说主要分为两种，分别是基于coreAnimation的CALayer以及基于UIKit的animation。</p>
+
+<ul>
+<li>animation</li>
+<li>CALayer</li>
+</ul>
+
+<p>下面具体来梳理一下</p>
+
+<h2 id="toc_0">基于UIKit的animation</h2>
+
+<p>凡是继承自<code>UIView</code>，都可以实现动画效果</p>
+
+<pre><code>* 基于NSConstraint的动画
+* Spring animation(弹簧效果的动画)
+* view transition
+* animatable property
+* animate view transform
+* keyframe animation
+* UIViewController transition
+</code></pre>
+
+<h3 id="toc_1">简单介绍</h3>
+
+<pre><code>UIVIew.animate(withDuration: 0.5, delay:0.3, option: [],
+            animations:{
+              
+            },
+            completion:nil
+}
+</code></pre>
+
+<p>其中<br/>
+<code>withDuration</code>:表示动画持续的时间<br/>
+<code>delay</code>:表示动画开始前，UIKit要等待的时间<br/>
+<code>options</code>:一些附属选项，用于操作具体的效果。后面会讲解到<br/>
+<code>animations</code>:表现动画的闭包<br/>
+<code>completion</code>:动画执行完毕后要执行的代码。</p>
+
+<h4 id="toc_2">animatable 属性</h4>
+
+<p>animatable属性通常是指在一个UIView可以被用来执行动画的属性。<br/>
+你可以通过这些属性来实现位置、震动、上下移等效果。</p>
+
+<p>可以用来进行<strong>位置以及大小</strong>变动的属性：</p>
+
+<ul>
+<li>  bounds</li>
+<li>  frame</li>
+<li>  center</li>
+</ul>
+
+<p>可以用来实行<strong>颜色变化以及透明度改变</strong>的效果：</p>
+
+<ul>
+<li>backgroundColor</li>
+<li>alpha</li>
+</ul>
+
+<p>通过这些属性在<code>animations: {}</code>代码块中进行操作，实现效果的改变,例如：</p>
+
+<pre><code>UIVIew.animate(withDuration: 0.5, delay:0.3, option: [],
+            animations:{
+              self.view.backgroundColor = UIColor.red()
+              //此处进行填写。
+            },
+            completion:nil
+}
+
+</code></pre>
+
+<h4 id="toc_3">options参数介绍-UIViewAnimationOptions</h4>
+
+<p><code>ease-in</code>这个概念表示启动时加速<br/>
+<code>ease-out</code>这个概念表示停止前减速</p>
+
+<p>其中ease这个词我觉得有些缓慢变化的意思，用于形容<strong>变化的速率</strong>这个概念。其相关option选项有以下四种</p>
+
+<pre><code>.curveLinear    //表示全程速度无变化
+.curveEaseIn    //表示初始时加速开始
+.curveEaseOut   //表示结束时减速
+.curveEaseInOut //表示加速开始减速结束。
+</code></pre>
+
+<h3 id="toc_4">动画的弹簧(Springs)效果</h3>
+
+<p>通常，我们会遇到这样的需求：丢出一个球后，求落地、弹起、落地...反复几次后最终停止。<br/>
+类似于这种动画效果，它们都像一个弹簧的震动效果，我们称之为Springs效果。</p>
+
+<p>来，上代码：</p>
+
+<pre><code class="language-Swift"> UIView.animate(withDuration: TimeInterval, 
+            delay: TimeInterval, 
+            usingSpringWithDamping: CGFloat, //阻尼（0 震动多---- 1 震动少）
+            initialSpringVelocity: CGFloat,  //初始速度 
+            options: UIViewAnimationOptions, //此时此处属性无效，会被屏蔽
+            animations: () -&gt; Void, 
+            completion: ((Bool) -&gt; Void)?)
+</code></pre>
+
+<p>涉及到两个概念:<br/>
+damp: 阻尼，模拟出阻力的概念， 数值越大，阻力值越大，越容易静止<br/>
+velocity： 模拟出 初始速度的概念。 数值越大，初始速度越高。</p>
+
+<h3 id="toc_5">view transition</h3>
+
+<pre><code> UIView.transition(with: UIView, 
+                duration: TimeInterval, 
+                options: UIViewAnimationOptions, //此处option可以选择transition 的效
+                animations: (() -&gt; Void)?,
+                completion: ((Bool) -&gt; Void)?)
+</code></pre>
+
+<p>此处option 可以选择transition的效果，<br/>
+同时也可以选择animate的效果</p>
+
+<p>option的可选操作</p>
+
+<pre><code>   public static var transitionFlipFromLeft: UIViewAnimationOptions { get }
+//从左侧旋转
+    public static var transitionFlipFromRight: UIViewAnimationOptions { get }
+//从右侧旋传
+    public static var transitionCurlUp: UIViewAnimationOptions { get }
+//贴纸卷起的效果
+    public static var transitionCurlDown: UIViewAnimationOptions { get }
+//贴纸贴上的效果
+    public static var transitionCrossDissolve: UIViewAnimationOptions { get }
+//淡入淡出   类似于改变透明度的效果
+    public static var transitionFlipFromTop: UIViewAnimationOptions { get }
+//从上侧旋转
+    public static var transitionFlipFromBottom: UIViewAnimationOptions { get }
+ //从下侧旋转
+</code></pre>
+
+<p>通常伴随的操作如下，因为该效果都是伴随着view的出现或者消失</p>
+
+<ul>
+<li><code>isHiden()</code></li>
+<li><code>addSubview()</code></li>
+<li><code>removeFromSuperView()</code></li>
+</ul>
+
+<h3 id="toc_6">animating view transform</h3>
+
+<p>UIView.transform 可以操作的属性如下</p>
+
+<ul>
+<li>    translation //位移变换</li>
+<li>    rotation    //角度翻转</li>
+<li>    scale       //尺寸缩放</li>
+</ul>
+
+<p>上代码</p>
+
+<pre><code>UIView.animate(with Duration: 2.0, animations: {
+ view.transform = CGAffineTransform(scaleX: 0.5, y: 1.0)
+ .concatenating(CGAffineTransform(totationAngle: -.pi/5)
+ .concatenating(CGAffineTransform(translationX:200, y:0.0)))
+//把三种变化全部加起来
+})
+
+view.transform = .identity//重置 返回最初的位置。
+</code></pre>
+
+<p>其中<code>concatenating()</code>方法是将多个transform进行连接。<br/>
+<code>.identity</code>是将transform进行的变换操作全部取消。</p>
+
+<p>注意：view.transform之后,其frame是发生了改变的。而不像layer，只是表面发生改变，而其实际内容不变。</p>
+
+<h3 id="toc_7">constraint animation</h3>
+
+<p>通过约束来添加动画</p>
+
+<pre><code>constraint.value = 20
+
+UIView.animate(
+ withDuration:10,
+ animations:{
+ self.view.layoutIfNeeded() //有任何的layout变化，开始animate
+})
+</code></pre>
+
+<p><code>layoutIfNeeded()</code>重点关注该方法。对于所有拥有<code>animatible</code>的属性，但是还未发生的，强制发生动画。</p>
+
+<p>如果对于一些变化，我们不希望它发生动画，而是希望立即发生，如：字体变化，那么我们首先改变字体，然后layoutIfNeed(),然后再调用  UIVIew.animate..方法。</p>
+
+<h4 id="toc_8">额外用法</h4>
+
+<p><code>constraint.isActive</code>设置其是否生效</p>
+
+<p><code>if constraints.identifier == &quot;sss&quot;  {可以设置active 为true或者false}</code></p>
+
+<h4 id="toc_9">获取constraint的方式</h4>
+
+<p>1.从xib中直接拖拽出对应的constraint<br/>
+2.直接使用<code>view.constraints.foreach</code> 进行遍历判断</p>
+
+<p>举个例子</p>
+
+<pre><code> view.superView?.constraints.foreach {constraint in
+  if constraint.identifier == &quot;con&quot; {
+   //通过identifier进行判断
+ } else if constraint.firstItem == ...&amp;&amp; constraint.firstAttribute== .center{
+   //通过 连接的元素以及对应的属性进行判断。
+ }}
+</code></pre>
+
+<h3 id="toc_10">keyframe animation</h3>
+
+<p>相应的keyframe API</p>
+
+<pre><code>UIView.animateKeyrames(withDuration:Double,
+delay: Double,
+nimations: {
+
+
+UIView.addKeyFrame(withRelativeStartTime: Double// 表示相对于起始时间(按照比例)
+relativeDuration: Double// （按照比例）
+animate: {
+self.center.x = 10
+self.center.y = 100
+}
+
+
+UIView.addKeyFrame。。。
+
+
+UIView.addKeyFrame。。。
+
+UIView.addKeyFrame。。。
+
+
+//其中，不同的keyFrame之间可以相互交叉。
+})
+
+</code></pre>
+
+<p>注意：<br/>
+<code>view.transform = .identity</code>效果主要是把转换矩阵清空。 使用UIView.animate执行的各种唯一操作等就没有效果了。清空transform的操作。</p>
+
+<h5 id="toc_11">UIViewController transition</h5>
+
+<p>需要实现的两个主要的协议</p>
+
+<p><strong>UIViewControllerTransitionDelegate</strong><br/>
+    这里要实现2个方法<br/>
+    1. present一个viewController<br/>
+    2. dismiss it</p>
+
+<p><strong>UIViewControllerAnimatedTransitioning</strong></p>
+
+<h5 id="toc_12">第一步 实现animator</h5>
+
+<pre><code class="language-swift">class PopAnimator: NSObject, UIViewControllerAnimatedTransitioning{
+ func duration....{
+  //返回duration的时间
+ }
+
+
+func animateTransition(using transitionContext: UIViewControllerTransitionContext){
+//其中分为三步来实现
+
+//1）set up the transition
+let containView = transitionContext.containView 
+    //切换过程中整个的内容包含页
+let toView = transitionContext.view(forKey: .to)
+    //切换过程中，最终显示的view
+    
+let fromView = transitionContext.view(forKey: .from)
+    //切换之前显示的页面
+//2)animated
+
+//3)completed transition
+//最终动画完成之后，需要调用下面方法进行通知
+transitionContext.completeTransition(true)
+
+}
+
+}
+
+
+</code></pre>
+
+<h5 id="toc_13">第二步 viewController设置动画协议</h5>
+
+<p>然后，在具体需要跳转的viewController中实现<br/>
+1.设置量 animator<br/>
+2.<code>extension viewController: UIViewControllerTransitionDelegate</code></p>
+
+<p>其中具体点的代码：</p>
+
+<pre><code class="language-swift">extension ViewController: UIViewControllerTransitioningDelegate {
+  func animationController(
+    forPresented presented: UIViewController,
+    presenting: UIViewController,
+    source: UIViewController
+  ) -&gt; UIViewControllerAnimatedTransitioning? {
+        // 使用场景 当前viewController-&gt;(present) newViewController时
+        //  该方法的作用：
+        // 1.对animator中一些参数做具体设定，传递参数
+        // 2.返回animator。如果无动效，则返回nil
+        //  
+    return transition
+  }
+  
+  func animationController(forDismissed dismissed: UIViewController) -&gt; UIViewControllerAnimatedTransitioning? {
+      // 使用场景  newViewController dismiss时
+      // 该方法的作用：
+      // 1.对animator中一些参数做具体设定，方便做动画效果
+      // 2.返回animator。如果没有动画效果，则返回nil
+    return transition
+  }
+}
+</code></pre>
+
+<p>下面涉及到两个方法：<br/>
+   分别是要跳转的detailController 在出现和消失的时候要发生的<code>transition</code></p>
+
+<h5 id="toc_14">第三步 设置代理</h5>
+
+<p>在当前viewController中</p>
+
+<p><code>controllerToBePresented.transitionDelegate = self</code></p>
+
+<p>待理解的代码:把一个坐标系下的frame转换为另外一个坐标系下的frame。</p>
+
+<pre><code class="language-swift">selectedImage!.superview!.convert(selectedImage!.frame, to: nil)
+
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS code review 注意事项]]></title>
+    <link href="iginkgo.cn/15209388990708.html"/>
+    <updated>2018-03-13T19:01:39+08:00</updated>
+    <id>iginkgo.cn/15209388990708.html</id>
+    <content type="html"><![CDATA[
+<p>代码评审知识在软件开发过程中，对源代码进行系统性检查的过程。通常的目的是查找系统缺陷，保证软件总体质量，提高开发者的水平，避免<code>破窗理论</code>。</p>
+
+<span id="more"></span><!-- more -->
+
+<ul>
+<li>
+<a href="#toc_0">iOS的质量保证</a>
+<ul>
+<li>
+<ul>
+<li>
+<a href="#toc_1">Step1 总体把握</a>
+</li>
+<li>
+<a href="#toc_2">Step2 深入细节</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">针对代码的理念</a>
+<ul>
+<li>
+<ul>
+<li>
+<a href="#toc_4">架构、设计、常规</a>
+<ul>
+<li>
+<a href="#toc_5">单一职责</a>
+</li>
+<li>
+<a href="#toc_6">行为统一：</a>
+</li>
+<li>
+<a href="#toc_7">错误处理</a>
+</li>
+<li>
+<a href="#toc_8">改动不是对代码的提升</a>
+</li>
+<li>
+<a href="#toc_9">效率/性能</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_10">代码风格</a>
+<ul>
+<li>
+<a href="#toc_11">可读性</a>
+</li>
+<li>
+<a href="#toc_12">命名</a>
+</li>
+<li>
+<a href="#toc_13">函数长度/类长度</a>
+</li>
+<li>
+<a href="#toc_14">注释</a>
+</li>
+<li>
+<a href="#toc_15">参数个数</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<blockquote>
+<p>破窗理论：此理论认为环境中的不良现象如果被放任存在，会诱使人们仿效，甚至变本加厉</p>
+
+<p>一个房子如果窗户破了，没有人去修补，隔不久，其它的窗户也会莫名其妙地被人打破；一面墙，如果出现一些涂鸦没有被清洗掉，很快的，墙上就布满了乱七八糟、不堪入目的东西；一个很干净的地方，人们不好意思丢垃圾，但是一旦地上有垃圾出现之后，人就会毫不犹豫地抛，丝毫不觉羞愧。</p>
+</blockquote>
+
+<p>review的核心点: 设计、可读性、健壮性等问题。</p>
+
+<h2 id="toc_0">iOS的质量保证</h2>
+
+<h4 id="toc_1">Step1 总体把握</h4>
+
+<ul>
+<li>确定第三方依赖被完全载入</li>
+<li>no error、 no warning</li>
+<li>运行Xcode中静态统计 <code>product-&gt;analysis</code></li>
+<li>运行oclint或swiftlint</li>
+<li>检查项目的层次结构</li>
+<li>运行单元测试/集成测试</li>
+</ul>
+
+<h4 id="toc_2">Step2 深入细节</h4>
+
+<ul>
+<li>MVC、Notification、KVO、MVVM的使用是否合理</li>
+<li>viewController只能是否过重</li>
+<li>GUI使用xib、storyboard还是code</li>
+<li>GUI使用约束 还是 hard-code frame layout</li>
+<li>DRY——Don&#39;t repeat yourself</li>
+<li>return bool: 类似的函数通常可以写的很简单</li>
+<li>尽量减少缩进/嵌套的层次，及早退出</li>
+<li>单一职能：功能模块尽可能小</li>
+<li>private开头</li>
+<li>移除空方法或不用的方法。</li>
+<li>使用static时，考虑是否真的不可避免</li>
+<li>对所有的错误打Log</li>
+<li>delegate保持weak</li>
+</ul>
+
+<h2 id="toc_3">针对代码的理念</h2>
+
+<h4 id="toc_4">架构、设计、常规</h4>
+
+<h5 id="toc_5">单一职责</h5>
+
+<p>每个类或每个方法只实现一个功能。</p>
+
+<h5 id="toc_6">行为统一：</h5>
+
+<ul>
+<li>样式是否统一</li>
+<li>缓存是否统一</li>
+<li>错误处理是否统一</li>
+<li>错误提示是否统一</li>
+<li>弹出框是否统一
+##### 代码污染
+代码是否对其他模块强耦合
+##### 重复代码-&gt;抽取
+##### 开闭原则
+##### 面向接口
+##### 健壮</li>
+<li>是否考虑线程安全</li>
+<li>数据访问是否一致</li>
+<li>边界处理是否是完整</li>
+<li>逻辑是否健壮</li>
+<li>是否有内存泄漏</li>
+<li>是否存在循环依赖</li>
+<li>有没有野指针</li>
+<li>是否检查了数组的越界错误
+。。。。。。</li>
+</ul>
+
+<h5 id="toc_7">错误处理</h5>
+
+<h5 id="toc_8">改动不是对代码的提升</h5>
+
+<p>新的改动是打补丁，让代码质量继续恶化，还是对代码质量做了修复</p>
+
+<h5 id="toc_9">效率/性能</h5>
+
+<ul>
+<li>关键算法的时间复杂度多少？有没有可能有潜在的性能瓶颈</li>
+<li>客户端程序对频繁消息和较大数据等耗时操作是否处理得当</li>
+</ul>
+
+<h4 id="toc_10">代码风格</h4>
+
+<h5 id="toc_11">可读性</h5>
+
+<p>是否可以很轻易的理解代码</p>
+
+<h5 id="toc_12">命名</h5>
+
+<p>对可读性很重要<br/>
+是否跟系统命名冲突<br/>
+英语用词尽量准确</p>
+
+<h5 id="toc_13">函数长度/类长度</h5>
+
+<p>函数太长不好阅读<br/>
+类太长检查是否违反<code>单一职责</code></p>
+
+<h5 id="toc_14">注释</h5>
+
+<p>恰到好处的注释，不是注释越多越好</p>
+
+<h5 id="toc_15">参数个数</h5>
+
+<p>不要太多，一般不要超过三个</p>
+
+<p><a href="http://www.jianshu.com/p/583025f702a8">swife语法规范参考</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Bug list]]></title>
+    <link href="iginkgo.cn/15209388155961.html"/>
+    <updated>2018-03-13T19:00:15+08:00</updated>
+    <id>iginkgo.cn/15209388155961.html</id>
+    <content type="html"><![CDATA[
+<p>记录日常碰到的各种疑难问题</p>
+
+<span id="more"></span><!-- more -->
+
+<ol>
+<li><p>同一地点大量使用 <code>??</code> 会导致编译 费事 甚至 一直进行下去</p></li>
+<li><p>加一个符号断点UIViewAlertForUnsatisfiableConstraints可以用来调试自动布局的问题，masonry经常出一些幺蛾子，搞的我现在写布局都要如图二这样子写才行[doge] ​​​​</p></li>
+<li></li>
+</ol>
+
+<pre><code>Terminating app due to uncaught exception 
+&#39;NSInvalidArgumentException&#39;, reason: &#39;Application tried to present modally an active controller 
+</code></pre>
+
+<p>通常原因是 被present的viewController已经被处理了 //TODO: 待测试</p>
+
+<h3 id="toc_0">问题1：项目在真机跑时出现的问题</h3>
+
+<blockquote>
+<p>errors：The operation couldn’t be completed. Unable to log in with account &#39;myappleid&#39;. An unexpected failure occurred while logging in (Underlying error code 1100).</p>
+</blockquote>
+
+<p>使用个人开发者账号（未付费）使用手机测试时，一直是认为不能跑的。<br/>
+由于个人前期配置之后，及时打开AutoMatically manage signing 后，依然会出现这个问题。报错是apple ID过期</p>
+
+<p>解决策略<br/>
+1. Xcode Preference -&gt; account 账号重新登录<br/>
+2. 在项目general面板中，勾选 <code>Automatically manage signing</code>选项，然后Team中选定自己的 team<br/>
+3. <strong>重启自己的Xcode，会自动运行repair自己的apple ID</strong><br/>
+4. 首次使用该apple Id配置自己的手机时，需要在手机中操作<br/>
+   <code>preference-&gt;general-&gt;developers-&gt;trust</code></p>
+
+<h3 id="toc_1">问题2：Development Certificate 以及 Provisioning Profile</h3>
+
+<p>Development Certificate 它是一个电子文件，证明你是一个iOS程序的开发，并且在一个限定时间段内有效。这在你需要真机调试时必要的，因为该程序需要被你的Development Certificate进行签名<br/>
+（该证书可以免费试用）</p>
+
+<p>Distribution Certificate：只有用该证书签名的app才可以被提交到AppStore。（只有付费用户才可以有该证书）</p>
+
+<p>Provisioning Profile：每个app都应该有一个Provisioning Profile文件，主要用以标记/判断 该app是否可以在 某个特定手机安装。</p>
+
+<p>其中Xcode8以后 出现了一个新的功能叫做<code>AutoMatically manage siging</code>，选定之后，xcode可以自行管理有关Certificate以及Proisioning Profile的相关东西。</p>
+
+<h3 id="toc_2">问题3：真机运行时启动失败</h3>
+
+<p>可能出现的问题<br/>
+* 设备未连接<br/>
+* 设备未添加信任<br/>
+* 设备已经被锁</p>
+
+<h3 id="toc_3">问题4: charles 真机抓包https一直显示<code>unknown</code></h3>
+
+<p><code><br/>
+No request was made. Possibly the SSL certificate was rejected.<br/>
+You may need to configure your browser or application to trust the Charles Root Certificate. See SSL Proxying in the Help menu.<br/>
+</code><br/>
+该问题普遍应该是因为没有安装<code>ssl</code>的协议证书导致的，但是我本机和手机都分别进行了安装，依然出现了该问题。<br/>
+尝试的措施<br/>
+1.重装charles  ❌<br/>
+2.各种查资料     ❌<br/>
+3.mac证书重新安装 ❌<br/>
+4.手机证书重新安装  ✅</p>
+
+<p>注意：<br/>
+当前charles的mac端版本为 <code>v4.1.4</code>，安装手机证书时提示地址为<code>charles.com/ssl</code>但是一直无法打开。<br/>
+实际地址为<code>charlesproxy.com/getssl</code></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[书籍清单]]></title>
+    <link href="iginkgo.cn/15209385419836.html"/>
+    <updated>2018-03-13T18:55:41+08:00</updated>
+    <id>iginkgo.cn/15209385419836.html</id>
+    <content type="html"><![CDATA[
+<p>个人准备阅读的书籍</p>
+
+<span id="more"></span><!-- more -->
+
+<p><img src="media/15209385419836/disturbBook.png" alt="disturbBook"/></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[算法_最长递增子序列]]></title>
+    <link href="iginkgo.cn/15209357186151.html"/>
+    <updated>2018-03-13T18:08:38+08:00</updated>
+    <id>iginkgo.cn/15209357186151.html</id>
+    <content type="html"><![CDATA[
+<p><strong>问题：给定一个数组，求出该数组的最长递增子序列的长度以及个数</strong></p>
+
+<span id="more"></span><!-- more -->
+
+<p>示例：<br/>
+ <code><br/>
+ [1,3,5,4,7] <br/>
+ 返回结果为(4，2) //其中长度为4，结果为2<br/>
+ 其最长递增子序列分别为[1,3,5,7]和[1,3,4,7] <br/>
+</code></p>
+
+<p>最终代码</p>
+
+<pre><code class="language-swift">/// 返回最长递增子序列的长度以及其个数
+///
+/// - Parameter data: 带统计的参数
+/// - Returns: 最长递增子序列的长度以及其个数
+func calculateLIS(data: [Int])-&gt; (length: Int, count: Int) {
+    
+    /// 当前全局最长的递增子序列的长度
+    var maxLength: Int = 0
+    
+    /// 存放以该index为结尾的最长递增子序列的长度
+    var dp: [Int]  =  data.map { (_) -&gt; Int in
+        return 1
+    }
+    
+    
+    /// 存放以该index为结尾的最长递增子序列的个数
+    var ans: [Int] = data.map { (_) -&gt; Int in
+        return 1
+    }
+    print(&quot;1111&quot;)
+    data.enumerated().forEach { (index, value) in
+        
+        for i in 0..&lt;index {
+            print(&quot;\(index)   \(i)&quot;)
+            if data[i] &lt; data[index] {
+                if dp[i] + 1 &gt; dp[index] {
+                    ans[index] = ans[i]
+                    dp[index] = dp[i] + 1
+                    maxLength = max(maxLength, dp[index])
+                } else if dp[i] + 1 == dp[index] {
+                    ans[index] += ans[i]
+                }
+            }
+        }
+    }
+    
+    let count = data.enumerated().filter { (index,value) -&gt; Bool in
+        return dp[index] == maxLength
+        }.reduce(0) { (result, tuple) -&gt; Int in
+            return result + ans[tuple.offset]
+    }
+    
+    return (maxLength,count)
+}
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[实例_类_元类]]></title>
+    <link href="iginkgo.cn/15209356364243.html"/>
+    <updated>2018-03-13T18:07:16+08:00</updated>
+    <id>iginkgo.cn/15209356364243.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">简介</h2>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_1">具体方法</h2>
+
+<p>OC中<br/>
+<code>isMemberOfClass</code> 用来判断对象是否是特定类型的实例</p>
+
+<p><code>isKindOfClass</code> 用来判断是否是某个类或者派生类型的实例</p>
+
+<p>这两个类型信息查询方法是使用对象的isa指针获取对象所属的类，通过类继承体系中的superclass指针在继承体系中游走。<br/>
+Objective—C语言与其他语言不同，必须通过查询类型信息，才能了解对象的真实类型。</p>
+
+<p>对于某个实例的类型进行判断，也可以使用</p>
+
+<p><code>[instance class] == [clazz class]</code>判断instance是否属于clazz类型。<br/>
+原因： <code>==</code>符号是用来比较地址是否相等的。因为类对象只可能有一个，因而它可以用地址来进行判定，而不需要用isEqual</p>
+
+<p>注意：</p>
+
+<blockquote>
+<p>虽然<code>[instance class]</code>方法可以查询对象的类型信息，但是还是建议使用<code>isKindOfClass</code>这样的类型信息查询方法。因为这个方法可以正确的处理那些使用了消息传递机制的对象。比方说某个对象可能会把其的所有选择子（selector）都转发给另一个对象(开启了消息转发功能)<strong>。这样的对象叫做”代理(proxy)“，此种对象所属的类均以NSProxy为根类（root class）。通常情况下，如果在此种代理对象上调用class方法，那么返回的是代理对象本身（NSProxy的子类），而非接受代理的对象所属的类。然而，若是改用“isKindOfClass:”这样的类型信息查询方法，那么代理对象就会把这条消息转给“接受代理的对象（proxy object）”。也就是说，这条消息（指isKindOfClass:）的返回值与直接接受代理的对象身上查询其类型信息所得的结果相同。因此，这样查出来的类对象与直接通过class方法所返回的那个类对象不同，class方法所返回类表示发起代理的对象，而非接受代理的对象。</strong>  </p>
+</blockquote>
+
+<h1 id="toc_2">加粗部分没看懂</h1>
+
+<p><a href="http://www.jianshu.com/p/374b570e1920">原文出处</a></p>
 
 ]]></content>
   </entry>

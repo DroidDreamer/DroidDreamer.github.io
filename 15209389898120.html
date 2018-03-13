@@ -1,0 +1,722 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  iOS Animation - iginkgo在路上
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="iginkgo在路上" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:iginkgo.cn ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; iginkgo在路上</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+       
+       <li><a href="index.html">HOME</a></li>
+    <li><a href="archives.html">Archives</a></li>
+    <li><a href="about.html">ABOUT</a></li>
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E7%BC%96%E7%A8%8B.html">编程</a></li>
+        
+            <li><a href="%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html">三省吾身</a></li>
+        
+            <li><a href="iOS.html">iOS</a></li>
+        
+            <li><a href="%E8%AF%BB%E4%B9%A6.html">读书</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>iOS Animation</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2018/3/13</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>最近在梳理一下iOS动画相关方方面的知识，然后来分别进行一下整理和总结，梳理一下每种动画的特点以及常用使用场景。</p>
+
+<span id="more"></span><!-- more -->
+
+<ul>
+<li>
+<a href="#toc_0">基于UIKit的animation</a>
+<ul>
+<li>
+<a href="#toc_1">简单介绍</a>
+<ul>
+<li>
+<a href="#toc_2">animatable 属性</a>
+</li>
+<li>
+<a href="#toc_3">options参数介绍-UIViewAnimationOptions</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_4">动画的弹簧(Springs)效果</a>
+</li>
+<li>
+<a href="#toc_5">view transition</a>
+</li>
+<li>
+<a href="#toc_6">animating view transform</a>
+</li>
+<li>
+<a href="#toc_7">constraint animation</a>
+<ul>
+<li>
+<a href="#toc_8">额外用法</a>
+</li>
+<li>
+<a href="#toc_9">获取constraint的方式</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_10">keyframe animation</a>
+<ul>
+<li>
+<ul>
+<li>
+<a href="#toc_11">UIViewController transition</a>
+</li>
+<li>
+<a href="#toc_12">第一步 实现animator</a>
+</li>
+<li>
+<a href="#toc_13">第二步 viewController设置动画协议</a>
+</li>
+<li>
+<a href="#toc_14">第三步 设置代理</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<p>iOS的动画实现从层面上来说主要分为两种，分别是基于coreAnimation的CALayer以及基于UIKit的animation。</p>
+
+<ul>
+<li>animation</li>
+<li>CALayer</li>
+</ul>
+
+<p>下面具体来梳理一下</p>
+
+<h2 id="toc_0">基于UIKit的animation</h2>
+
+<p>凡是继承自<code>UIView</code>，都可以实现动画效果</p>
+
+<pre><code>* 基于NSConstraint的动画
+* Spring animation(弹簧效果的动画)
+* view transition
+* animatable property
+* animate view transform
+* keyframe animation
+* UIViewController transition
+</code></pre>
+
+<h3 id="toc_1">简单介绍</h3>
+
+<pre><code>UIVIew.animate(withDuration: 0.5, delay:0.3, option: [],
+            animations:{
+              
+            },
+            completion:nil
+}
+</code></pre>
+
+<p>其中<br/>
+<code>withDuration</code>:表示动画持续的时间<br/>
+<code>delay</code>:表示动画开始前，UIKit要等待的时间<br/>
+<code>options</code>:一些附属选项，用于操作具体的效果。后面会讲解到<br/>
+<code>animations</code>:表现动画的闭包<br/>
+<code>completion</code>:动画执行完毕后要执行的代码。</p>
+
+<h4 id="toc_2">animatable 属性</h4>
+
+<p>animatable属性通常是指在一个UIView可以被用来执行动画的属性。<br/>
+你可以通过这些属性来实现位置、震动、上下移等效果。</p>
+
+<p>可以用来进行<strong>位置以及大小</strong>变动的属性：</p>
+
+<ul>
+<li>  bounds</li>
+<li>  frame</li>
+<li>  center</li>
+</ul>
+
+<p>可以用来实行<strong>颜色变化以及透明度改变</strong>的效果：</p>
+
+<ul>
+<li>backgroundColor</li>
+<li>alpha</li>
+</ul>
+
+<p>通过这些属性在<code>animations: {}</code>代码块中进行操作，实现效果的改变,例如：</p>
+
+<pre><code>UIVIew.animate(withDuration: 0.5, delay:0.3, option: [],
+            animations:{
+              self.view.backgroundColor = UIColor.red()
+              //此处进行填写。
+            },
+            completion:nil
+}
+
+</code></pre>
+
+<h4 id="toc_3">options参数介绍-UIViewAnimationOptions</h4>
+
+<p><code>ease-in</code>这个概念表示启动时加速<br/>
+<code>ease-out</code>这个概念表示停止前减速</p>
+
+<p>其中ease这个词我觉得有些缓慢变化的意思，用于形容<strong>变化的速率</strong>这个概念。其相关option选项有以下四种</p>
+
+<pre><code>.curveLinear    //表示全程速度无变化
+.curveEaseIn    //表示初始时加速开始
+.curveEaseOut   //表示结束时减速
+.curveEaseInOut //表示加速开始减速结束。
+</code></pre>
+
+<h3 id="toc_4">动画的弹簧(Springs)效果</h3>
+
+<p>通常，我们会遇到这样的需求：丢出一个球后，求落地、弹起、落地...反复几次后最终停止。<br/>
+类似于这种动画效果，它们都像一个弹簧的震动效果，我们称之为Springs效果。</p>
+
+<p>来，上代码：</p>
+
+<pre><code class="language-Swift"> UIView.animate(withDuration: TimeInterval, 
+            delay: TimeInterval, 
+            usingSpringWithDamping: CGFloat, //阻尼（0 震动多---- 1 震动少）
+            initialSpringVelocity: CGFloat,  //初始速度 
+            options: UIViewAnimationOptions, //此时此处属性无效，会被屏蔽
+            animations: () -&gt; Void, 
+            completion: ((Bool) -&gt; Void)?)
+</code></pre>
+
+<p>涉及到两个概念:<br/>
+damp: 阻尼，模拟出阻力的概念， 数值越大，阻力值越大，越容易静止<br/>
+velocity： 模拟出 初始速度的概念。 数值越大，初始速度越高。</p>
+
+<h3 id="toc_5">view transition</h3>
+
+<pre><code> UIView.transition(with: UIView, 
+                duration: TimeInterval, 
+                options: UIViewAnimationOptions, //此处option可以选择transition 的效
+                animations: (() -&gt; Void)?,
+                completion: ((Bool) -&gt; Void)?)
+</code></pre>
+
+<p>此处option 可以选择transition的效果，<br/>
+同时也可以选择animate的效果</p>
+
+<p>option的可选操作</p>
+
+<pre><code>   public static var transitionFlipFromLeft: UIViewAnimationOptions { get }
+//从左侧旋转
+    public static var transitionFlipFromRight: UIViewAnimationOptions { get }
+//从右侧旋传
+    public static var transitionCurlUp: UIViewAnimationOptions { get }
+//贴纸卷起的效果
+    public static var transitionCurlDown: UIViewAnimationOptions { get }
+//贴纸贴上的效果
+    public static var transitionCrossDissolve: UIViewAnimationOptions { get }
+//淡入淡出   类似于改变透明度的效果
+    public static var transitionFlipFromTop: UIViewAnimationOptions { get }
+//从上侧旋转
+    public static var transitionFlipFromBottom: UIViewAnimationOptions { get }
+ //从下侧旋转
+</code></pre>
+
+<p>通常伴随的操作如下，因为该效果都是伴随着view的出现或者消失</p>
+
+<ul>
+<li><code>isHiden()</code></li>
+<li><code>addSubview()</code></li>
+<li><code>removeFromSuperView()</code></li>
+</ul>
+
+<h3 id="toc_6">animating view transform</h3>
+
+<p>UIView.transform 可以操作的属性如下</p>
+
+<ul>
+<li>    translation //位移变换</li>
+<li>    rotation    //角度翻转</li>
+<li>    scale       //尺寸缩放</li>
+</ul>
+
+<p>上代码</p>
+
+<pre><code>UIView.animate(with Duration: 2.0, animations: {
+ view.transform = CGAffineTransform(scaleX: 0.5, y: 1.0)
+ .concatenating(CGAffineTransform(totationAngle: -.pi/5)
+ .concatenating(CGAffineTransform(translationX:200, y:0.0)))
+//把三种变化全部加起来
+})
+
+view.transform = .identity//重置 返回最初的位置。
+</code></pre>
+
+<p>其中<code>concatenating()</code>方法是将多个transform进行连接。<br/>
+<code>.identity</code>是将transform进行的变换操作全部取消。</p>
+
+<p>注意：view.transform之后,其frame是发生了改变的。而不像layer，只是表面发生改变，而其实际内容不变。</p>
+
+<h3 id="toc_7">constraint animation</h3>
+
+<p>通过约束来添加动画</p>
+
+<pre><code>constraint.value = 20
+
+UIView.animate(
+ withDuration:10,
+ animations:{
+ self.view.layoutIfNeeded() //有任何的layout变化，开始animate
+})
+</code></pre>
+
+<p><code>layoutIfNeeded()</code>重点关注该方法。对于所有拥有<code>animatible</code>的属性，但是还未发生的，强制发生动画。</p>
+
+<p>如果对于一些变化，我们不希望它发生动画，而是希望立即发生，如：字体变化，那么我们首先改变字体，然后layoutIfNeed(),然后再调用  UIVIew.animate..方法。</p>
+
+<h4 id="toc_8">额外用法</h4>
+
+<p><code>constraint.isActive</code>设置其是否生效</p>
+
+<p><code>if constraints.identifier == &quot;sss&quot;  {可以设置active 为true或者false}</code></p>
+
+<h4 id="toc_9">获取constraint的方式</h4>
+
+<p>1.从xib中直接拖拽出对应的constraint<br/>
+2.直接使用<code>view.constraints.foreach</code> 进行遍历判断</p>
+
+<p>举个例子</p>
+
+<pre><code> view.superView?.constraints.foreach {constraint in
+  if constraint.identifier == &quot;con&quot; {
+   //通过identifier进行判断
+ } else if constraint.firstItem == ...&amp;&amp; constraint.firstAttribute== .center{
+   //通过 连接的元素以及对应的属性进行判断。
+ }}
+</code></pre>
+
+<h3 id="toc_10">keyframe animation</h3>
+
+<p>相应的keyframe API</p>
+
+<pre><code>UIView.animateKeyrames(withDuration:Double,
+delay: Double,
+nimations: {
+
+
+UIView.addKeyFrame(withRelativeStartTime: Double// 表示相对于起始时间(按照比例)
+relativeDuration: Double// （按照比例）
+animate: {
+self.center.x = 10
+self.center.y = 100
+}
+
+
+UIView.addKeyFrame。。。
+
+
+UIView.addKeyFrame。。。
+
+UIView.addKeyFrame。。。
+
+
+//其中，不同的keyFrame之间可以相互交叉。
+})
+
+</code></pre>
+
+<p>注意：<br/>
+<code>view.transform = .identity</code>效果主要是把转换矩阵清空。 使用UIView.animate执行的各种唯一操作等就没有效果了。清空transform的操作。</p>
+
+<h5 id="toc_11">UIViewController transition</h5>
+
+<p>需要实现的两个主要的协议</p>
+
+<p><strong>UIViewControllerTransitionDelegate</strong><br/>
+    这里要实现2个方法<br/>
+    1. present一个viewController<br/>
+    2. dismiss it</p>
+
+<p><strong>UIViewControllerAnimatedTransitioning</strong></p>
+
+<h5 id="toc_12">第一步 实现animator</h5>
+
+<pre><code class="language-swift">class PopAnimator: NSObject, UIViewControllerAnimatedTransitioning{
+ func duration....{
+  //返回duration的时间
+ }
+
+
+func animateTransition(using transitionContext: UIViewControllerTransitionContext){
+//其中分为三步来实现
+
+//1）set up the transition
+let containView = transitionContext.containView 
+    //切换过程中整个的内容包含页
+let toView = transitionContext.view(forKey: .to)
+    //切换过程中，最终显示的view
+    
+let fromView = transitionContext.view(forKey: .from)
+    //切换之前显示的页面
+//2)animated
+
+//3)completed transition
+//最终动画完成之后，需要调用下面方法进行通知
+transitionContext.completeTransition(true)
+
+}
+
+}
+
+
+</code></pre>
+
+<h5 id="toc_13">第二步 viewController设置动画协议</h5>
+
+<p>然后，在具体需要跳转的viewController中实现<br/>
+1.设置量 animator<br/>
+2.<code>extension viewController: UIViewControllerTransitionDelegate</code></p>
+
+<p>其中具体点的代码：</p>
+
+<pre><code class="language-swift">extension ViewController: UIViewControllerTransitioningDelegate {
+  func animationController(
+    forPresented presented: UIViewController,
+    presenting: UIViewController,
+    source: UIViewController
+  ) -&gt; UIViewControllerAnimatedTransitioning? {
+        // 使用场景 当前viewController-&gt;(present) newViewController时
+        //  该方法的作用：
+        // 1.对animator中一些参数做具体设定，传递参数
+        // 2.返回animator。如果无动效，则返回nil
+        //  
+    return transition
+  }
+  
+  func animationController(forDismissed dismissed: UIViewController) -&gt; UIViewControllerAnimatedTransitioning? {
+      // 使用场景  newViewController dismiss时
+      // 该方法的作用：
+      // 1.对animator中一些参数做具体设定，方便做动画效果
+      // 2.返回animator。如果没有动画效果，则返回nil
+    return transition
+  }
+}
+</code></pre>
+
+<p>下面涉及到两个方法：<br/>
+   分别是要跳转的detailController 在出现和消失的时候要发生的<code>transition</code></p>
+
+<h5 id="toc_14">第三步 设置代理</h5>
+
+<p>在当前viewController中</p>
+
+<p><code>controllerToBePresented.transitionDelegate = self</code></p>
+
+<p>待理解的代码:把一个坐标系下的frame转换为另外一个坐标系下的frame。</p>
+
+<pre><code class="language-swift">selectedImage!.superview!.convert(selectedImage!.frame, to: nil)
+
+</code></pre>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="%E8%B0%83%E8%AF%95.html" 
+          title="Previous Post: iOS 调试技巧">&laquo; iOS 调试技巧</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15209388990708.html" 
+          title="Next Post: iOS code review 注意事项">iOS code review 注意事项 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>iginkgo在路上</h1>
+                <div class="site-des">漫漫人生路</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E7%BC%96%E7%A8%8B.html"><strong>编程</strong></a>
+        
+            <a href="%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html"><strong>三省吾身</strong></a>
+        
+            <a href="iOS.html"><strong>iOS</strong></a>
+        
+            <a href="%E8%AF%BB%E4%B9%A6.html"><strong>读书</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15209408940888.html">代码观</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15209408664766.html">Xcode提速</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15209407678838.html">Xcode基本操作</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15209406714961.html">viewController的生命周期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15209405889264.html">tools</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    <script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

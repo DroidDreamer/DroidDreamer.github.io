@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  iOS  元编程 - iginkgo在路上
+  Bug list - iginkgo在路上
   
   </title>
   
@@ -105,12 +105,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>iOS  元编程</h1>
+          <h1>Bug list</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/8/18</span>
+          <span class="date">2018/3/13</span>
 
+          <span>posted in&nbsp;</span> 
           
+              <span class="posted-in"><a href='%E7%BC%96%E7%A8%8B.html'>编程</a></span>
            
          
           <span class="comments">
@@ -123,27 +125,72 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>能写代码的代码-&gt; 元编程</p>
+      <p>记录日常碰到的各种疑难问题</p>
 
 <span id="more"></span><!-- more -->
 
-<p><img src="media/15030624381800/15030625368268.jpg" alt=""/></p>
+<ol>
+<li><p>同一地点大量使用 <code>??</code> 会导致编译 费事 甚至 一直进行下去</p></li>
+<li><p>加一个符号断点UIViewAlertForUnsatisfiableConstraints可以用来调试自动布局的问题，masonry经常出一些幺蛾子，搞的我现在写布局都要如图二这样子写才行[doge] ​​​​</p></li>
+<li></li>
+</ol>
 
-<p>元编程：<br/>
-  程序运行前 进行的 元编程<br/>
-  程序运行中 的元编程</p>
+<pre><code>Terminating app due to uncaught exception 
+&#39;NSInvalidArgumentException&#39;, reason: &#39;Application tried to present modally an active controller 
+</code></pre>
 
-<p>为什么要元编程：<br/>
-  形成领域专属语言，脱离语言的本体。<br/>
-  简介</p>
+<p>通常原因是 被present的viewController已经被处理了 //TODO: 待测试</p>
 
-<p>podfile是一个ruby 的程序</p>
+<h3 id="toc_0">问题1：项目在真机跑时出现的问题</h3>
 
-<p><img src="media/15030624381800/15030629482108.jpg" alt=""/></p>
+<blockquote>
+<p>errors：The operation couldn’t be completed. Unable to log in with account &#39;myappleid&#39;. An unexpected failure occurred while logging in (Underlying error code 1100).</p>
+</blockquote>
 
-<p><img src="media/15030624381800/15030630034175.jpg" alt=""/></p>
+<p>使用个人开发者账号（未付费）使用手机测试时，一直是认为不能跑的。<br/>
+由于个人前期配置之后，及时打开AutoMatically manage signing 后，依然会出现这个问题。报错是apple ID过期</p>
 
-<p><img src="media/15030624381800/15030642996048.jpg" alt=""/></p>
+<p>解决策略<br/>
+1. Xcode Preference -&gt; account 账号重新登录<br/>
+2. 在项目general面板中，勾选 <code>Automatically manage signing</code>选项，然后Team中选定自己的 team<br/>
+3. <strong>重启自己的Xcode，会自动运行repair自己的apple ID</strong><br/>
+4. 首次使用该apple Id配置自己的手机时，需要在手机中操作<br/>
+   <code>preference-&gt;general-&gt;developers-&gt;trust</code></p>
+
+<h3 id="toc_1">问题2：Development Certificate 以及 Provisioning Profile</h3>
+
+<p>Development Certificate 它是一个电子文件，证明你是一个iOS程序的开发，并且在一个限定时间段内有效。这在你需要真机调试时必要的，因为该程序需要被你的Development Certificate进行签名<br/>
+（该证书可以免费试用）</p>
+
+<p>Distribution Certificate：只有用该证书签名的app才可以被提交到AppStore。（只有付费用户才可以有该证书）</p>
+
+<p>Provisioning Profile：每个app都应该有一个Provisioning Profile文件，主要用以标记/判断 该app是否可以在 某个特定手机安装。</p>
+
+<p>其中Xcode8以后 出现了一个新的功能叫做<code>AutoMatically manage siging</code>，选定之后，xcode可以自行管理有关Certificate以及Proisioning Profile的相关东西。</p>
+
+<h3 id="toc_2">问题3：真机运行时启动失败</h3>
+
+<p>可能出现的问题<br/>
+* 设备未连接<br/>
+* 设备未添加信任<br/>
+* 设备已经被锁</p>
+
+<h3 id="toc_3">问题4: charles 真机抓包https一直显示<code>unknown</code></h3>
+
+<p><code><br/>
+No request was made. Possibly the SSL certificate was rejected.<br/>
+You may need to configure your browser or application to trust the Charles Root Certificate. See SSL Proxying in the Help menu.<br/>
+</code><br/>
+该问题普遍应该是因为没有安装<code>ssl</code>的协议证书导致的，但是我本机和手机都分别进行了安装，依然出现了该问题。<br/>
+尝试的措施<br/>
+1.重装charles  ❌<br/>
+2.各种查资料     ❌<br/>
+3.mac证书重新安装 ❌<br/>
+4.手机证书重新安装  ✅</p>
+
+<p>注意：<br/>
+当前charles的mac端版本为 <code>v4.1.4</code>，安装手机证书时提示地址为<code>charles.com/ssl</code>但是一直无法打开。<br/>
+实际地址为<code>charlesproxy.com/getssl</code></p>
 
 
     
@@ -154,16 +201,16 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15209352249778.html" 
-          title="Previous Post: 《Flow》">&laquo; 《Flow》</a>
+          <a href="15209388990708.html" 
+          title="Previous Post: iOS code review 注意事项">&laquo; iOS code review 注意事项</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14819656504986.html" 
-          title="Next Post: 给老婆聊IOS之一：我对IOS的认识">给老婆聊IOS之一：我对IOS的认识 &raquo;</a>
+          <a  href="15209385419836.html" 
+          title="Next Post: 书籍清单">书籍清单 &raquo;</a>
       
       </p>
         </div>

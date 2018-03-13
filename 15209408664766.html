@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  iOS  元编程 - iginkgo在路上
+  Xcode提速 - iginkgo在路上
   
   </title>
   
@@ -105,12 +105,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>iOS  元编程</h1>
+          <h1>Xcode提速</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/8/18</span>
+          <span class="date">2018/3/13</span>
 
+          <span>posted in&nbsp;</span> 
           
+              <span class="posted-in"><a href='iOS.html'>iOS</a></span>
            
          
           <span class="comments">
@@ -123,27 +125,38 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>能写代码的代码-&gt; 元编程</p>
+      <p>如何更加快速的使用Xcode</p>
 
 <span id="more"></span><!-- more -->
 
-<p><img src="media/15030624381800/15030625368268.jpg" alt=""/></p>
+<h2 id="toc_0">1.把DeriveData放在内存中</h2>
 
-<p>元编程：<br/>
-  程序运行前 进行的 元编程<br/>
-  程序运行中 的元编程</p>
+<p><a href="http://blog.csdn.net/qq_30513483/article/details/70600301">相关地址</a></p>
 
-<p>为什么要元编程：<br/>
-  形成领域专属语言，脱离语言的本体。<br/>
-  简介</p>
+<p>相关思路<br/>
+1. 配置ram，让ram开辟出一块内存专门供Xcode使用<br/>
+2. 连接Xcode，让Xcode连接到我们开辟出的专属内存中</p>
 
-<p>podfile是一个ruby 的程序</p>
+<p>方案<br/>
+1.创建<code>.sh</code>文件</p>
 
-<p><img src="media/15030624381800/15030629482108.jpg" alt=""/></p>
+<pre><code>#!/bin/bash
+RAMDISK=”ramdisk”
+SIZE=1024         #size in MB for ramdisk.
+diskutil erasevolume HFS+ $RAMDISK \
+     `hdiutil attach -nomount ram://$[SIZE*2048]`
+</code></pre>
 
-<p><img src="media/15030624381800/15030630034175.jpg" alt=""/></p>
+<p>2.命令行中执行 <code>./ramdisk.sh</code>命令，执行该脚本</p>
 
-<p><img src="media/15030624381800/15030642996048.jpg" alt=""/></p>
+<pre><code>//注意：如果出现`Permission denied`的情况，使用
+chmod 777 aa.sh
+</code></pre>
+
+<p>3.发现 ./Volume/ 下出现了一个新的内存空间</p>
+
+<p>4.Xcode-&gt;Preference-&gt;Locations-&gt;Location Tab中 <br/>
+DeriveData 目录选定为 Custom，然后路径为 /Volumes/“ramdisk”/DeriveData</p>
 
 
     
@@ -154,16 +167,16 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15209352249778.html" 
-          title="Previous Post: 《Flow》">&laquo; 《Flow》</a>
+          <a href="15209408940888.html" 
+          title="Previous Post: 代码观">&laquo; 代码观</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14819656504986.html" 
-          title="Next Post: 给老婆聊IOS之一：我对IOS的认识">给老婆聊IOS之一：我对IOS的认识 &raquo;</a>
+          <a  href="15209407678838.html" 
+          title="Next Post: Xcode基本操作">Xcode基本操作 &raquo;</a>
       
       </p>
         </div>

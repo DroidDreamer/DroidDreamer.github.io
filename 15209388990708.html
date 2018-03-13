@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  iOS  元编程 - iginkgo在路上
+  iOS code review 注意事项 - iginkgo在路上
   
   </title>
   
@@ -105,12 +105,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>iOS  元编程</h1>
+          <h1>iOS code review 注意事项</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/8/18</span>
+          <span class="date">2018/3/13</span>
 
+          <span>posted in&nbsp;</span> 
           
+              <span class="posted-in"><a href='iOS.html'>iOS</a></span>
            
          
           <span class="comments">
@@ -123,27 +125,189 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>能写代码的代码-&gt; 元编程</p>
+      <p>代码评审知识在软件开发过程中，对源代码进行系统性检查的过程。通常的目的是查找系统缺陷，保证软件总体质量，提高开发者的水平，避免<code>破窗理论</code>。</p>
 
 <span id="more"></span><!-- more -->
 
-<p><img src="media/15030624381800/15030625368268.jpg" alt=""/></p>
+<ul>
+<li>
+<a href="#toc_0">iOS的质量保证</a>
+<ul>
+<li>
+<ul>
+<li>
+<a href="#toc_1">Step1 总体把握</a>
+</li>
+<li>
+<a href="#toc_2">Step2 深入细节</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">针对代码的理念</a>
+<ul>
+<li>
+<ul>
+<li>
+<a href="#toc_4">架构、设计、常规</a>
+<ul>
+<li>
+<a href="#toc_5">单一职责</a>
+</li>
+<li>
+<a href="#toc_6">行为统一：</a>
+</li>
+<li>
+<a href="#toc_7">错误处理</a>
+</li>
+<li>
+<a href="#toc_8">改动不是对代码的提升</a>
+</li>
+<li>
+<a href="#toc_9">效率/性能</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_10">代码风格</a>
+<ul>
+<li>
+<a href="#toc_11">可读性</a>
+</li>
+<li>
+<a href="#toc_12">命名</a>
+</li>
+<li>
+<a href="#toc_13">函数长度/类长度</a>
+</li>
+<li>
+<a href="#toc_14">注释</a>
+</li>
+<li>
+<a href="#toc_15">参数个数</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 
-<p>元编程：<br/>
-  程序运行前 进行的 元编程<br/>
-  程序运行中 的元编程</p>
 
-<p>为什么要元编程：<br/>
-  形成领域专属语言，脱离语言的本体。<br/>
-  简介</p>
+<blockquote>
+<p>破窗理论：此理论认为环境中的不良现象如果被放任存在，会诱使人们仿效，甚至变本加厉</p>
 
-<p>podfile是一个ruby 的程序</p>
+<p>一个房子如果窗户破了，没有人去修补，隔不久，其它的窗户也会莫名其妙地被人打破；一面墙，如果出现一些涂鸦没有被清洗掉，很快的，墙上就布满了乱七八糟、不堪入目的东西；一个很干净的地方，人们不好意思丢垃圾，但是一旦地上有垃圾出现之后，人就会毫不犹豫地抛，丝毫不觉羞愧。</p>
+</blockquote>
 
-<p><img src="media/15030624381800/15030629482108.jpg" alt=""/></p>
+<p>review的核心点: 设计、可读性、健壮性等问题。</p>
 
-<p><img src="media/15030624381800/15030630034175.jpg" alt=""/></p>
+<h2 id="toc_0">iOS的质量保证</h2>
 
-<p><img src="media/15030624381800/15030642996048.jpg" alt=""/></p>
+<h4 id="toc_1">Step1 总体把握</h4>
+
+<ul>
+<li>确定第三方依赖被完全载入</li>
+<li>no error、 no warning</li>
+<li>运行Xcode中静态统计 <code>product-&gt;analysis</code></li>
+<li>运行oclint或swiftlint</li>
+<li>检查项目的层次结构</li>
+<li>运行单元测试/集成测试</li>
+</ul>
+
+<h4 id="toc_2">Step2 深入细节</h4>
+
+<ul>
+<li>MVC、Notification、KVO、MVVM的使用是否合理</li>
+<li>viewController只能是否过重</li>
+<li>GUI使用xib、storyboard还是code</li>
+<li>GUI使用约束 还是 hard-code frame layout</li>
+<li>DRY——Don&#39;t repeat yourself</li>
+<li>return bool: 类似的函数通常可以写的很简单</li>
+<li>尽量减少缩进/嵌套的层次，及早退出</li>
+<li>单一职能：功能模块尽可能小</li>
+<li>private开头</li>
+<li>移除空方法或不用的方法。</li>
+<li>使用static时，考虑是否真的不可避免</li>
+<li>对所有的错误打Log</li>
+<li>delegate保持weak</li>
+</ul>
+
+<h2 id="toc_3">针对代码的理念</h2>
+
+<h4 id="toc_4">架构、设计、常规</h4>
+
+<h5 id="toc_5">单一职责</h5>
+
+<p>每个类或每个方法只实现一个功能。</p>
+
+<h5 id="toc_6">行为统一：</h5>
+
+<ul>
+<li>样式是否统一</li>
+<li>缓存是否统一</li>
+<li>错误处理是否统一</li>
+<li>错误提示是否统一</li>
+<li>弹出框是否统一
+##### 代码污染
+代码是否对其他模块强耦合
+##### 重复代码-&gt;抽取
+##### 开闭原则
+##### 面向接口
+##### 健壮</li>
+<li>是否考虑线程安全</li>
+<li>数据访问是否一致</li>
+<li>边界处理是否是完整</li>
+<li>逻辑是否健壮</li>
+<li>是否有内存泄漏</li>
+<li>是否存在循环依赖</li>
+<li>有没有野指针</li>
+<li>是否检查了数组的越界错误
+。。。。。。</li>
+</ul>
+
+<h5 id="toc_7">错误处理</h5>
+
+<h5 id="toc_8">改动不是对代码的提升</h5>
+
+<p>新的改动是打补丁，让代码质量继续恶化，还是对代码质量做了修复</p>
+
+<h5 id="toc_9">效率/性能</h5>
+
+<ul>
+<li>关键算法的时间复杂度多少？有没有可能有潜在的性能瓶颈</li>
+<li>客户端程序对频繁消息和较大数据等耗时操作是否处理得当</li>
+</ul>
+
+<h4 id="toc_10">代码风格</h4>
+
+<h5 id="toc_11">可读性</h5>
+
+<p>是否可以很轻易的理解代码</p>
+
+<h5 id="toc_12">命名</h5>
+
+<p>对可读性很重要<br/>
+是否跟系统命名冲突<br/>
+英语用词尽量准确</p>
+
+<h5 id="toc_13">函数长度/类长度</h5>
+
+<p>函数太长不好阅读<br/>
+类太长检查是否违反<code>单一职责</code></p>
+
+<h5 id="toc_14">注释</h5>
+
+<p>恰到好处的注释，不是注释越多越好</p>
+
+<h5 id="toc_15">参数个数</h5>
+
+<p>不要太多，一般不要超过三个</p>
+
+<p><a href="http://www.jianshu.com/p/583025f702a8">swife语法规范参考</a></p>
 
 
     
@@ -154,16 +318,16 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15209352249778.html" 
-          title="Previous Post: 《Flow》">&laquo; 《Flow》</a>
+          <a href="15209389898120.html" 
+          title="Previous Post: iOS Animation">&laquo; iOS Animation</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14819656504986.html" 
-          title="Next Post: 给老婆聊IOS之一：我对IOS的认识">给老婆聊IOS之一：我对IOS的认识 &raquo;</a>
+          <a  href="15209388155961.html" 
+          title="Next Post: Bug list">Bug list &raquo;</a>
       
       </p>
         </div>

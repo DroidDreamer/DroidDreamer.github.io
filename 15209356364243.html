@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  iOS  元编程 - iginkgo在路上
+  实例_类_元类 - iginkgo在路上
   
   </title>
   
@@ -105,12 +105,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>iOS  元编程</h1>
+          <h1>实例_类_元类</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/8/18</span>
+          <span class="date">2018/3/13</span>
 
+          <span>posted in&nbsp;</span> 
           
+              <span class="posted-in"><a href='iOS.html'>iOS</a></span>
            
          
           <span class="comments">
@@ -123,27 +125,34 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>能写代码的代码-&gt; 元编程</p>
+      <h2 id="toc_0">简介</h2>
 
 <span id="more"></span><!-- more -->
 
-<p><img src="media/15030624381800/15030625368268.jpg" alt=""/></p>
+<h2 id="toc_1">具体方法</h2>
 
-<p>元编程：<br/>
-  程序运行前 进行的 元编程<br/>
-  程序运行中 的元编程</p>
+<p>OC中<br/>
+<code>isMemberOfClass</code> 用来判断对象是否是特定类型的实例</p>
 
-<p>为什么要元编程：<br/>
-  形成领域专属语言，脱离语言的本体。<br/>
-  简介</p>
+<p><code>isKindOfClass</code> 用来判断是否是某个类或者派生类型的实例</p>
 
-<p>podfile是一个ruby 的程序</p>
+<p>这两个类型信息查询方法是使用对象的isa指针获取对象所属的类，通过类继承体系中的superclass指针在继承体系中游走。<br/>
+Objective—C语言与其他语言不同，必须通过查询类型信息，才能了解对象的真实类型。</p>
 
-<p><img src="media/15030624381800/15030629482108.jpg" alt=""/></p>
+<p>对于某个实例的类型进行判断，也可以使用</p>
 
-<p><img src="media/15030624381800/15030630034175.jpg" alt=""/></p>
+<p><code>[instance class] == [clazz class]</code>判断instance是否属于clazz类型。<br/>
+原因： <code>==</code>符号是用来比较地址是否相等的。因为类对象只可能有一个，因而它可以用地址来进行判定，而不需要用isEqual</p>
 
-<p><img src="media/15030624381800/15030642996048.jpg" alt=""/></p>
+<p>注意：</p>
+
+<blockquote>
+<p>虽然<code>[instance class]</code>方法可以查询对象的类型信息，但是还是建议使用<code>isKindOfClass</code>这样的类型信息查询方法。因为这个方法可以正确的处理那些使用了消息传递机制的对象。比方说某个对象可能会把其的所有选择子（selector）都转发给另一个对象(开启了消息转发功能)<strong>。这样的对象叫做”代理(proxy)“，此种对象所属的类均以NSProxy为根类（root class）。通常情况下，如果在此种代理对象上调用class方法，那么返回的是代理对象本身（NSProxy的子类），而非接受代理的对象所属的类。然而，若是改用“isKindOfClass:”这样的类型信息查询方法，那么代理对象就会把这条消息转给“接受代理的对象（proxy object）”。也就是说，这条消息（指isKindOfClass:）的返回值与直接接受代理的对象身上查询其类型信息所得的结果相同。因此，这样查出来的类对象与直接通过class方法所返回的那个类对象不同，class方法所返回类表示发起代理的对象，而非接受代理的对象。</strong>  </p>
+</blockquote>
+
+<h1 id="toc_2">加粗部分没看懂</h1>
+
+<p><a href="http://www.jianshu.com/p/374b570e1920">原文出处</a></p>
 
 
     
@@ -154,16 +163,16 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15209352249778.html" 
-          title="Previous Post: 《Flow》">&laquo; 《Flow》</a>
+          <a href="15209357186151.html" 
+          title="Previous Post: 算法_最长递增子序列">&laquo; 算法_最长递增子序列</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14819656504986.html" 
-          title="Next Post: 给老婆聊IOS之一：我对IOS的认识">给老婆聊IOS之一：我对IOS的认识 &raquo;</a>
+          <a  href="15209353467239.html" 
+          title="Next Post: 个人的自我修养">个人的自我修养 &raquo;</a>
       
       </p>
         </div>

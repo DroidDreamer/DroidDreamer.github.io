@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  iOS  元编程 - iginkgo在路上
+  算法_最长递增子序列 - iginkgo在路上
   
   </title>
   
@@ -105,12 +105,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>iOS  元编程</h1>
+          <h1>算法_最长递增子序列</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/8/18</span>
+          <span class="date">2018/3/13</span>
 
+          <span>posted in&nbsp;</span> 
           
+              <span class="posted-in"><a href='%E7%BC%96%E7%A8%8B.html'>编程</a></span>
            
          
           <span class="comments">
@@ -123,27 +125,64 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>能写代码的代码-&gt; 元编程</p>
+      <p><strong>问题：给定一个数组，求出该数组的最长递增子序列的长度以及个数</strong></p>
 
 <span id="more"></span><!-- more -->
 
-<p><img src="media/15030624381800/15030625368268.jpg" alt=""/></p>
+<p>示例：<br/>
+ <code><br/>
+ [1,3,5,4,7] <br/>
+ 返回结果为(4，2) //其中长度为4，结果为2<br/>
+ 其最长递增子序列分别为[1,3,5,7]和[1,3,4,7] <br/>
+</code></p>
 
-<p>元编程：<br/>
-  程序运行前 进行的 元编程<br/>
-  程序运行中 的元编程</p>
+<p>最终代码</p>
 
-<p>为什么要元编程：<br/>
-  形成领域专属语言，脱离语言的本体。<br/>
-  简介</p>
-
-<p>podfile是一个ruby 的程序</p>
-
-<p><img src="media/15030624381800/15030629482108.jpg" alt=""/></p>
-
-<p><img src="media/15030624381800/15030630034175.jpg" alt=""/></p>
-
-<p><img src="media/15030624381800/15030642996048.jpg" alt=""/></p>
+<pre><code class="language-swift">/// 返回最长递增子序列的长度以及其个数
+///
+/// - Parameter data: 带统计的参数
+/// - Returns: 最长递增子序列的长度以及其个数
+func calculateLIS(data: [Int])-&gt; (length: Int, count: Int) {
+    
+    /// 当前全局最长的递增子序列的长度
+    var maxLength: Int = 0
+    
+    /// 存放以该index为结尾的最长递增子序列的长度
+    var dp: [Int]  =  data.map { (_) -&gt; Int in
+        return 1
+    }
+    
+    
+    /// 存放以该index为结尾的最长递增子序列的个数
+    var ans: [Int] = data.map { (_) -&gt; Int in
+        return 1
+    }
+    print(&quot;1111&quot;)
+    data.enumerated().forEach { (index, value) in
+        
+        for i in 0..&lt;index {
+            print(&quot;\(index)   \(i)&quot;)
+            if data[i] &lt; data[index] {
+                if dp[i] + 1 &gt; dp[index] {
+                    ans[index] = ans[i]
+                    dp[index] = dp[i] + 1
+                    maxLength = max(maxLength, dp[index])
+                } else if dp[i] + 1 == dp[index] {
+                    ans[index] += ans[i]
+                }
+            }
+        }
+    }
+    
+    let count = data.enumerated().filter { (index,value) -&gt; Bool in
+        return dp[index] == maxLength
+        }.reduce(0) { (result, tuple) -&gt; Int in
+            return result + ans[tuple.offset]
+    }
+    
+    return (maxLength,count)
+}
+</code></pre>
 
 
     
@@ -154,16 +193,16 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15209352249778.html" 
-          title="Previous Post: 《Flow》">&laquo; 《Flow》</a>
+          <a href="15209385419836.html" 
+          title="Previous Post: 书籍清单">&laquo; 书籍清单</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14819656504986.html" 
-          title="Next Post: 给老婆聊IOS之一：我对IOS的认识">给老婆聊IOS之一：我对IOS的认识 &raquo;</a>
+          <a  href="15209356364243.html" 
+          title="Next Post: 实例_类_元类">实例_类_元类 &raquo;</a>
       
       </p>
         </div>
