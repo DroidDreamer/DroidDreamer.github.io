@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  三省吾身 - iginkgo在路上
+  WWDC 2018 Swift 4.2 新特性 - iginkgo在路上
   
   </title>
   
@@ -96,116 +96,230 @@
        
 
  <script type="text/javascript">
-	$(function(){
-		$('#menu_item_index').addClass('is_active');
-	});
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
 </script>
 <div class="row">
-	<div class="large-8 medium-8 columns">
-		<div class="markdown-body home-categories">
-		
-			<div class="article">
-                <a class="clearlink" href="15209404077015.html">
-                
-                  <h1>selfControl list</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>如何进行个人与知识的自我筛查</p>
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>WWDC 2018 Swift 4.2 新特性</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2018/6/6</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <span id="more"></span><!-- more -->
+
+<p><a href="https://devstreaming-cdn.apple.com/videos/wwdc/2018/401ieeclipzse3tz3fg/401/401_hd_whats_new_in_swift.mp4?dl=1">视频下载地址</a></p>
+
+<ul>
+<li>
+<a href="#toc_0">优化</a>
+</li>
+<li>
+<a href="#toc_1">在编译方便的优化</a>
+<ul>
+<li>
+<a href="#toc_2">Compliation Mode</a>
+</li>
+<li>
+<a href="#toc_3">Optimization Level</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_4">Swift语言特性</a>
+<ul>
+<li>
+<a href="#toc_5">CaseIterable协议</a>
+</li>
+<li>
+<a href="#toc_6">随机数生成以及打乱操作</a>
+</li>
+<li>
+<a href="#toc_7">Enhanced conditional conformances</a>
+<ul>
+<li>
+<a href="#toc_8">运行时的类型询问</a>
+</li>
+<li>
+<a href="#toc_9">Optional、Array、Dictionary等对协议的默认实现</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_10">Hashable（未完待续）</a>
+</li>
+</ul>
 
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="15209404077015.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2018/3/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html'>三省吾身</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<p>不得不赞叹一句 Xcode10下的playground运行起来真是比以前好到不行</p>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15209353467239.html">
-                
-                  <h1>个人的自我修养</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>读了《富兰克林自传》，希望践行一下他的培养品质的的方法，只坚持简单的东西，并付诸以时间。<br/>
-希望自己每天打开博客，看到自己的践行方案，填充、记录下自己的努力。</p>
+<h2 id="toc_0">优化</h2>
 
-<p>下面是对这13条品德的进一步说明：</p>
+<p><code>TODO: 待补充</code></p>
 
-<p>1.节制：食不可饱，衣不过量<br/>
-2.慎言：只讲对人对己有益之言，不说无聊琐碎的话<br/>
-3.条理：让拥有的每件东西都各有其位，要让所做的每件事都各有其时<br/>
-4.坚毅：一旦决定做一件事情，就马上义无反顾去做<br/>
-5.节俭：将钱用在于人于己有益的事情上，杜绝浪费<br/>
-6.勤奋：不耽误任何时间，总是在干有用的事情，终止不必要的行为<br/>
-7.真诚：不采用任何有害的欺骗行为，想问题和说话都要公平公正<br/>
-8.正直：不做损人利己之事。<br/>
-9.适度：避免极端，避免别人对你产生怨恨<br/>
-10.清洁：决不允许服装、身体和居所不洁<br/>
-11.心静：不为琐碎之事、寻常之事、和不可避免之事萦绕<br/>
-12.贞洁：不过度行房事，也不因男女关系损害和他人的关系<br/>
-13.谦卑：以耶稣和苏格拉底为楷模</p>
+<h2 id="toc_1">在编译方便的优化</h2>
+
+<p><img src="media/15282735197620/1D720CC705576DB05D71C805EFE2BBB6.jpg" alt="1D720CC705576DB05D71C805EFE2BBB6"/></p>
+
+<p>主要体现在两个方面</p>
+
+<h3 id="toc_2">Compliation Mode</h3>
+
+<p>在debug模式下建议开始<code>Incremental</code>模式，会大大提升效率<br/>
+ <code>Whole Module</code>模式意味着在每次build会将全局进行build，耗时较长</p>
+
+<h3 id="toc_3">Optimization Level</h3>
+
+<p>其中有3个选项 <code>No optimization[-Onone]</code>,<code>Optimize for Speed [-O]</code>,<code>Optimize for Size[-Osize]</code><br/>
+其中<code>Optimize for Size</code>模式是这次更新的一大主题<strong>Code Size</strong>的一部分，在开启之后， Code size可能会减少 10% - 30%， 但是运行时的特性可能会降低 5%。</p>
+
+<h2 id="toc_4">Swift语言特性</h2>
+
+<h3 id="toc_5">CaseIterable协议</h3>
+
+<p>swift中的枚举类型在实现CaseIterable协议后，可以对每个case进行遍历操作。其具体操作如下</p>
+
+<p><img src="media/15282735197620/F24356323AB18A4707FDC96E96D35FB8.jpg" alt="F24356323AB18A4707FDC96E96D35FB8"/></p>
+
+<p>在上面的例子中，<code>FamilyMember</code> 这个枚举类型在实现CaseIterable协议之后， swift自动为其添加了静态变量</p>
+
+<pre><code>static var allCase: [FamilyMember] {
+    return  [.father, .mother, .brother, .sister]
+}
+</code></pre>
+
+<p>但是需要注意的是，对于枚举类型中有关联变量的情况，系统不会自动实现allCase。</p>
+
+<p>比如 下图中<code>case porsche(convertible: Bool)</code>涉及了关联变量。这种情况下，需要像图中的注释掉的代码那样自己生成 。</p>
+
+<p><img src="media/15282735197620/4CC5806A78B51C75CA0789FB03A1D13D.jpg" alt="4CC5806A78B51C75CA0789FB03A1D13D"/></p>
+
+<h3 id="toc_6">随机数生成以及打乱操作</h3>
+
+<p>过去我们一般使用的随机数生成操作</p>
+
+<pre><code>1+(arc4random() % 6) //生成1-6之间的随机数
+</code></pre>
+
+<p>swift4.2中提供的新的方法</p>
+
+<pre><code>Int.random(in: 0..&lt;10)
+Float.random(in: 0..&lt;1)
+[&quot;1&quot;,&quot;he&quot;,&quot;she&quot;,&quot;we&quot;].randomElement()! //选举出一个随机的
+[&quot;1&quot;,&quot;he&quot;,&quot;she&quot;,&quot;we&quot;].shuffled()   // 打乱顺序，重新组合
+</code></pre>
+
+<p>除了系统提供的随机数生成方法，我们也可以让系统调用我们自己写的随机数生成算法。<br/>
+需要实现协议<code>RandomNumberGenerator</code></p>
+
+<pre><code>struct PrivateRandom: RandomNumberGenerator {...} //定义自己的随机数生成方式
+var pr = PrivateRandom()
+Int.random(in: 0..&lt;10, using: &amp;pr) //按照自己的随机数生成方法进行生成
+</code></pre>
+
+<h3 id="toc_7">Enhanced conditional conformances</h3>
+
+<p>conditional conformances 允许在只有在特定条件满足时，才实现某种协议</p>
+
+<p>比如说</p>
+
+<pre><code>
+protocol Purchaseable {
+    func buy()
+}
+
+struct Book: Purchaseable {
+    func buy(){
+     print(&quot;You bought a book&quot;)
+    }
+}
+
+extension Array: Purchaseable where Element: Purchaseable {
+    func buy(){
+    
+    }
+}
+</code></pre>
+
+<h4 id="toc_8">运行时的类型询问</h4>
+
+<p>但是如果在运行时 去询问这个array时，会出现crash的情况（因为默认把array定义为any）。<br/>
+这个情况在Swift4.2中得到解决。</p>
+
+<p>举例说明<br/>
+<img src="media/15282735197620/F9E6BB62AB0D7F29BAEC7E1428ECD376.jpg" alt="F9E6BB62AB0D7F29BAEC7E1428ECD376"/></p>
+
+<h4 id="toc_9">Optional、Array、Dictionary等对协议的默认实现</h4>
+
+<p>在swift4.2之前，如果我们要对 两个容器是否相等进行判定，通常要手动实现Equatable协议。</p>
+
+<p><img src="media/15282735197620/43EF202AEED4513984A2C30BDA907EAB.jpg" alt="43EF202AEED4513984A2C30BDA907EAB"/></p>
+
+<p>在swift4.2中，对于这些容易类型， swift已经为我们做好了处理。</p>
+
+<p><img src="media/15282735197620/A9F4B891E7C0A3D7C242ABE9838204AD.png" alt="A9F4B891E7C0A3D7C242ABE9838204AD"/></p>
+
+<p><img src="media/15282735197620/170E2367105A5EB8FBBF90FF4D0184C6.png" alt="170E2367105A5EB8FBBF90FF4D0184"/></p>
+
+<p><strong>未完待续</strong></p>
+
+<h2 id="toc_10">Hashable（未完待续）</h2>
 
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="15209353467239.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2018/3/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html'>三省吾身</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+    
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-              
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15282672319466.html" 
+          title="Next Post: 踩坑记录">踩坑记录 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
 
 
-			<div class="row">
-			  <div class="large-6 columns">
-			  <p class="text-left" style="padding-top:25px;">
-			   
-			  </p>
-			  </div>
-			  <div class="large-6 columns">
-			<p class="text-right" style="padding-top:25px;">
-			
-			</p>
-			  </div>
-			</div>
-		</div>
-	</div><!-- large 8 -->
+
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">

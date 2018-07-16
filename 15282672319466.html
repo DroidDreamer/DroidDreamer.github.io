@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  三省吾身 - iginkgo在路上
+  踩坑记录 - iginkgo在路上
   
   </title>
   
@@ -96,116 +96,101 @@
        
 
  <script type="text/javascript">
-	$(function(){
-		$('#menu_item_index').addClass('is_active');
-	});
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
 </script>
 <div class="row">
-	<div class="large-8 medium-8 columns">
-		<div class="markdown-body home-categories">
-		
-			<div class="article">
-                <a class="clearlink" href="15209404077015.html">
-                
-                  <h1>selfControl list</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>如何进行个人与知识的自我筛查</p>
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>踩坑记录</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2018/6/6</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h3 id="toc_0">问题1  使用 Leaks检查项目内存泄漏，崩溃的问题</h3>
+
+<p>问题描述</p>
+
+<p>进入Leaks模拟器或者真机app，进入30s左右就出现崩溃的现象，但是正常运行app没有问题</p>
+
+<p><a href="">参考资料</a><br/>
+最后找到解决方案：<br/>
+进入leaks之后，在开启任务前，<br/>
+通过操作<code>file</code> -&gt; <code>recordOptions</code> -&gt; <code>recordCount</code> 取消选择</p>
+
+<h3 id="toc_1">问题2 对于约束的判定</h3>
+
+<p>应用场景： 一个superview 加入 一个子view-UITableView。<br/>
+在后续需要找到tableView的顶部约束并改变其值，使之发生改变。</p>
+
+<pre><code>  self.view.constraints.foreach { (const) in
+    if const.firstAttribute == NSLayoutAttribute.top.
+        let view = const.firstItem as? UITableView,
+            view = self.tableView {
+            //TODO: 此处已识别，do sth
+            }
+  }
+</code></pre>
+
+<p>在这对关系中 const中的item1是UITableView，item2是superView<br/>
+由于tableView的位置需要通过 superView来进行确定。<br/>
+在最初添加约束时， <code>superView.addConstraints(...)</code></p>
 
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="15209404077015.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2018/3/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html'>三省吾身</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+    
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15209353467239.html">
-                
-                  <h1>个人的自我修养</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>读了《富兰克林自传》，希望践行一下他的培养品质的的方法，只坚持简单的东西，并付诸以时间。<br/>
-希望自己每天打开博客，看到自己的践行方案，填充、记录下自己的努力。</p>
+      </div>
 
-<p>下面是对这13条品德的进一步说明：</p>
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="15282735197620.html" 
+          title="Previous Post: WWDC 2018 Swift 4.2 新特性">&laquo; WWDC 2018 Swift 4.2 新特性</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15214499571066.html" 
+          title="Next Post: 面试相关知识">面试相关知识 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
 
-<p>1.节制：食不可饱，衣不过量<br/>
-2.慎言：只讲对人对己有益之言，不说无聊琐碎的话<br/>
-3.条理：让拥有的每件东西都各有其位，要让所做的每件事都各有其时<br/>
-4.坚毅：一旦决定做一件事情，就马上义无反顾去做<br/>
-5.节俭：将钱用在于人于己有益的事情上，杜绝浪费<br/>
-6.勤奋：不耽误任何时间，总是在干有用的事情，终止不必要的行为<br/>
-7.真诚：不采用任何有害的欺骗行为，想问题和说话都要公平公正<br/>
-8.正直：不做损人利己之事。<br/>
-9.适度：避免极端，避免别人对你产生怨恨<br/>
-10.清洁：决不允许服装、身体和居所不洁<br/>
-11.心静：不为琐碎之事、寻常之事、和不可避免之事萦绕<br/>
-12.贞洁：不过度行房事，也不因男女关系损害和他人的关系<br/>
-13.谦卑：以耶稣和苏格拉底为楷模</p>
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
 
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="15209353467239.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2018/3/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html'>三省吾身</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-              
-
-
-			<div class="row">
-			  <div class="large-6 columns">
-			  <p class="text-left" style="padding-top:25px;">
-			   
-			  </p>
-			  </div>
-			  <div class="large-6 columns">
-			<p class="text-right" style="padding-top:25px;">
-			
-			</p>
-			  </div>
-			</div>
-		</div>
-	</div><!-- large 8 -->
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">
