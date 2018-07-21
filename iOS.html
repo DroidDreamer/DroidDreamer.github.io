@@ -105,6 +105,172 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15321351019730.html">
+                
+                  <h1>Swift中的反射  Mirror (上) 认识和基本使用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">简介</h2>
+
+<blockquote>
+<p>Reflection: In computer science, reflection is the ability of a computer program to examine, introspect, and modify its own structure and behavior at runtime     --wikipedia</p>
+</blockquote>
+
+<p>在计算机科学中，反射指的是在计算机程序在运行时 检查，introspect， 修改自身结构以及行为的能力。</p>
+
+<p><a href="https://en.wikipedia.org/wiki/Reflection_(computer_programming)">wikipedia介绍</a></p>
+
+<p>在正常的iOS开发中，由于OC语言有着强大的运行时特性，它的能力要比反射高的多，因此在过去OC实现的iOS项目中并不多见。 Swift作为一个标准且强大的静态语言，本身并没有runtime的相关能力，只提供了<code>Mirror</code>来实现一些反射的特性。</p>
+
+<h2 id="toc_1">Mirror基本介绍</h2>
+
+<p><a href="https://developer.apple.com/documentation/swift/mirror">官方文档</a></p>
+
+<h3 id="toc_2">表述：A representation of the substructure and display style of an instance of any type.</h3>
+
+<p>对于一种类型内部结构的描述以及具体实例的展示类型</p>
+
+<h3 id="toc_3">创建</h3>
+
+<pre><code>class Car {
+    var price: Int
+    var color: String = &quot;red&quot;
+    
+    init(price: Int) {
+        self.price = price
+    }
+}
+
+let car = Car(price: 20000)
+let mirror = Mirror(reflecting: car)
+</code></pre>
+
+<p>使用<code>Mirror</code>的<code>reflecting</code>方法，传出一个静态的实例， 获取该实例类型的反射结果</p>
+
+<h3 id="toc_4">内部结构</h3>
+
+<h4 id="toc_5">property</h4>
+
+<pre><code>let children: Mirror.Children
+A collection of Child elements describing the structure of the reflected subject.
+
+var customMirror: Mirror
+var description: String
+let displayStyle: Mirror.DisplayStyle?
+A suggested display style for the reflected subject.
+
+let subjectType: Any.Type
+The static type of the subject being reflected.
+
+var superclassMirror: Mirror?
+A mirror of the subject’s superclass, if one exists.
+
+</code></pre>
+
+<p>其中需要重点介绍的是 <code>Mirror.children</code></p>
+
+<pre><code> typealias Mirror.Child = (label: String?, value: Any)
+ typealias Mirror.Children = AnyCollection&lt;Mirror.Child&gt;
+</code></pre>
+
+<p>我们通常使用Mirror的反射来获取一个类型的内部变量，都是通过<code>Mirror.Child</code>来获取的。<br/>
+ 对于内部变量， <code>label</code>用于表述其内部参数名， <code>value</code> 表示其参数值。<br/>
+ 下面我们写一个例子，进行观察</p>
+
+<p>示例</p>
+
+<pre><code> for item in mirror.children {
+    print(&quot;当前属性名为\(item.label), 属性的值为\(item.value)&quot;)
+}
+</code></pre>
+
+<p>其输出结果为：<br/>
+当前属性名为Optional(&quot;price&quot;), 属性的值为20000<br/>
+当前属性名为Optional(&quot;color&quot;), 属性的值为red</p>
+
+<p>当然，我们也看到，Mirror.child 作为一个 tuple，其第一个属性<code>label</code>是一个可选型。这是因为Mirror支持的类型很多，后面会进一步介绍， 对于一个 <code>Array</code> 进行反射，只会对属性值进行展示，却没有属性名， 这种情况下 属性名是会为空的。</p>
+
+<h4 id="toc_6">descendant</h4>
+
+<p>返回给定路径的对象，如果路径错误，则返回为nil。</p>
+
+<pre><code>func descendant(MirrorPath, MirrorPath...) -&gt; Any?
+Returns a specific descendant of the reflected subject, or nil if no such descendant exists.
+
+protocol MirrorPath
+A protocol for legitimate arguments to Mirror’s descendant method.
+</code></pre>
+
+<p>这个方法介绍给有多层类型嵌套的情况<br/>
+例如，我们先重新修改 要检测的实例类型,在<code>Car</code>中嵌套一个class。</p>
+
+<pre><code>class Driver {
+    var gender: String = &quot;男&quot;
+    var age: Int = 30
+}
+
+class Car {
+    var price: Int
+    var color: String = &quot;red&quot;
+    var driver = Driver()
+    
+    init(price: Int) {
+        self.price = price
+    }
+}
+
+let car = Car(price: 20000)
+let carMirror = Mirror(reflecting: car)
+let mirror = Mirror(reflecting: car)
+for item in mirror.children {
+    print(&quot;当前属性名为\(item.label), 属性的值为\(item.value)&quot;)
+}
+</code></pre>
+
+<p>实际情况是，对于 driver这个属性，无法进行清晰的表述<br/>
+输出结果：<br/>
+当前属性名为Optional(&quot;price&quot;), 属性的值为20000<br/>
+当前属性名为Optional(&quot;color&quot;), 属性的值为red<br/>
+当前属性名为Optional(&quot;driver&quot;), 属性的值为__lldb_expr_14.Driver</p>
+
+<p>此时第三条driver，就是直接打印的driver的对象。<br/>
+当然，如果需要对driver进行进一步输入，就要继续向下做下去了。</p>
+
+<p><code>descendant</code> 这个方法可以返回给定路径的属性值。<br/>
+例如：</p>
+
+<pre><code>let gender = mirror.descendant(&quot;driver&quot;, &quot;gender&quot;)
+print(gender)car
+</code></pre>
+
+<p>输出结构为 Optional(30)</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/7/21</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15282735197620.html">
                 
                   <h1>WWDC 2018 Swift 4.2 新特性</h1>
@@ -509,40 +675,6 @@ view实现的具体功能<br/>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15209389898120.html">
-                
-                  <h1>iOS Animation</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>最近在梳理一下iOS动画相关方方面的知识，然后来分别进行一下整理和总结，梳理一下每种动画的特点以及常用使用场景。</p>
-
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="15209389898120.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2018/3/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -618,6 +750,18 @@ view实现的具体功能<br/>
 	      
 		      
 			      <li class="post">
+			        <a href="15321351019730.html">Swift中的反射  Mirror (上) 认识和基本使用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15319270059690.html">随想系列(-)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15282735197620.html">WWDC 2018 Swift 4.2 新特性</a>
 			      </li>
 		     
@@ -631,18 +775,6 @@ view实现的具体功能<br/>
 		      
 			      <li class="post">
 			        <a href="15214499571066.html">面试相关知识</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15209408940888.html">代码观</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15209408664766.html">Xcode提速</a>
 			      </li>
 		     
 		  

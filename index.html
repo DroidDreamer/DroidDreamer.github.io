@@ -105,6 +105,218 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15321351019730.html">
+                
+                  <h1>Swift中的反射  Mirror (上) 认识和基本使用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">简介</h2>
+
+<blockquote>
+<p>Reflection: In computer science, reflection is the ability of a computer program to examine, introspect, and modify its own structure and behavior at runtime     --wikipedia</p>
+</blockquote>
+
+<p>在计算机科学中，反射指的是在计算机程序在运行时 检查，introspect， 修改自身结构以及行为的能力。</p>
+
+<p><a href="https://en.wikipedia.org/wiki/Reflection_(computer_programming)">wikipedia介绍</a></p>
+
+<p>在正常的iOS开发中，由于OC语言有着强大的运行时特性，它的能力要比反射高的多，因此在过去OC实现的iOS项目中并不多见。 Swift作为一个标准且强大的静态语言，本身并没有runtime的相关能力，只提供了<code>Mirror</code>来实现一些反射的特性。</p>
+
+<h2 id="toc_1">Mirror基本介绍</h2>
+
+<p><a href="https://developer.apple.com/documentation/swift/mirror">官方文档</a></p>
+
+<h3 id="toc_2">表述：A representation of the substructure and display style of an instance of any type.</h3>
+
+<p>对于一种类型内部结构的描述以及具体实例的展示类型</p>
+
+<h3 id="toc_3">创建</h3>
+
+<pre><code>class Car {
+    var price: Int
+    var color: String = &quot;red&quot;
+    
+    init(price: Int) {
+        self.price = price
+    }
+}
+
+let car = Car(price: 20000)
+let mirror = Mirror(reflecting: car)
+</code></pre>
+
+<p>使用<code>Mirror</code>的<code>reflecting</code>方法，传出一个静态的实例， 获取该实例类型的反射结果</p>
+
+<h3 id="toc_4">内部结构</h3>
+
+<h4 id="toc_5">property</h4>
+
+<pre><code>let children: Mirror.Children
+A collection of Child elements describing the structure of the reflected subject.
+
+var customMirror: Mirror
+var description: String
+let displayStyle: Mirror.DisplayStyle?
+A suggested display style for the reflected subject.
+
+let subjectType: Any.Type
+The static type of the subject being reflected.
+
+var superclassMirror: Mirror?
+A mirror of the subject’s superclass, if one exists.
+
+</code></pre>
+
+<p>其中需要重点介绍的是 <code>Mirror.children</code></p>
+
+<pre><code> typealias Mirror.Child = (label: String?, value: Any)
+ typealias Mirror.Children = AnyCollection&lt;Mirror.Child&gt;
+</code></pre>
+
+<p>我们通常使用Mirror的反射来获取一个类型的内部变量，都是通过<code>Mirror.Child</code>来获取的。<br/>
+ 对于内部变量， <code>label</code>用于表述其内部参数名， <code>value</code> 表示其参数值。<br/>
+ 下面我们写一个例子，进行观察</p>
+
+<p>示例</p>
+
+<pre><code> for item in mirror.children {
+    print(&quot;当前属性名为\(item.label), 属性的值为\(item.value)&quot;)
+}
+</code></pre>
+
+<p>其输出结果为：<br/>
+当前属性名为Optional(&quot;price&quot;), 属性的值为20000<br/>
+当前属性名为Optional(&quot;color&quot;), 属性的值为red</p>
+
+<p>当然，我们也看到，Mirror.child 作为一个 tuple，其第一个属性<code>label</code>是一个可选型。这是因为Mirror支持的类型很多，后面会进一步介绍， 对于一个 <code>Array</code> 进行反射，只会对属性值进行展示，却没有属性名， 这种情况下 属性名是会为空的。</p>
+
+<h4 id="toc_6">descendant</h4>
+
+<p>返回给定路径的对象，如果路径错误，则返回为nil。</p>
+
+<pre><code>func descendant(MirrorPath, MirrorPath...) -&gt; Any?
+Returns a specific descendant of the reflected subject, or nil if no such descendant exists.
+
+protocol MirrorPath
+A protocol for legitimate arguments to Mirror’s descendant method.
+</code></pre>
+
+<p>这个方法介绍给有多层类型嵌套的情况<br/>
+例如，我们先重新修改 要检测的实例类型,在<code>Car</code>中嵌套一个class。</p>
+
+<pre><code>class Driver {
+    var gender: String = &quot;男&quot;
+    var age: Int = 30
+}
+
+class Car {
+    var price: Int
+    var color: String = &quot;red&quot;
+    var driver = Driver()
+    
+    init(price: Int) {
+        self.price = price
+    }
+}
+
+let car = Car(price: 20000)
+let carMirror = Mirror(reflecting: car)
+let mirror = Mirror(reflecting: car)
+for item in mirror.children {
+    print(&quot;当前属性名为\(item.label), 属性的值为\(item.value)&quot;)
+}
+</code></pre>
+
+<p>实际情况是，对于 driver这个属性，无法进行清晰的表述<br/>
+输出结果：<br/>
+当前属性名为Optional(&quot;price&quot;), 属性的值为20000<br/>
+当前属性名为Optional(&quot;color&quot;), 属性的值为red<br/>
+当前属性名为Optional(&quot;driver&quot;), 属性的值为__lldb_expr_14.Driver</p>
+
+<p>此时第三条driver，就是直接打印的driver的对象。<br/>
+当然，如果需要对driver进行进一步输入，就要继续向下做下去了。</p>
+
+<p><code>descendant</code> 这个方法可以返回给定路径的属性值。<br/>
+例如：</p>
+
+<pre><code>let gender = mirror.descendant(&quot;driver&quot;, &quot;gender&quot;)
+print(gender)car
+</code></pre>
+
+<p>输出结构为 Optional(30)</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/7/21</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15319270059690.html">
+                
+                  <h1>随想系列(-)</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>最近走上上班的路上，常常会触发一些联想。这可能就是乱七八糟的书多了，就会触发跨区域的传输。</p>
+
+<p>今天思考了个问题， <strong>人为什么要学习呢？</strong><br/>
+最近两天也在刷算法的一些问题。发现很多问题的解决确实是需要一些奇思妙想，这些天马行空的思想需要一个卓越的大脑来实现。然而大部分算法的实现都是有<strong>套路</strong>的。作为普通劳动力里的我，也就只能通过不断的接触和实践才能慢慢掌握。<br/>
+这里就把解题的人分为两种类型：聪明人和平庸的人。 <br/>
+针对一个问题，聪明人可能直接给出答案，平庸的人呢，要针对给出的细节，进行反复的思考。<br/>
+这里就体现了不同的人，他的思维深度和广度。<br/>
+思维的深度指的是，针对一个一些底层条件和细节，是否能够推断出高层次的结论，进而由这些高层次的结论，推断出想要的结果。 这个已知条件实现的“升级”，也就是我们平时常说的知识点了。对于不了解这些知识点的人，对于那些底层的细节，也都是束手无策的。<br/>
+我又想到以前讨论的很火热的一个问题”现在搜索软件已经这么方便了，可以直接在网络搜索我需要的结果，那我还要花时间学习，有必要吗?“  我的结论是——非常有必要。<br/>
+coursera上有一门课程，叫做《Learn How to learn》, 里面介绍了学习知识的一种理论： 我们学习的东西在大脑中就是一个点，与该知识相关的知识就是另外一个点，当我们学习并深化之后，两个点就会建立一个连接，在大脑思考问题时，考虑到某个点，就很自然的通过连接到达其他的相关知识点。这就是推论、联想。连接是可以通过不断的思考，练习来强化的。这样，随着点的越来越多，连接的越来越多，最终形成了牢固的知识体系。我们在考虑一个问题的时候，可以藉由这个知识网络到达体系内的任意一点。这也代表了在某一个领域内的广度和深度。而这一点是很难通过网络引擎来替代。<br/>
+回到解题的问题上来，知识体系丰富的人，对于现有的条件，很容易在网络中寻找相关的信息，利用这些相关信息来处理问题。而体系狭窄，萎缩的人，想破脑袋也很难想的出来，临时使用搜索引擎，针对相关的知识进行学习，其挑选、吸收的过程就需要很大的成本。</p>
+
+<p>我当前希望自己做的，就是不断强化和延伸这样的知识网络。</p>
+
+<p>第二个想法呢， 每天做一件让自己赞叹的事情吧。让自己的一天显得与众不同。<br/>
+第三个想法呢 克服习惯的惯性，克服欲望。完成一个完整的流程，好好的做完一件事。</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/7/18</span>
+                    
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15282735197620.html">
                 
                   <h1>WWDC 2018 Swift 4.2 新特性</h1>
@@ -397,74 +609,6 @@
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15209404638621.html">
-                
-                  <h1>《被讨厌的勇气》</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>中文名《被讨厌的勇气》</p>
-
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="15209404638621.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2018/3/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AF%BB%E4%B9%A6.html'>读书</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15209404077015.html">
-                
-                  <h1>selfControl list</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>如何进行个人与知识的自我筛查</p>
-
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="15209404077015.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2018/3/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html'>三省吾身</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -540,6 +684,18 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15321351019730.html">Swift中的反射  Mirror (上) 认识和基本使用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15319270059690.html">随想系列(-)</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15282735197620.html">WWDC 2018 Swift 4.2 新特性</a>
 			      </li>
 		     
@@ -553,18 +709,6 @@
 		      
 			      <li class="post">
 			        <a href="15214499571066.html">面试相关知识</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15209408940888.html">代码观</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15209408664766.html">Xcode提速</a>
 			      </li>
 		     
 		  

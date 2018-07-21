@@ -4,13 +4,183 @@
   <title><![CDATA[iginkgo在路上]]></title>
   <link href="iginkgo.cn/atom.xml" rel="self"/>
   <link href="iginkgo.cn/"/>
-  <updated>2018-06-08T15:26:44+08:00</updated>
+  <updated>2018-07-21T10:31:40+08:00</updated>
   <id>iginkgo.cn/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift中的反射  Mirror (上) 认识和基本使用]]></title>
+    <link href="iginkgo.cn/15321351019730.html"/>
+    <updated>2018-07-21T09:05:01+08:00</updated>
+    <id>iginkgo.cn/15321351019730.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">简介</h2>
+
+<blockquote>
+<p>Reflection: In computer science, reflection is the ability of a computer program to examine, introspect, and modify its own structure and behavior at runtime     --wikipedia</p>
+</blockquote>
+
+<p>在计算机科学中，反射指的是在计算机程序在运行时 检查，introspect， 修改自身结构以及行为的能力。</p>
+
+<p><a href="https://en.wikipedia.org/wiki/Reflection_(computer_programming)">wikipedia介绍</a></p>
+
+<p>在正常的iOS开发中，由于OC语言有着强大的运行时特性，它的能力要比反射高的多，因此在过去OC实现的iOS项目中并不多见。 Swift作为一个标准且强大的静态语言，本身并没有runtime的相关能力，只提供了<code>Mirror</code>来实现一些反射的特性。</p>
+
+<h2 id="toc_1">Mirror基本介绍</h2>
+
+<p><a href="https://developer.apple.com/documentation/swift/mirror">官方文档</a></p>
+
+<h3 id="toc_2">表述：A representation of the substructure and display style of an instance of any type.</h3>
+
+<p>对于一种类型内部结构的描述以及具体实例的展示类型</p>
+
+<h3 id="toc_3">创建</h3>
+
+<pre><code>class Car {
+    var price: Int
+    var color: String = &quot;red&quot;
+    
+    init(price: Int) {
+        self.price = price
+    }
+}
+
+let car = Car(price: 20000)
+let mirror = Mirror(reflecting: car)
+</code></pre>
+
+<p>使用<code>Mirror</code>的<code>reflecting</code>方法，传出一个静态的实例， 获取该实例类型的反射结果</p>
+
+<h3 id="toc_4">内部结构</h3>
+
+<h4 id="toc_5">property</h4>
+
+<pre><code>let children: Mirror.Children
+A collection of Child elements describing the structure of the reflected subject.
+
+var customMirror: Mirror
+var description: String
+let displayStyle: Mirror.DisplayStyle?
+A suggested display style for the reflected subject.
+
+let subjectType: Any.Type
+The static type of the subject being reflected.
+
+var superclassMirror: Mirror?
+A mirror of the subject’s superclass, if one exists.
+
+</code></pre>
+
+<p>其中需要重点介绍的是 <code>Mirror.children</code></p>
+
+<pre><code> typealias Mirror.Child = (label: String?, value: Any)
+ typealias Mirror.Children = AnyCollection&lt;Mirror.Child&gt;
+</code></pre>
+
+<p>我们通常使用Mirror的反射来获取一个类型的内部变量，都是通过<code>Mirror.Child</code>来获取的。<br/>
+ 对于内部变量， <code>label</code>用于表述其内部参数名， <code>value</code> 表示其参数值。<br/>
+ 下面我们写一个例子，进行观察</p>
+
+<p>示例</p>
+
+<pre><code> for item in mirror.children {
+    print(&quot;当前属性名为\(item.label), 属性的值为\(item.value)&quot;)
+}
+</code></pre>
+
+<p>其输出结果为：<br/>
+当前属性名为Optional(&quot;price&quot;), 属性的值为20000<br/>
+当前属性名为Optional(&quot;color&quot;), 属性的值为red</p>
+
+<p>当然，我们也看到，Mirror.child 作为一个 tuple，其第一个属性<code>label</code>是一个可选型。这是因为Mirror支持的类型很多，后面会进一步介绍， 对于一个 <code>Array</code> 进行反射，只会对属性值进行展示，却没有属性名， 这种情况下 属性名是会为空的。</p>
+
+<h4 id="toc_6">descendant</h4>
+
+<p>返回给定路径的对象，如果路径错误，则返回为nil。</p>
+
+<pre><code>func descendant(MirrorPath, MirrorPath...) -&gt; Any?
+Returns a specific descendant of the reflected subject, or nil if no such descendant exists.
+
+protocol MirrorPath
+A protocol for legitimate arguments to Mirror’s descendant method.
+</code></pre>
+
+<p>这个方法介绍给有多层类型嵌套的情况<br/>
+例如，我们先重新修改 要检测的实例类型,在<code>Car</code>中嵌套一个class。</p>
+
+<pre><code>class Driver {
+    var gender: String = &quot;男&quot;
+    var age: Int = 30
+}
+
+class Car {
+    var price: Int
+    var color: String = &quot;red&quot;
+    var driver = Driver()
+    
+    init(price: Int) {
+        self.price = price
+    }
+}
+
+let car = Car(price: 20000)
+let carMirror = Mirror(reflecting: car)
+let mirror = Mirror(reflecting: car)
+for item in mirror.children {
+    print(&quot;当前属性名为\(item.label), 属性的值为\(item.value)&quot;)
+}
+</code></pre>
+
+<p>实际情况是，对于 driver这个属性，无法进行清晰的表述<br/>
+输出结果：<br/>
+当前属性名为Optional(&quot;price&quot;), 属性的值为20000<br/>
+当前属性名为Optional(&quot;color&quot;), 属性的值为red<br/>
+当前属性名为Optional(&quot;driver&quot;), 属性的值为__lldb_expr_14.Driver</p>
+
+<p>此时第三条driver，就是直接打印的driver的对象。<br/>
+当然，如果需要对driver进行进一步输入，就要继续向下做下去了。</p>
+
+<p><code>descendant</code> 这个方法可以返回给定路径的属性值。<br/>
+例如：</p>
+
+<pre><code>let gender = mirror.descendant(&quot;driver&quot;, &quot;gender&quot;)
+print(gender)car
+</code></pre>
+
+<p>输出结构为 Optional(30)</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[随想系列(-)]]></title>
+    <link href="iginkgo.cn/15319270059690.html"/>
+    <updated>2018-07-18T23:16:45+08:00</updated>
+    <id>iginkgo.cn/15319270059690.html</id>
+    <content type="html"><![CDATA[
+<p>最近走上上班的路上，常常会触发一些联想。这可能就是乱七八糟的书多了，就会触发跨区域的传输。</p>
+
+<p>今天思考了个问题， <strong>人为什么要学习呢？</strong><br/>
+最近两天也在刷算法的一些问题。发现很多问题的解决确实是需要一些奇思妙想，这些天马行空的思想需要一个卓越的大脑来实现。然而大部分算法的实现都是有<strong>套路</strong>的。作为普通劳动力里的我，也就只能通过不断的接触和实践才能慢慢掌握。<br/>
+这里就把解题的人分为两种类型：聪明人和平庸的人。 <br/>
+针对一个问题，聪明人可能直接给出答案，平庸的人呢，要针对给出的细节，进行反复的思考。<br/>
+这里就体现了不同的人，他的思维深度和广度。<br/>
+思维的深度指的是，针对一个一些底层条件和细节，是否能够推断出高层次的结论，进而由这些高层次的结论，推断出想要的结果。 这个已知条件实现的“升级”，也就是我们平时常说的知识点了。对于不了解这些知识点的人，对于那些底层的细节，也都是束手无策的。<br/>
+我又想到以前讨论的很火热的一个问题”现在搜索软件已经这么方便了，可以直接在网络搜索我需要的结果，那我还要花时间学习，有必要吗?“  我的结论是——非常有必要。<br/>
+coursera上有一门课程，叫做《Learn How to learn》, 里面介绍了学习知识的一种理论： 我们学习的东西在大脑中就是一个点，与该知识相关的知识就是另外一个点，当我们学习并深化之后，两个点就会建立一个连接，在大脑思考问题时，考虑到某个点，就很自然的通过连接到达其他的相关知识点。这就是推论、联想。连接是可以通过不断的思考，练习来强化的。这样，随着点的越来越多，连接的越来越多，最终形成了牢固的知识体系。我们在考虑一个问题的时候，可以藉由这个知识网络到达体系内的任意一点。这也代表了在某一个领域内的广度和深度。而这一点是很难通过网络引擎来替代。<br/>
+回到解题的问题上来，知识体系丰富的人，对于现有的条件，很容易在网络中寻找相关的信息，利用这些相关信息来处理问题。而体系狭窄，萎缩的人，想破脑袋也很难想的出来，临时使用搜索引擎，针对相关的知识进行学习，其挑选、吸收的过程就需要很大的成本。</p>
+
+<p>我当前希望自己做的，就是不断强化和延伸这样的知识网络。</p>
+
+<p>第二个想法呢， 每天做一件让自己赞叹的事情吧。让自己的一天显得与众不同。<br/>
+第三个想法呢 克服习惯的惯性，克服欲望。完成一个完整的流程，好好的做完一件事。</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[WWDC 2018 Swift 4.2 新特性]]></title>
@@ -2633,275 +2803,6 @@ transitionContext.completeTransition(true)
 <pre><code class="language-swift">selectedImage!.superview!.convert(selectedImage!.frame, to: nil)
 
 </code></pre>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS code review 注意事项]]></title>
-    <link href="iginkgo.cn/15209388990708.html"/>
-    <updated>2018-03-13T19:01:39+08:00</updated>
-    <id>iginkgo.cn/15209388990708.html</id>
-    <content type="html"><![CDATA[
-<p>代码评审知识在软件开发过程中，对源代码进行系统性检查的过程。通常的目的是查找系统缺陷，保证软件总体质量，提高开发者的水平，避免<code>破窗理论</code>。</p>
-
-<span id="more"></span><!-- more -->
-
-<ul>
-<li>
-<a href="#toc_0">iOS的质量保证</a>
-<ul>
-<li>
-<ul>
-<li>
-<a href="#toc_1">Step1 总体把握</a>
-</li>
-<li>
-<a href="#toc_2">Step2 深入细节</a>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_3">针对代码的理念</a>
-<ul>
-<li>
-<ul>
-<li>
-<a href="#toc_4">架构、设计、常规</a>
-<ul>
-<li>
-<a href="#toc_5">单一职责</a>
-</li>
-<li>
-<a href="#toc_6">行为统一：</a>
-</li>
-<li>
-<a href="#toc_7">错误处理</a>
-</li>
-<li>
-<a href="#toc_8">改动不是对代码的提升</a>
-</li>
-<li>
-<a href="#toc_9">效率/性能</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_10">代码风格</a>
-<ul>
-<li>
-<a href="#toc_11">可读性</a>
-</li>
-<li>
-<a href="#toc_12">命名</a>
-</li>
-<li>
-<a href="#toc_13">函数长度/类长度</a>
-</li>
-<li>
-<a href="#toc_14">注释</a>
-</li>
-<li>
-<a href="#toc_15">参数个数</a>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-
-<blockquote>
-<p>破窗理论：此理论认为环境中的不良现象如果被放任存在，会诱使人们仿效，甚至变本加厉</p>
-
-<p>一个房子如果窗户破了，没有人去修补，隔不久，其它的窗户也会莫名其妙地被人打破；一面墙，如果出现一些涂鸦没有被清洗掉，很快的，墙上就布满了乱七八糟、不堪入目的东西；一个很干净的地方，人们不好意思丢垃圾，但是一旦地上有垃圾出现之后，人就会毫不犹豫地抛，丝毫不觉羞愧。</p>
-</blockquote>
-
-<p>review的核心点: 设计、可读性、健壮性等问题。</p>
-
-<h2 id="toc_0">iOS的质量保证</h2>
-
-<h4 id="toc_1">Step1 总体把握</h4>
-
-<ul>
-<li>确定第三方依赖被完全载入</li>
-<li>no error、 no warning</li>
-<li>运行Xcode中静态统计 <code>product-&gt;analysis</code></li>
-<li>运行oclint或swiftlint</li>
-<li>检查项目的层次结构</li>
-<li>运行单元测试/集成测试</li>
-</ul>
-
-<h4 id="toc_2">Step2 深入细节</h4>
-
-<ul>
-<li>MVC、Notification、KVO、MVVM的使用是否合理</li>
-<li>viewController只能是否过重</li>
-<li>GUI使用xib、storyboard还是code</li>
-<li>GUI使用约束 还是 hard-code frame layout</li>
-<li>DRY——Don&#39;t repeat yourself</li>
-<li>return bool: 类似的函数通常可以写的很简单</li>
-<li>尽量减少缩进/嵌套的层次，及早退出</li>
-<li>单一职能：功能模块尽可能小</li>
-<li>private开头</li>
-<li>移除空方法或不用的方法。</li>
-<li>使用static时，考虑是否真的不可避免</li>
-<li>对所有的错误打Log</li>
-<li>delegate保持weak</li>
-</ul>
-
-<h2 id="toc_3">针对代码的理念</h2>
-
-<h4 id="toc_4">架构、设计、常规</h4>
-
-<h5 id="toc_5">单一职责</h5>
-
-<p>每个类或每个方法只实现一个功能。</p>
-
-<h5 id="toc_6">行为统一：</h5>
-
-<ul>
-<li>样式是否统一</li>
-<li>缓存是否统一</li>
-<li>错误处理是否统一</li>
-<li>错误提示是否统一</li>
-<li>弹出框是否统一
-##### 代码污染
-代码是否对其他模块强耦合
-##### 重复代码-&gt;抽取
-##### 开闭原则
-##### 面向接口
-##### 健壮</li>
-<li>是否考虑线程安全</li>
-<li>数据访问是否一致</li>
-<li>边界处理是否是完整</li>
-<li>逻辑是否健壮</li>
-<li>是否有内存泄漏</li>
-<li>是否存在循环依赖</li>
-<li>有没有野指针</li>
-<li>是否检查了数组的越界错误
-。。。。。。</li>
-</ul>
-
-<h5 id="toc_7">错误处理</h5>
-
-<h5 id="toc_8">改动不是对代码的提升</h5>
-
-<p>新的改动是打补丁，让代码质量继续恶化，还是对代码质量做了修复</p>
-
-<h5 id="toc_9">效率/性能</h5>
-
-<ul>
-<li>关键算法的时间复杂度多少？有没有可能有潜在的性能瓶颈</li>
-<li>客户端程序对频繁消息和较大数据等耗时操作是否处理得当</li>
-</ul>
-
-<h4 id="toc_10">代码风格</h4>
-
-<h5 id="toc_11">可读性</h5>
-
-<p>是否可以很轻易的理解代码</p>
-
-<h5 id="toc_12">命名</h5>
-
-<p>对可读性很重要<br/>
-是否跟系统命名冲突<br/>
-英语用词尽量准确</p>
-
-<h5 id="toc_13">函数长度/类长度</h5>
-
-<p>函数太长不好阅读<br/>
-类太长检查是否违反<code>单一职责</code></p>
-
-<h5 id="toc_14">注释</h5>
-
-<p>恰到好处的注释，不是注释越多越好</p>
-
-<h5 id="toc_15">参数个数</h5>
-
-<p>不要太多，一般不要超过三个</p>
-
-<p><a href="http://www.jianshu.com/p/583025f702a8">swife语法规范参考</a></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Bug list]]></title>
-    <link href="iginkgo.cn/15209388155961.html"/>
-    <updated>2018-03-13T19:00:15+08:00</updated>
-    <id>iginkgo.cn/15209388155961.html</id>
-    <content type="html"><![CDATA[
-<p>记录日常碰到的各种疑难问题</p>
-
-<span id="more"></span><!-- more -->
-
-<ol>
-<li><p>同一地点大量使用 <code>??</code> 会导致编译 费事 甚至 一直进行下去</p></li>
-<li><p>加一个符号断点UIViewAlertForUnsatisfiableConstraints可以用来调试自动布局的问题，masonry经常出一些幺蛾子，搞的我现在写布局都要如图二这样子写才行[doge] ​​​​</p></li>
-<li></li>
-</ol>
-
-<pre><code>Terminating app due to uncaught exception 
-&#39;NSInvalidArgumentException&#39;, reason: &#39;Application tried to present modally an active controller 
-</code></pre>
-
-<p>通常原因是 被present的viewController已经被处理了 //TODO: 待测试</p>
-
-<h3 id="toc_0">问题1：项目在真机跑时出现的问题</h3>
-
-<blockquote>
-<p>errors：The operation couldn’t be completed. Unable to log in with account &#39;myappleid&#39;. An unexpected failure occurred while logging in (Underlying error code 1100).</p>
-</blockquote>
-
-<p>使用个人开发者账号（未付费）使用手机测试时，一直是认为不能跑的。<br/>
-由于个人前期配置之后，及时打开AutoMatically manage signing 后，依然会出现这个问题。报错是apple ID过期</p>
-
-<p>解决策略<br/>
-1. Xcode Preference -&gt; account 账号重新登录<br/>
-2. 在项目general面板中，勾选 <code>Automatically manage signing</code>选项，然后Team中选定自己的 team<br/>
-3. <strong>重启自己的Xcode，会自动运行repair自己的apple ID</strong><br/>
-4. 首次使用该apple Id配置自己的手机时，需要在手机中操作<br/>
-   <code>preference-&gt;general-&gt;developers-&gt;trust</code></p>
-
-<h3 id="toc_1">问题2：Development Certificate 以及 Provisioning Profile</h3>
-
-<p>Development Certificate 它是一个电子文件，证明你是一个iOS程序的开发，并且在一个限定时间段内有效。这在你需要真机调试时必要的，因为该程序需要被你的Development Certificate进行签名<br/>
-（该证书可以免费试用）</p>
-
-<p>Distribution Certificate：只有用该证书签名的app才可以被提交到AppStore。（只有付费用户才可以有该证书）</p>
-
-<p>Provisioning Profile：每个app都应该有一个Provisioning Profile文件，主要用以标记/判断 该app是否可以在 某个特定手机安装。</p>
-
-<p>其中Xcode8以后 出现了一个新的功能叫做<code>AutoMatically manage siging</code>，选定之后，xcode可以自行管理有关Certificate以及Proisioning Profile的相关东西。</p>
-
-<h3 id="toc_2">问题3：真机运行时启动失败</h3>
-
-<p>可能出现的问题<br/>
-* 设备未连接<br/>
-* 设备未添加信任<br/>
-* 设备已经被锁</p>
-
-<h3 id="toc_3">问题4: charles 真机抓包https一直显示<code>unknown</code></h3>
-
-<p><code><br/>
-No request was made. Possibly the SSL certificate was rejected.<br/>
-You may need to configure your browser or application to trust the Charles Root Certificate. See SSL Proxying in the Help menu.<br/>
-</code><br/>
-该问题普遍应该是因为没有安装<code>ssl</code>的协议证书导致的，但是我本机和手机都分别进行了安装，依然出现了该问题。<br/>
-尝试的措施<br/>
-1.重装charles  ❌<br/>
-2.各种查资料     ❌<br/>
-3.mac证书重新安装 ❌<br/>
-4.手机证书重新安装  ✅</p>
-
-<p>注意：<br/>
-当前charles的mac端版本为 <code>v4.1.4</code>，安装手机证书时提示地址为<code>charles.com/ssl</code>但是一直无法打开。<br/>
-实际地址为<code>charlesproxy.com/getssl</code></p>
 
 ]]></content>
   </entry>
