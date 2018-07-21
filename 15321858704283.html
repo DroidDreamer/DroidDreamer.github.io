@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  tools - iginkgo在路上
+  ObjectMapper学习 - iginkgo在路上
   
   </title>
   
@@ -105,14 +105,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>tools</h1>
+          <h1>ObjectMapper学习</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2018/3/13</span>
+          <span class="date">2018/7/21</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='%E7%BC%96%E7%A8%8B.html'>编程</a></span>
+              <span class="posted-in"><a href='iOS.html'>iOS</a></span>
            
          
           <span class="comments">
@@ -125,21 +125,160 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <span id="more"></span><!-- more -->
+      <p>ObjectMapper<br/>
+最近在写Mirror的时候，一直在考虑如何自动实现JSON 与Object之间的解析与赋值问题，而不需要手动进行key值的配置。因此对于当前Swift中常用的几个框架比较好奇。因此我打算解读一下 ObjectMapper是如何实现的。。</p>
 
-<h2 id="toc_0">code</h2>
+<span id="more"></span><!-- more -->
 
-<p><a href="http://asciiflow.com/">使用注释画图</a><br/>
-<a href="https://www.processon.com/login">绘制流程图</a><br/>
-<a href="https://www.appsight.io/">Find SDKs &amp; services used by iOS mobile apps</a><br/>
-<a href="https://aso100.com/">iOS app排名</a></p>
+<p>看一下ObjectMapper的结构</p>
 
-<h2 id="toc_1">life</h2>
+<pre><code>Map.swift
+Mapper.swift
+Mappable.swift
+MapError.swift
 
-<p><a href="http://ip.taobao.com/index.php">ip地址查询</a><br/>
-<a href="http://app2.sfda.gov.cn/datasearchp/gzcxSearch.do?formRender=cx&amp;page=1">药监局查询正品</a><br/>
-<a href="http://sswz.spb.gov.cn/">快递投诉</a><br/>
-<a href="https://github.com/cn">中国资料数据库 github开源</a></p>
+...Transform.swift
+
+
+</code></pre>
+
+<p>下面介绍一下主要的职能部分</p>
+
+<h3 id="toc_0">Mapper</h3>
+
+<p>Mapper是一个操作类，用于操作本地赋予的各种数值，list, dictionary等不同的类型，将类型统一后 生成对应的Map进行赋值操作。<br/>
+它是控制整个转换操作过程中最大的操作类。</p>
+
+<p>//TODO: 需要画图进行演示。</p>
+
+<h4 id="toc_1">主要方法</h4>
+
+<p>方法列表中的方法主要是兼容可能出现的各种输入形式，并最终分析目标类型的元素或者list， dictionary等。</p>
+
+<pre><code>//class Mapper&lt;N: BaseMappable&gt;
+//泛型N表示目标类型
+public func map(JSONObject: Any?, toObject object: N) -&gt; N
+public func map(JSONString: String, toObject object: N) -&gt; N
+public func map(JSON: [String : Any], toObject object: N) -&gt; N
+public func map(JSONString: String) -&gt; N?
+public func map(JSONObject: Any?) -&gt; N?
+public func map(JSON: [String : Any]) -&gt; N?
+public func mapArray(JSONString: String) -&gt; [N]?
+public func mapArray(JSONObject: Any?) -&gt; [N]?
+public func mapArray(JSONArray: [[String : Any]]) -&gt; [N]
+public func mapDictionary(JSONString: String) -&gt; [String : N]?
+public func mapDictionary(JSONObject: Any?) -&gt; [String : N]?
+public func mapDictionary(JSON: [String : [String : Any]]) -&gt; [String : N]?
+public func mapDictionary(JSONObject: Any?, toDictionary dictionary: [String : N]) -&gt; [String : N]
+public func mapDictionary(JSON: [String : [String : Any]], toDictionary dictionary: [String : N]) -&gt; [String : N]
+public func mapDictionaryOfArrays(JSONObject: Any?) -&gt; [String : [N]]?
+public func mapDictionaryOfArrays(JSON: [String : [[String : Any]]]) -&gt; [String : [N]]?
+ public func mapArrayOfArrays(JSONObject: Any?) -&gt; [[N]]?
+public static func parseJSONStringIntoDictionary(JSONString: String) -&gt; [String : Any]?
+public static func parseJSONString(JSONString: String) -&gt; Any?
+</code></pre>
+
+<h3 id="toc_2">Map</h3>
+
+<p>Map 提供一个基础的容器， 在获取JSON内容或者Object之后，提供一些基本的状态标识，数据存储</p>
+
+<h4 id="toc_3">关键属性</h4>
+
+<pre><code>public internal(set) var JSON: [String: Any] = [:] //存放要操作的json
+public internal(set) var isKeyPresent = false// 当前key值对应的值是否存在
+public internal(set) var currentValue: Any? //当前key值所对应的value值
+public internal(set) var currentKey: String? //当前的key值
+</code></pre>
+
+<p>举了例子再进行说明<br/>
+对于一个对象进行转化时，</p>
+
+<pre><code>class Person: Mappable {
+var age: Int?
+var gender: String?
+var height: Double?
+
+func mapping(map: Map){
+  age &lt;- map[&quot;age&quot;]
+    gender &lt;- map[&quot;gender&quot;]
+    height &lt;_ map[&quot;height&quot;]
+}
+}
+</code></pre>
+
+<p>调用方法</p>
+
+<pre><code>Mapper&lt;Person&gt;().map(json: JSON) //生成对象
+</code></pre>
+
+<p>这边在进行转换的过程中，对于一个json，生成一个Map用于存储json并进行简单的数据操作。 在对于具体属性进行配给时，<br/>
+具体的步骤<br/>
+1. 处理<code>age &lt;- map[&quot;age&quot;]</code>时， 整个map的对象在map[“age”]的方法时， 调用下标方法， 设置 currentKey = “age”， currentValue = json[“age”], 由于要查找的key值在json中确实存在，isKeyPresent = true<br/>
+2. 处理<code>gender&lt;-map[&quot;gender&quot;]</code>, 加入json这个字典中不存在json[“gender”],<br/>
+则当前 <code>isKeyPresent=false</code>, currentValue = nil<br/>
+3. 处理height值时，使用相同的逻辑进行处理</p>
+
+<p>主要方法</p>
+
+<pre><code>init(json: [String:Any],...) //进行json的赋值
+subscript() //下标的方法，本身状态经过一定的修正，获取下标在json中对应的值，然后返回本身
+func value&lt;T&gt;()-&gt; T? // 将subscripy中获取的值，判断是可转为用于需要的类型，并转换。
+
+</code></pre>
+
+<p>这个部分中的value方法是我非常感兴趣的地方。 因为整个Map文件只有这一个地方涉及到泛型的问题，而我好奇的是，泛型的类型是如何进行推断的。</p>
+
+<pre><code>public func value&lt;T&gt;() -&gt; T? {
+    let value = currentValue as? T 
+  ...
+    ... 
+    ...
+}
+</code></pre>
+
+<p>这个类型转换中，最终进行判断的类型是如何确定的呢？</p>
+
+<p>让我们来看一下相关的调用方法：</p>
+
+<pre><code>//Operator.swift
+public func &lt;- &lt;T&gt;(left: inout T, right: Map) {
+    switch right.mappingType {
+    case .fromJSON where right.isKeyPresent:
+        FromJSON.basicType(&amp;left, object: right.value()) //注意
+    case .toJSON:
+        left &gt;&gt;&gt; right
+    default: ()
+    }
+}
+</code></pre>
+
+<pre><code>//FromJSON.swift
+internal final class FromJSON {
+    class func basicType&lt;FieldType&gt;(_ field: inout FieldType, object: FieldType?) {}
+}
+</code></pre>
+
+<p>那让我们来梳理一下泛型T的推断过程</p>
+
+<pre><code>func &lt;- &lt;T&gt;(left: inout T, right: Map)
+func basicType&lt;FieldType&gt;(_ field: inout FieldType, object: FieldType?)
+func value&lt;T&gt;()-&gt; T?
+</code></pre>
+
+<p>砰砰，划重点：<br/>
+basicType方法声明了一个泛型，约束输入的两个参数属性应该是相同的。<br/>
+而在Operator.swift中的方法，left这个参数类型 和 right.value()类型相同。<br/>
+由于value()这个方法声明为一个泛型，这个类型是需要被推断出来的，因此最终确定是需要通过 left的属性来确定。<br/>
+即： <strong>根据操作符</strong><code>&lt;-</code><strong>的做参数的属性来确定返回值的类型</strong><br/>
+我认为这是类型推断非常强大的一点。</p>
+
+<p>同样的, 我在playground上实验了类似的例子，说明编译器对于泛型中类型的推导具有延续性。<br/>
+写一个泛型类型推导的例子<a href="https://github.com/DroidDreamer/codeDaily/blob/master/Generic%20type%20inference.playground/Contents.swift">泛型例子</a><br/>
+//TODO: 此处添加类似的代码。Generic type inference</p>
+
+<p>…Transform: 针对特定的类型设置转换规则</p>
+
+<p>//TODO: 未完待续</p>
 
 
     
@@ -150,16 +289,13 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15209406714961.html" 
-          title="Previous Post: viewController的生命周期">&laquo; viewController的生命周期</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="15209404638621.html" 
-          title="Next Post: 《被讨厌的勇气》">《被讨厌的勇气》 &raquo;</a>
+          <a  href="15321351019730.html" 
+          title="Next Post: Swift中的反射  Mirror (上) 认识和基本使用">Swift中的反射  Mirror (上) 认识和基本使用 &raquo;</a>
       
       </p>
         </div>
