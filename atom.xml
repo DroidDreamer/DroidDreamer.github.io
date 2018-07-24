@@ -4,7 +4,7 @@
   <title><![CDATA[iginkgo在路上]]></title>
   <link href="iginkgo.cn/atom.xml" rel="self"/>
   <link href="iginkgo.cn/"/>
-  <updated>2018-07-24T10:55:34+08:00</updated>
+  <updated>2018-07-24T10:55:52+08:00</updated>
   <id>iginkgo.cn/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -195,8 +195,6 @@ basicType方法声明了一个泛型，约束输入的两个参数属性应该�
 <p><a href="https://en.wikipedia.org/wiki/Reflection_(computer_programming)">wikipedia介绍</a></p>
 
 <p>在正常的iOS开发中，由于OC语言有着强大的运行时特性，它的能力要比反射高的多，因此在过去OC实现的iOS项目中并不多见。 Swift作为一个标准且强大的静态语言，本身并没有runtime的相关能力，只提供了<code>Mirror</code>来实现一些反射的特性。</p>
-
-<p>&lt;!-- more --&gt;</p>
 
 <h2 id="toc_1">Mirror基本介绍</h2>
 
