@@ -4,13 +4,98 @@
   <title><![CDATA[iginkgo在路上]]></title>
   <link href="iginkgo.cn/atom.xml" rel="self"/>
   <link href="iginkgo.cn/"/>
-  <updated>2018-07-24T11:12:25+08:00</updated>
+  <updated>2018-07-24T20:09:36+08:00</updated>
   <id>iginkgo.cn/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[首页的优化记录]]></title>
+    <link href="iginkgo.cn/15324314483651.html"/>
+    <updated>2018-07-24T19:24:08+08:00</updated>
+    <id>iginkgo.cn/15324314483651.html</id>
+    <content type="html"><![CDATA[
+<p>记录一个复杂页面的优化过程</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">第一次优化</h2>
+
+<h3 id="toc_1">当前现状</h3>
+
+<p>当前的页面有三个文件</p>
+
+<pre><code>viewController.swift //处理交互和主体逻辑
+viewController.xib   //当前页面的主要view 
+viewModel.swift      //当前页面的主要网络请求、数据转换与存储、信号
+</code></pre>
+
+<p>当前的viewController是一个非常典型的<strong>“Massive view Controller”</strong>.<br/>
+整个viewConttroller 大概1000行代码。</p>
+
+<p>大体梳理一下具体的实现：</p>
+
+<ol>
+<li><p>初始化方法<br/>
+普通view的初始化    10<br/>
+tableView初始化    45<br/>
+网络请求（失败和成功的UI变化）            20<br/>
+事件监听        60行</p></li>
+<li><p>tableView中涉及到的cell有8种混杂，<br/>
+使用代码(如下方代码)的方式进行解析</p></li>
+</ol>
+
+<pre><code>switch viewmodel.list[indexpath.row].style {
+case .news: //...
+case .video: //...
+case .image:// ...
+...
+}
+</code></pre>
+
+<p>其中方法<code>cellForRowAtIndex</code>  90行<br/>
+方法 <code>cellDidSelect</code>  65行</p>
+
+<ol>
+<li>tableView上某些cell包含UICollectionView，需要具体实现<code>UICollectionDataSource</code>、<code>UICollectionDataSource</code>实现   60行</li>
+<li>tableView上具体点赞按钮、关注按钮、收藏按钮等需要具体使用回调来相应   90行</li>
+<li>其余的辅助方法  大约200行左右。</li>
+</ol>
+
+<p>当前代码结构过于雍容，像《代码大全》，《代码简洁之道》等总结代码规范的书籍，通常建议一个文件不要超过200行，最多不要超过400行。一个1000行左右的文件已经让人读起来非常吃力，并且考虑到业务会经常修改的情况，清晰的脉络是非常必要的。</p>
+
+<h3 id="toc_2">当前进行的操作</h3>
+
+<ol>
+<li>将各种涉及到cell idendifier，cell height等跟固定的cell相关的一些常量，全部提取到cell本身代码中去。</li>
+<li>去除整个页面中的魔幻数（突然出现的字符串、常量等），用一个变量进行代替。</li>
+<li>创建一个<code>TableViewDataSource： NSObject, UITableViewDataSource</code>作为tableView的数据源。将对应的代码切换过去。</li>
+</ol>
+
+<h3 id="toc_3">遇到的问题</h3>
+
+<p>在进行DataSource剥离的时候,出现tableView中高度失调的问题。</p>
+
+<pre><code>//ViewController.swift
+tableView.dataSource = TableViewDataSource()
+tableView.delegate = self
+</code></pre>
+
+<pre><code>//UITableViewDataSource
+public func numberOfSections(in tableView: UITableView)-&gt; Int
+public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -&gt; Int
+public func tableView(_ tableView: UITableView, cellForRow indexPath: IndexPath)-&gt; UITableViewCell
+public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -&gt; CGFloat
+</code></pre>
+
+<p>调试许久发现，返回高度的方法<strong>不属于</strong><code>UITableViewDataSouce</code>.<br/>
+问题的发生源于我的一个观念： DataSource通常是用于view在controller中获取所需数据、内容、view。 delegate是处理一些响应、监听的事件的。 但是从这次的问题来看，显然不是如此</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ObjectMapper学习]]></title>
@@ -182,13 +267,15 @@ basicType方法声明了一个泛型，约束输入的两个参数属性应该�
     <updated>2018-07-21T09:05:01+08:00</updated>
     <id>iginkgo.cn/15321351019730.html</id>
     <content type="html"><![CDATA[
+<span id="more"></span><!-- more -->
+
 <h2 id="toc_0">简介</h2>
 
 <blockquote>
 <p>Reflection: In computer science, reflection is the ability of a computer program to examine, introspect, and modify its own structure and behavior at runtime     --wikipedia</p>
 </blockquote>
 
-<span id="more"></span><!-- more -->
+<!-- more -->
 
 <p>在计算机科学中，反射指的是在计算机程序在运行时 检查，introspect， 修改自身结构以及行为的能力。</p>
 
@@ -524,6 +611,8 @@ extension Array: Purchaseable where Element: Purchaseable {
     <updated>2018-06-06T14:40:31+08:00</updated>
     <id>iginkgo.cn/15282672319466.html</id>
     <content type="html"><![CDATA[
+<!--more-->
+
 <h3 id="toc_0">问题1  使用 Leaks检查项目内存泄漏，崩溃的问题</h3>
 
 <p>问题描述</p>
@@ -552,19 +641,6 @@ extension Array: Purchaseable where Element: Purchaseable {
 <p>在这对关系中 const中的item1是UITableView，item2是superView<br/>
 由于tableView的位置需要通过 superView来进行确定。<br/>
 在最初添加约束时， <code>superView.addConstraints(...)</code></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[面试相关知识]]></title>
-    <link href="iginkgo.cn/15214499571066.html"/>
-    <updated>2018-03-19T16:59:17+08:00</updated>
-    <id>iginkgo.cn/15214499571066.html</id>
-    <content type="html"><![CDATA[
-<p><a href="https://github.com/CyC2018/Interview-Notebook">iOS面试知识</a></p>
-
-<p>fastlane 相关的一本书</p>
 
 ]]></content>
   </entry>

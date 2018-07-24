@@ -2,7 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
   <loc>iginkgo.cn/</loc>
-  <lastmod>2018-07-24T11:26:07+08:00</lastmod>
+  <lastmod>2018-07-24T20:09:41+08:00</lastmod>
+</url>
+
+<url>
+  <loc>iginkgo.cn/15324314483651.html</loc>
+  <lastmod>2018-07-24T19:24:08+08:00</lastmod>
 </url>
 
 <url>
@@ -28,11 +33,6 @@
 <url>
   <loc>iginkgo.cn/15282672319466.html</loc>
   <lastmod>2018-06-06T14:40:31+08:00</lastmod>
-</url>
-
-<url>
-  <loc>iginkgo.cn/15214499571066.html</loc>
-  <lastmod>2018-03-19T16:59:17+08:00</lastmod>
 </url>
 
 <url>
@@ -176,6 +176,10 @@
 
 <url>
   <loc>iginkgo.cn/%E8%AF%BB%E4%B9%A6.html</loc>
+</url>
+
+<url>
+  <loc>iginkgo.cn/codeDaily.html</loc>
 </url>
 
 

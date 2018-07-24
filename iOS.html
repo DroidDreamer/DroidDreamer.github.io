@@ -44,8 +44,6 @@
         
         <li id=""><a target="_self" href="archives.html">Archives</a></li>
         
-        <li id=""><a target="_self" href="http://iginkgo.cn">iginkgo</a></li>
-        
         </ul>
 
         <ul class="right" id="search-wrap">
@@ -85,6 +83,8 @@
             <li><a href="iOS.html">iOS</a></li>
         
             <li><a href="%E8%AF%BB%E4%B9%A6.html">读书</a></li>
+        
+            <li><a href="codeDaily.html">codeDaily</a></li>
          
 
       </ul>
@@ -149,13 +149,7 @@
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">简介</h2>
-
-<blockquote>
-<p>Reflection: In computer science, reflection is the ability of a computer program to examine, introspect, and modify its own structure and behavior at runtime     --wikipedia</p>
-</blockquote>
-
-
+                        	
                         
                       </div>
                   </div>
@@ -196,101 +190,6 @@
                   <div class="more-left left">
                    <a href="15282735197620.html">Read more</a>&nbsp;&nbsp; 
                     <span class="date">2018/6/6</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15282672319466.html">
-                
-                  <h1>踩坑记录</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h3 id="toc_0">问题1  使用 Leaks检查项目内存泄漏，崩溃的问题</h3>
-
-<p>问题描述</p>
-
-<p>进入Leaks模拟器或者真机app，进入30s左右就出现崩溃的现象，但是正常运行app没有问题</p>
-
-<p><a href="">参考资料</a><br/>
-最后找到解决方案：<br/>
-进入leaks之后，在开启任务前，<br/>
-通过操作<code>file</code> -&gt; <code>recordOptions</code> -&gt; <code>recordCount</code> 取消选择</p>
-
-<h3 id="toc_1">问题2 对于约束的判定</h3>
-
-<p>应用场景： 一个superview 加入 一个子view-UITableView。<br/>
-在后续需要找到tableView的顶部约束并改变其值，使之发生改变。</p>
-
-<pre><code>  self.view.constraints.foreach { (const) in
-    if const.firstAttribute == NSLayoutAttribute.top.
-        let view = const.firstItem as? UITableView,
-            view = self.tableView {
-            //TODO: 此处已识别，do sth
-            }
-  }
-</code></pre>
-
-<p>在这对关系中 const中的item1是UITableView，item2是superView<br/>
-由于tableView的位置需要通过 superView来进行确定。<br/>
-在最初添加约束时， <code>superView.addConstraints(...)</code></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/6/6</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15214499571066.html">
-                
-                  <h1>面试相关知识</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><a href="https://github.com/CyC2018/Interview-Notebook">iOS面试知识</a></p>
-
-<p>fastlane 相关的一本书</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/3/19</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
@@ -536,6 +435,88 @@ view实现的具体功能<br/>
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="%E8%B0%83%E8%AF%95.html">
+                
+                  <h1>iOS 调试技巧</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>调试技巧总结</p>
+
+<!--more-->
+
+<p>1 <code>command + 6</code> -&gt; new -&gt; Exception Breakpoint<br/>
+然后在 action选项中选择 <code>debuger command</code> 在对应的输入框里输入 <code>po $arg1</code></p>
+
+<p>效果：会在发生exception（崩溃）前进入断点并进行打印。 <br/>
+这在实际项目中数组越界的错误定位是非常有帮助和的。因为控制台打印的信息是堆栈信息，不能直接定位到这里。</p>
+
+<p>2  <code>command + 6</code> -&gt; new -&gt; Symbolic breakpoint<br/>
+在Symbol中输入 <code>UIViewAlertForUnsatisfiableConstraints</code><br/>
+系统运行时出现 对应Symbol时就会进行剥啄</p>
+
+<p>参考文章<br/>
+ <a href="http://www.cocoachina.com/ios/20150805/12842.html">http://www.cocoachina.com/ios/20150805/12842.html</a></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/3/13</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15209389898120.html">
+                
+                  <h1>iOS Animation</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>最近在梳理一下iOS动画相关方方面的知识，然后来分别进行一下整理和总结，梳理一下每种动画的特点以及常用使用场景。</p>
+
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                   <a href="15209389898120.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2018/3/13</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -595,6 +576,8 @@ view实现的具体功能<br/>
             <a href="iOS.html"><strong>iOS</strong></a>
         
             <a href="%E8%AF%BB%E4%B9%A6.html"><strong>读书</strong></a>
+        
+            <a href="codeDaily.html"><strong>codeDaily</strong></a>
          
         </p>
 
@@ -609,6 +592,12 @@ view实现的具体功能<br/>
                 <div class="side-content">
                 <ul class="posts-list">
 	      
+		      
+			      <li class="post">
+			        <a href="15324314483651.html">首页的优化记录</a>
+			      </li>
+		     
+		  
 		      
 			      <li class="post">
 			        <a href="15321858704283.html">ObjectMapper学习</a>
@@ -630,12 +619,6 @@ view实现的具体功能<br/>
 		      
 			      <li class="post">
 			        <a href="15282735197620.html">WWDC 2018 Swift 4.2 新特性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15282672319466.html">踩坑记录</a>
 			      </li>
 		     
 		  
