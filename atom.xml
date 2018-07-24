@@ -4,7 +4,7 @@
   <title><![CDATA[iginkgo在路上]]></title>
   <link href="iginkgo.cn/atom.xml" rel="self"/>
   <link href="iginkgo.cn/"/>
-  <updated>2018-07-24T10:17:03+08:00</updated>
+  <updated>2018-07-24T10:55:34+08:00</updated>
   <id>iginkgo.cn/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -187,6 +187,8 @@ basicType方法声明了一个泛型，约束输入的两个参数属性应该�
 <blockquote>
 <p>Reflection: In computer science, reflection is the ability of a computer program to examine, introspect, and modify its own structure and behavior at runtime     --wikipedia</p>
 </blockquote>
+
+<span id="more"></span><!-- more -->
 
 <p>在计算机科学中，反射指的是在计算机程序在运行时 检查，introspect， 修改自身结构以及行为的能力。</p>
 
