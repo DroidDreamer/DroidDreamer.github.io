@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  《被讨厌的勇气》 - iginkgo在路上
+  对于首页的优化 - iginkgo在路上
   
   </title>
   
@@ -107,14 +107,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>《被讨厌的勇气》</h1>
+          <h1>对于首页的优化</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2018/3/13</span>
+          <span class="date">2018/7/25</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='%E8%AF%BB%E4%B9%A6.html'>读书</a></span>
+              <span class="posted-in"><a href='iOS.html'>iOS</a></span>
            
          
           <span class="comments">
@@ -127,17 +127,97 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>中文名《被讨厌的勇气》</p>
+      <!-- 进行中 -->
 
-<span id="more"></span><!-- more -->
+<p>当前页面中存在的问题</p>
 
-<p>大约花了3天的时间，25-30个番茄时钟的时间细细读完了日本作家岸建一郎的书《被讨厌的勇气》, 刷了一遍自己的认知。<br/>
-<img src="https://img1.doubanio.com/lpic/s29237648.jpg" alt="被讨厌的勇气"/></p>
+<pre><code>switch model.style {
+case .news: 
+    let cell = tableView.dequeue(&quot;newsCell&quot;) //config
+    //...配置
+    return cell
+case .video:
+     let cell = tableView.dequeue(&quot;videosCell&quot;) //config
+    //...配置
+    return cell
+case .pic:
+     let cell = tableView.dequeue(&quot;picsCell&quot;) //config
+    //...配置
+    return cell
+case .beauty:
+     let cell = tableView.dequeue(&quot;beautyCell&quot;) //config
+    //...配置
+    return cell
+case .bigImage:
+     let cell = tableView.dequeue(&quot;bigImageCell&quot;) //config
+    //...配置
+    return cell
+default: ...
+}
+</code></pre>
 
-<p>全书大体是一个 “目的论”为核心的思想，提倡充分发挥自己的主观能动性、利他但是不以他人的期待为约束，不拘泥过去，不过度关注未来，活在当下。<br/>
-现做一下大体的总结，第一次阅读比较粗陋，今后还会继续修缮。</p>
+<p>实际页面涉及到的cell种类不止这些，并且在未来的开发过程中会随着app特性的增加而增长，因为每次需要维护和更新时对整个大的代码块进行修改就编程一个非常杂乱的过程，稍有不慎还会影响整体的逻辑。那这里我们需要利用协议的特性进行设计。<a href="https://xiaozhuanlan.com/topic/2537681490">相关参考</a></p>
 
-<p><img src="media/15209404638621/TheCourageToBeHated.png" alt="TheCourageToBeHated"/></p>
+<p>实际项目中定义了一个协议，用来表示整个的数据类型</p>
+
+<pre><code class="language-表示我们的基本类型以及转换后的类型">protocol ParseMessageType{
+    associatetype: Original
+    associatetype: ParseResult
+}
+</code></pre>
+
+<p>那<code>Original</code>-&gt;<code>ParseResult</code>的转换步骤通过一个 parser来完成， 叫做<code>MessageParser</code></p>
+
+<pre><code>protocol MessageParser {
+ 
+ associatetype: Message
+ associatetype: Target: ParaseMessageType where Message == Target.Original
+    func parse(messgae: Message)-&gt; Target.ParsedResult
+}
+
+</code></pre>
+
+<p>对于Target遵守 ParaseMessageType 的协议， 并且它的 original和message一致， 这就对parse方法的返回值进行了限定，编译过程中进行类型检查时会进行严格的类型匹配。</p>
+
+<p>在具体MessageType实现的过程中</p>
+
+<pre><code>final class ParsedChatMessage: ParsedMessageType {
+    let output: NSAttributedString
+    let original: ChatMessage
+    
+    init(message: ChatMessage){
+        original = messgae
+        let parser = Parser()
+        self.output = parser.parse(message: message)
+    }
+}
+
+struct Parser: MessageParser {
+    typealias Target = ParsedChatMessage
+    func parse(message: ChatMeaasge)-&gt; NSAttributeString {
+     let reuslt = ...
+     return .init(attributedString: result...)
+    }
+}
+
+
+</code></pre>
+
+<p>那么实际中的本地效果呢：</p>
+
+<p>FeedModel   IndexProtocol   cellViewModel1  cellViewModel2cellViewModel3</p>
+
+<p>在 feedModel，<br/>
+在feedModel中实现fakeModel<br/>
+FeedModel-&gt; IndexProtocol<br/>
+fakeModel-&gt; IndexProtocol<br/>
+TopicModel -&gt; IndexProtocol</p>
+
+<p>对应的不同的cell， </p>
+
+<p>此外，需要进一步实践的</p>
+
+<p><a href="http://xiaozhuanlan.com/topic/6104325798">delegate改进</a></p>
 
 
     
@@ -148,16 +228,16 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15209405889264.html" 
-          title="Previous Post: tools">&laquo; tools</a>
+          <a href="15325305399890.html" 
+          title="Previous Post: 最大值连续子序列">&laquo; 最大值连续子序列</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="15209404077015.html" 
-          title="Next Post: selfControl list">selfControl list &raquo;</a>
+          <a  href="15324314483651.html" 
+          title="Next Post: 首页的优化记录">首页的优化记录 &raquo;</a>
       
       </p>
         </div>

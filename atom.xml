@@ -4,13 +4,291 @@
   <title><![CDATA[iginkgo在路上]]></title>
   <link href="iginkgo.cn/atom.xml" rel="self"/>
   <link href="iginkgo.cn/"/>
-  <updated>2018-07-24T20:09:36+08:00</updated>
+  <updated>2018-07-26T00:10:51+08:00</updated>
   <id>iginkgo.cn/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[fastlane相关]]></title>
+    <link href="iginkgo.cn/15325341079693.html"/>
+    <updated>2018-07-25T23:55:07+08:00</updated>
+    <id>iginkgo.cn/15325341079693.html</id>
+    <content type="html"><![CDATA[
+<span id="more"></span><!-- more -->
+
+<p>具体的fastlane配置文件在 <code>项目/fastlane/</code>文件内 </p>
+
+<pre><code>Fastfile =&gt; 用来定义所有的lane任务
+Appfile =&gt; 是用来存储一些公共信息的，比如app_identifier，apple_id，team_id，itc_team_id等。
+Deliverfile =&gt; deliver的配置文件
+</code></pre>
+
+<h2 id="toc_0">fastlane安装</h2>
+
+<pre><code>xcode-select --install
+sudo gem install fastlane
+</code></pre>
+
+<p>其中在安装fastlane时一直出现问题， 按照fastlane在github上给出的说明， 安装了RVM之后，安装的问题得以解决。</p>
+
+<h2 id="toc_1">插件安装</h2>
+
+<pre><code>fastlane install_plugins // 安装插件
+</code></pre>
+
+<p>当前项目中分别安装了两个插件</p>
+
+<pre><code>fastlane add_plugin firim // 自动上传fir的插件
+fastlane add_plugin versioning
+</code></pre>
+
+<h2 id="toc_2">使用</h2>
+
+<p>在cocopods一下安装没有问题的情况下</p>
+
+<p><code>fastlane develop</code> 打包development环境并进行上传<br/>
+<code>fastlane adhoc</code>   打包adhoc环境并进行上传<br/>
+ 测试// 攻略中</p>
+
+<h2 id="toc_3">参考文档</h2>
+
+<ol>
+<li><a href="https://docs.fastlane.tools/">官方文档</a></li>
+<li><p><a href="https://dongjiawang.github.io/2017/09/13/2017-09-13-fastlane/">自动发布</a></p></li>
+<li><p><a href="https://zhuanlan.zhihu.com/p/23180455">https://zhuanlan.zhihu.com/p/23180455</a></p></li>
+<li><p>把所有的过程打包成一个可执行文件 <a href="https://www.jianshu.com/p/edcd8d9430f6">方法</a></p></li>
+<li><p><a href="http://www.devzhang.cn/2017/07/18/fastLane%E5%85%A5%E9%97%A8%E4%B9%8Bipa%E6%89%93%E5%8C%85/">没事看看</a></p></li>
+</ol>
+
+<h2 id="toc_4">额外配置</h2>
+
+<h3 id="toc_5">.gitignore</h3>
+
+<pre><code># fastlane specific
+fastlane/report.xml
+
+# deliver temporary files
+fastlane/Preview.html
+
+# snapshot generated screenshots
+fastlane/screenshots
+
+# scan temporary files
+fastlane/test_output
+</code></pre>
+
+<h3 id="toc_6">小感悟</h3>
+
+<p>在lane中执行 通常terminal的命令是不ok，<br/>
+需要使用 sh &quot;命令&quot;  执行才可以</p>
+
+<h2 id="toc_7">Fastfile配置文件</h2>
+
+<p><a href="https://github.com/DroidDreamer/codeDaily/blob/master/files/Fastfile">demo地址</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[最大值连续子序列]]></title>
+    <link href="iginkgo.cn/15325305399890.html"/>
+    <updated>2018-07-25T22:55:39+08:00</updated>
+    <id>iginkgo.cn/15325305399890.html</id>
+    <content type="html"><![CDATA[
+<span id="more"></span><!-- more -->
+
+<p>晚上在听得到的上吴军老师讲的《谷歌方法论的专栏》，题目叫做股票的最长增长期。其实也就是求的最大和的子序列方法。</p>
+
+<blockquote>
+<p>题目: 对于一个数组，数组内数值可正可负， 求其中和最大的子序列(不考虑空数组的情况)</p>
+</blockquote>
+
+<p>例如 [1,3,-2,-5,8,2,-3,6,-2]， 其和最大的子序列为 [8,2,-3,6].</p>
+
+<pre><code>//swift代码
+var list = [1,3,-2,-5,8,2,-3,6,-2]
+//
+</code></pre>
+
+<p>当然，直接拿到这个题目，除了常规上的上来就做之外，还要考虑一下题目是否完整，以及各种边界情况，<br/>
+比如<br/>
+1.子序列的和溢出的情况<br/>
+2.给出的数组为空的情况<br/>
+文章中的方法并不会对这些情况作出处理， 但是在自己实现的过程中，一定要考虑到这些可能性。</p>
+
+<h2 id="toc_0">专栏中的解法</h2>
+
+<p>专栏中讲到四种方法，分别实现一下。</p>
+
+<h3 id="toc_1">第一种，暴力遍历所有情况</h3>
+
+<h3 id="toc_2">第二种，优化一些的算法</h3>
+
+<h3 id="toc_3">第三种，分治算法</h3>
+
+<h3 id="toc_4">第四种</h3>
+
+<h2 id="toc_5">个人解法</h2>
+
+<p>首先构建一个新的数组sum[], 其中存储的每个元素sum[i] = a[0]+ a[1] +..a[i],<br/>
+也就是 sum[0] = a[0], sum[i] = sum[i-1] + a[i]</p>
+
+<pre><code>var sum: [Int] = []
+var count: Int = 0
+for i in (0..&lt;list.size) {
+  if i == 0 {
+   sum.append(a[0])
+   }else {
+     sum.append(sum[i-1] + a[i])
+   }
+  count += list[i]
+  sum.append(count)
+}
+
+</code></pre>
+
+<p>然后最大子序列的问题，也就变成了数组sum中，差最大的两个值的问题。<br/>
+若最大子序列为 a[left]... a[right], 则 sum[right]与sum[left-1]的差值也是最大的。</p>
+
+<p>因此需要求sum数组中差值最大的情况。当然，要求下标 right &gt; left</p>
+
+<pre><code>var minValue: Int = Int.max
+var minValueIndex: Int = 0
+
+var max: Int = Int.min
+var left: Int = 0
+var right: Int = 0
+
+sum.enmurated.foreach{ (index, value) in
+   if minValue &gt; value {
+    minValue = value
+    minValueIndex = index
+   }
+   
+   let separatedValue = value - minValue
+    if separatedValue  &gt; max {
+        max = separatedValue
+        right = index
+        if left != minValueIndex {
+          left = minValueIndex
+        }
+   }
+}
+
+//最终， sum[left...right] 会是其结果，其子序列的和为max
+
+
+
+
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[对于首页的优化]]></title>
+    <link href="iginkgo.cn/15324828408733.html"/>
+    <updated>2018-07-25T09:40:40+08:00</updated>
+    <id>iginkgo.cn/15324828408733.html</id>
+    <content type="html"><![CDATA[
+<!-- 进行中 -->
+
+<p>当前页面中存在的问题</p>
+
+<pre><code>switch model.style {
+case .news: 
+    let cell = tableView.dequeue(&quot;newsCell&quot;) //config
+    //...配置
+    return cell
+case .video:
+     let cell = tableView.dequeue(&quot;videosCell&quot;) //config
+    //...配置
+    return cell
+case .pic:
+     let cell = tableView.dequeue(&quot;picsCell&quot;) //config
+    //...配置
+    return cell
+case .beauty:
+     let cell = tableView.dequeue(&quot;beautyCell&quot;) //config
+    //...配置
+    return cell
+case .bigImage:
+     let cell = tableView.dequeue(&quot;bigImageCell&quot;) //config
+    //...配置
+    return cell
+default: ...
+}
+</code></pre>
+
+<p>实际页面涉及到的cell种类不止这些，并且在未来的开发过程中会随着app特性的增加而增长，因为每次需要维护和更新时对整个大的代码块进行修改就编程一个非常杂乱的过程，稍有不慎还会影响整体的逻辑。那这里我们需要利用协议的特性进行设计。<a href="https://xiaozhuanlan.com/topic/2537681490">相关参考</a></p>
+
+<p>实际项目中定义了一个协议，用来表示整个的数据类型</p>
+
+<pre><code class="language-表示我们的基本类型以及转换后的类型">protocol ParseMessageType{
+    associatetype: Original
+    associatetype: ParseResult
+}
+</code></pre>
+
+<p>那<code>Original</code>-&gt;<code>ParseResult</code>的转换步骤通过一个 parser来完成， 叫做<code>MessageParser</code></p>
+
+<pre><code>protocol MessageParser {
+ 
+ associatetype: Message
+ associatetype: Target: ParaseMessageType where Message == Target.Original
+    func parse(messgae: Message)-&gt; Target.ParsedResult
+}
+
+</code></pre>
+
+<p>对于Target遵守 ParaseMessageType 的协议， 并且它的 original和message一致， 这就对parse方法的返回值进行了限定，编译过程中进行类型检查时会进行严格的类型匹配。</p>
+
+<p>在具体MessageType实现的过程中</p>
+
+<pre><code>final class ParsedChatMessage: ParsedMessageType {
+    let output: NSAttributedString
+    let original: ChatMessage
+    
+    init(message: ChatMessage){
+        original = messgae
+        let parser = Parser()
+        self.output = parser.parse(message: message)
+    }
+}
+
+struct Parser: MessageParser {
+    typealias Target = ParsedChatMessage
+    func parse(message: ChatMeaasge)-&gt; NSAttributeString {
+     let reuslt = ...
+     return .init(attributedString: result...)
+    }
+}
+
+
+</code></pre>
+
+<p>那么实际中的本地效果呢：</p>
+
+<p>FeedModel   IndexProtocol   cellViewModel1  cellViewModel2cellViewModel3</p>
+
+<p>在 feedModel，<br/>
+在feedModel中实现fakeModel<br/>
+FeedModel-&gt; IndexProtocol<br/>
+fakeModel-&gt; IndexProtocol<br/>
+TopicModel -&gt; IndexProtocol</p>
+
+<p>对应的不同的cell， </p>
+
+<p>此外，需要进一步实践的</p>
+
+<p><a href="http://xiaozhuanlan.com/topic/6104325798">delegate改进</a></p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[首页的优化记录]]></title>
@@ -2176,471 +2454,6 @@ defaults write com.apple.finder AppleShowAllFiles -bool true
 //关闭
 defaults write com.apple.finder AppleShowAllFiles -bool false
 </code></pre>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS 中的MVVM]]></title>
-    <link href="iginkgo.cn/15209393092903.html"/>
-    <updated>2018-03-13T19:08:29+08:00</updated>
-    <id>iginkgo.cn/15209393092903.html</id>
-    <content type="html"><![CDATA[
-<!--more-->
-
-<ul>
-<li>
-<a href="#toc_0">介绍</a>
-</li>
-<li>
-<a href="#toc_1">功能</a>
-</li>
-<li>
-<a href="#toc_2">注意事项</a>
-</li>
-</ul>
-
-
-<h2 id="toc_0">介绍</h2>
-
-<p>MVVM现在也算是移动端比较火热的一种设计模式了。其全称是model、view、viewModel</p>
-
-<p>与MVC相比，只有 viewModel 以及 viewControl的区别。<br/>
-viewModel： 专门用于处理view的数据功能。不涉及任何的图形关系。</p>
-
-<pre><code>**此处插入关系图**
-</code></pre>
-
-<p>而mvc中的 controller则是处于 model与view之间，作为二者之间的逻辑层。接收一方的信息，然后逻辑处理以后影响另外一方。</p>
-
-<p>许多MVC模式的实现也都使用一个View Model 或 Application Model的概念。 Controller是沟通的媒介，架起领域模型和用户界面之间的桥梁。属于表现层。为了View的简单性，controller负责处理或者将领域模型转换为一个View model，这通常叫做数据传输对象（DTO）</p>
-
-<h2 id="toc_1">功能</h2>
-
-<p>MVVM中，<br/>
-model 是数据源<br/>
-view  作为需要在界面上显示的动画<br/>
-viewModel 则需要实现view显示所需要的数据支撑。当然，最基础的来源是model。</p>
-
-<p>具体来说，<br/>
-view实现的具体功能<br/>
-1. 根据数据控制自身view的转换<br/>
-2. 接收用户通过界面操作传递的数据</p>
-
-<p>viewModel的主要功能<br/>
-1. 为view的实现、界面变化、动画效果提供数据支撑<br/>
-2. 处理view接收到的用户进行的交互操作（手势、传感器、网络请求等）、并进行处理和转换</p>
-
-<p>总结来说，viewModel更像是 针对view进行的 数据处理的终端。<br/>
-与其他模式相比，MVVM一个很大的优点就是 逻辑层与UI层进行了分离，非常易于测试（Testable）</p>
-
-<h2 id="toc_2">注意事项</h2>
-
-<p>viewModel中<br/>
-* 不可持有viewController<br/>
-* 不可import UIKit<br/>
-* 不可持有UIKit下的任何东西<br/>
-* 只应是数据</p>
-
-<p>tips：简单版本的mvvm，凡是通过viewModel中数据改变引起UI改变的，需要进行3步处理。<br/>
-1.在viewModel中进行相关callBack或closure的声明<br/>
-2.在viewModel中数据发生变化后，主动触发定义的callBack<br/>
-3.在view中，由于持有viewModel，对viewModel的callBack进行赋值。相当于数据改变后UI变化的逻辑</p>
-
-<p>在实际使用RxSwift的情况下，由于其本身实现了监听值变化后的主动触发的功能（相当于上方的第二部分），因而只需进行如下步骤<br/>
-1.viewModel中定义RxSwift可以监听的值<br/>
-2.在view/viewController 中对该值进行监听，设置触发后的变化逻辑。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS 事件传递及响应机制]]></title>
-    <link href="iginkgo.cn/15209391761900.html"/>
-    <updated>2018-03-13T19:06:16+08:00</updated>
-    <id>iginkgo.cn/15209391761900.html</id>
-    <content type="html"><![CDATA[
-<span id="more"></span><!-- more -->
-
-<ul>
-<li>
-<a href="#toc_0">简介</a>
-</li>
-<li>
-<a href="#toc_1">事件的处理</a>
-<ul>
-<li>
-<a href="#toc_2">UIView的拖拽</a>
-</li>
-<li>
-<a href="#toc_3">示例</a>
-</li>
-<li>
-<a href="#toc_4">UITouch的作用</a>
-</li>
-<li>
-<a href="#toc_5">UITouch关键属性</a>
-</li>
-<li>
-<a href="#toc_6">UITouch关键方法</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_7">iOS事件的产生与传递</a>
-<ul>
-<li>
-<a href="#toc_8">产生</a>
-</li>
-<li>
-<a href="#toc_9">传递</a>
-<ul>
-<li>
-<a href="#toc_10">寻找合适的视图</a>
-</li>
-<li>
-<a href="#toc_11">UIView不能接受触摸事件的三种情况</a>
-</li>
-<li>
-<a href="#toc_12">寻找合适视图的底层剖析</a>
-<ul>
-<li>
-<a href="#toc_13">拦截事件的处理</a>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_14">事件的响应过程</a>
-</li>
-<li>
-<a href="#toc_15">事件处理的整个过程</a>
-</li>
-</ul>
-
-
-<ul>
-<li> 触摸事件</li>
-<li> 加速计事件</li>
-<li> 远程控制事件</li>
-</ul>
-
-<h2 id="toc_0">简介</h2>
-
-<p>响应者对象 <code>UIResponder</code><br/>
- 其继承体系下才能接受并处理事件。<br/>
- 主要包括</p>
-
-<ul>
-<li> UIApplication</li>
-<li> UIViewController</li>
-<li><p>UIView</p>
-
-<p>原因： <code>UIResponder</code>提供了触摸事件的相应处理方法</p>
-
-<pre><code>func touchesBegan(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
-
-func touchesMoved(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
-
-func touchesEnded(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
-func touchesCancelled(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
-
-</code></pre></li>
-</ul>
-
-<h2 id="toc_1">事件的处理</h2>
-
-<p>对于<code>UIResponder</code>的子类<code>UIView</code>而言</p>
-
-<pre><code> //一根或多根手指开始触摸view，系统自动调用下面方法
- func touchesBegan(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
- 
- //一根或多跟手指在view上移动，系统会自动调用view的下面方法（随着手指的移动会持续调用）
- func touchesMoved(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
- 
- //一根或多根手指离开view，系统会调用view的下面方法
- func touchesEnded(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
- 
- //触摸结束前，某个系统事件（比如电话）会打断触摸过程，系统自动调用下面方法。
- func touchesCancelled(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)
- 
-</code></pre>
-
-<p>注意：上面的方法是系统自动调用的。所以可以通过重写方法来处理一些事件。</p>
-
-<p>如果两个手指同时触摸一个view，只会调用一次<code>touchesBegan</code>方法，touches参数中有2个<br/>
- 后台机制UITouch的对象<br/>
- 如果这两个手指一前一后分别触摸同一个view，那么这个view会分别调用两次<code>touchesBegan</code>方法，每次touches参数只包含一个UITouch对象。<br/>
- 如果是处理UIView的子类触摸事件，必须要继承UIView，然后在子类中重写上面四个方法。<br/>
- 如果是处理UIViewController，那么直接在控制器的.m文件中进行重写。</p>
-
-<h3 id="toc_2">UIView的拖拽</h3>
-
-<p>重写<code>func touchesMoved(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)</code>方法。<br/>
-下面简单介绍一下<code>UITouch</code>的属性和方法。</p>
-
-<pre><code>NS_CLASS_AVAILABLE_IOS(2_0) @interface UITouch : NSObject
-
-@property(nonatomic,readonly) NSTimeInterval      timestamp;
-@property(nonatomic,readonly) UITouchPhase        phase;
-@property(nonatomic,readonly) NSUInteger          tapCount;   // touch down within a certain point within a certain amount of time
-
-// majorRadius and majorRadiusTolerance are in points
-// The majorRadius will be accurate +/- the majorRadiusTolerance
-@property(nonatomic,readonly) CGFloat majorRadius NS_AVAILABLE_IOS(8_0);
-@property(nonatomic,readonly) CGFloat majorRadiusTolerance NS_AVAILABLE_IOS(8_0);
-
-@property(nullable,nonatomic,readonly,strong) UIWindow                        *window;
-@property(nullable,nonatomic,readonly,strong) UIView                          *view;
-@property(nullable,nonatomic,readonly,copy)   NSArray &lt;UIGestureRecognizer *&gt; *gestureRecognizers NS_AVAILABLE_IOS(3_2);
-
-- (CGPoint)locationInView:(nullable UIView *)view;
-- (CGPoint)previousLocationInView:(nullable UIView *)view;
-
-// Force of the touch, where 1.0 represents the force of an average touch
-@property(nonatomic,readonly) CGFloat force NS_AVAILABLE_IOS(9_0);
-// Maximum possible force with this input mechanism
-@property(nonatomic,readonly) CGFloat maximumPossibleForce NS_AVAILABLE_IOS(9_0);
-
-</code></pre>
-
-<h3 id="toc_3">示例</h3>
-
-<ul>
-<li>当用户的一根手指接触屏幕时，会出现一个与手指相关的的UITouch对象。</li>
-<li>一根手指对应一个UITouch对象</li>
-<li>如果两个手指同时触摸屏幕，只会触发一次<code>func touchesBegan(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)</code>,参数touches存放两个UITouch对象</li>
-<li>如果一前一后触摸屏幕，则会触发两次<code>func touchesBegan(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?)</code>方法，每次调用的参数只会包含一个UITouch对象。</li>
-</ul>
-
-<h3 id="toc_4">UITouch的作用</h3>
-
-<ul>
-<li>保存与手指相关的信息，比如触摸的时间、位置、阶段等等</li>
-<li>当同一个手指移动时，系统会同步更新对应的UITouch，使之能够一直保存该手指在触摸的位置</li>
-<li>当手指离开屏幕时，会销毁相应的UITouch</li>
-</ul>
-
-<h3 id="toc_5">UITouch关键属性</h3>
-
-<pre><code>//触摸产生时所处的窗口
-@property(nonatomic,readonly,retain) UIWindow *window;
-
-//触摸产生时所处的视图
-@property(nonatomic,readonly,retain) UIView *view;
-
-//短时间内点按屏幕的次数，可以根据tapCount判断单击、双击或更多的点击
-@property(nonatomic,readonly) NSUInteger tapCount;
-
-//记录了触摸事件产生或变化时的时间，单位是秒@property(nonatomic,readonly) NSTimeInterval timestamp;
-
-//当前触摸事件所处的状态  TODO:看一下具体的类型是什么
-@property(nonatomic,readonly) UITouchPhase phase;
-</code></pre>
-
-<h3 id="toc_6">UITouch关键方法</h3>
-
-<pre><code>(CGPoint)locationInView:(UIView *)view;
-// 返回值表示触摸在view上的位置
-// 这里返回的位置是针对view的坐标系的（以view的左上角为原点(0, 0)）
-// 调用时传入的view参数为nil的话，返回的是触摸点在UIWindow的位置
-
-(CGPoint)previousLocationInView:(UIView *)view;
-// 该方法记录了前一个触摸点的位置
-
-</code></pre>
-
-<p>实现：</p>
-
-<pre><code>- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event{ 
-    // 想让控件随着手指移动而移动,监听手指移动 
-    // 获取UITouch对象 
-    UITouch *touch = [touches anyObject]; 
-    // 获取当前点的位置 
-    CGPoint curP = [touch locationInView:self]; 
-    // 获取上一个点的位置 
-    CGPoint preP = [touch previousLocationInView:self]; 
-    // 获取它们x轴的偏移量,每次都是相对上一次 
-    CGFloat offsetX = curP.x - preP.x; 
-    // 获取y轴的偏移量 
-    CGFloat offsetY = curP.y - preP.y; 
-    // 修改控件的形变或者frame,center,就可以控制控件的位置 
-    // 形变也是相对上一次形变(平移) 
-    // CGAffineTransformMakeTranslation:会把之前形变给清空,重新开始设置形变参数 
-    // make:相对于最原始的位置形变 
-    // CGAffineTransform t:相对这个t的形变的基础上再去形变 
-    // 如果相对哪个形变再次形变,就传入它的形变 
-    self.transform = CGAffineTransformTranslate(self.transform, offsetX, offsetY);}
-</code></pre>
-
-<h2 id="toc_7">iOS事件的产生与传递</h2>
-
-<h3 id="toc_8">产生</h3>
-
-<p>发生触摸事件后，事件存入由application管理的事件队列中（先进先出的原则）<br/>
-|<br/>
-application从事件队列中取出最前面的事件，并分发下去处理。通常现发给应用程序的主窗口<strong>keywindow</strong><br/>
-|<br/>
-主窗口会在视图层次结构中找到一个最合适的视图来处理事件。<strong>关键</strong><br/>
-|<br/>
-找到合适的控件后，会调用视图控件的touches方法来做具体事件处理。</p>
-
-<h3 id="toc_9">传递</h3>
-
-<p>传递的原则<br/>
-1. 从父控件传递到子控件<br/>
-2. UIApplication -&gt; keyWindow -&gt; 寻找最合适的view</p>
-
-<p>注意：如果父控件不能接受消息，那么子控件肯定也不能接收。</p>
-
-<h4 id="toc_10">寻找合适的视图</h4>
-
-<p>1.判断主窗口keywindow是否接收触摸事件<br/>
-2.判断触摸点是否在自己身上<br/>
-3.子控件数组中从后向前遍历子控件，重复步骤1，2<br/>
-4.找到合适的view后把事件传递给该view，然后对其子view继续进行遍历，直到找不到为止。<br/>
-5.若没有合适的子控件，那么自身控件就是最适合处理事件的控件（View）</p>
-
-<h4 id="toc_11">UIView不能接受触摸事件的三种情况</h4>
-
-<p>不允许交互： userInteractionEnable = NO<br/>
-隐藏： 如果父控件隐藏，子控件也会隐藏。因而不会接受事件<br/>
-透明度： 如果设置一个控件的透明度&lt;0.01，会直接影响子控件的透明度。alpha：0.0~0.01为透明。</p>
-
-<h4 id="toc_12">寻找合适视图的底层剖析</h4>
-
-<pre><code>hitTest:withEvent
-pointInside
-</code></pre>
-
-<p>对于第一个方法<code>hitTest:withEvent</code>,<br/>
-调用时间：事件被分配给view之后<br/>
-作用：查找并返回合适的view</p>
-
-<p><strong>注 意：</strong>不管这个控件能不能处理事件，也不管触摸点在不在这个控件上，事件都会先传递给这个控件，随后再调用hitTest:withEvent:方法</p>
-
-<h5 id="toc_13">拦截事件的处理</h5>
-
-<ul>
-<li>正因为hitTest：withEvent：方法可以返回最合适的view，所以可以通过重写hitTest：withEvent：方法，返回指定的view作为最合适的view。</li>
-<li>不管点击哪里，最合适的view都是hitTest：withEvent：方法中返回的那个view。</li>
-<li>通过重写hitTest：withEvent：，就可以拦截事件的传递过程，想让谁处理事件谁就处理事件。</li>
-</ul>
-
-<pre><code>//hitTest方法的具体实现
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
-    // 1.判断下窗口能否接收事件
-     if (self.userInteractionEnabled == NO || self.hidden == YES ||  self.alpha &lt;= 0.01) return nil; 
-    // 2.判断下点在不在窗口上 
-    // 不在窗口上 
-    if ([self pointInside:point withEvent:event] == NO) return nil; 
-    // 3.从后往前遍历子控件数组 
-    int count = (int)self.subviews.count; 
-    for (int i = count - 1; i &gt;= 0; i--)     { 
-    // 获取子控件
-    UIView *childView = self.subviews[i]; 
-    // 坐标系的转换,把窗口上的点转换为子控件上的点 
-    // 把自己控件上的点转换成子控件上的点 
-    CGPoint childP = [self convertPoint:point toView:childView]; 
-    UIView *fitView = [childView hitTest:childP withEvent:event]; 
-    if (fitView) {
-    // 如果能找到最合适的view 
-    return fitView; 
-    }
-    } 
-    // 4.没有找到更合适的view，也就是没有比自己更合适的view 
-    return self;
-    }
-
-</code></pre>
-
-<p>需要稍微研究下的方法</p>
-
-<pre><code>[view convertPoint: point toView: view]//将某点坐标从自身坐标系转换为 另外一个view
-</code></pre>
-
-<pre><code>pointInside:withEvent:方法判断点在不在方法调用者的坐标系上。
-</code></pre>
-
-<h2 id="toc_14">事件的响应过程</h2>
-
-<p>触摸事件处理的整个过程<br/>
-1.找到合适的视图控件来处理事件<br/>
-2.找到合适的的控件后，调用touchbegan touchmove  touchEnd来处理具体事件<br/>
-3.touch方法的默认方法是将事件顺着响应链向上传递，将事件交给上一个响应者进行处理。</p>
-
-<p>响应者链条：在iOS程序中无论是最后面的UIWindow还是最前面的某个按钮，它们的摆放是有前后关系的，一个控件可以放到另一个控件上面或下面，那么用户点击某个控件时是触发上面的控件还是下面的控件呢，这种先后关系构成一个链条就叫“响应者链”</p>
-
-<p><img src="media/15209391761900/1121.png" alt="1121"/></p>
-
-<p>其中左侧为viewController不包含controller嵌套的。<br/>
-右侧为viewController包含controller符合嵌套的。</p>
-
-<p>响应者对象：能处理事件的对象，也就是继承自UIResponder的对象<br/>
-作用：能很清楚的看见每个响应者之间的联系，并且可以让一个事件多个对象处理。</p>
-
-<p>判断上一个响应者：<br/>
-如果当前view是控制器的view，那么上一个响应者就是控制器<br/>
-如果当前view不是控制器的view，那么上一个控制器就是其父控件</p>
-
-<p>响应者链条的事件传递：<br/>
-1.如果可以，传递给上一个响应者<br/>
-2.在视图层次的最顶级视图，如果不能处理事件，则传递给window对象处理<br/>
-3.window对象不能处理，传递给application处理<br/>
-4.若UIApplication也不能处理，则丢弃。</p>
-
-<h2 id="toc_15">事件处理的整个过程</h2>
-
-<p>1.屏幕产生触摸事件，加入application的事件队列<br/>
-2.application取出队列最前端的事件，把事件传递给主窗口keywindow<br/>
-3.主窗口在层次结构中找到最适合的一个视图View来处理事件<br/>
-4.最适合的view处理事件（默认会不断向上抛）</p>
-
-<pre><code>#import &quot;WSView.h&quot;
-@implementation WSView 
-//只要点击控件,就会调用touchBegin,如果没有重写这个方法,自己处理不了触摸事件
-// 上一个响应者可能是父控件
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{ 
-// 默认会把事件传递给上一个响应者,上一个响应者是父控件,交给父控件处理
-[super touchesBegan:touches withEvent:event]; 
-// 注意不是调用父控件的touches方法，而是调用父类的touches方法
-// super是父类 superview是父控件 
-}
-@end
-</code></pre>
-
-<p><code>注意：事件的响应中，如果某个控件实现了touches...方法，则这个事件将由该控件来接受，如果调用了[supertouches….];就会将事件顺着响应者链条往上传递，传递给上一个响应者；接着就会调用上一个响应者的touches….方法</code></p>
-
-<p><a href="http://www.jianshu.com/p/2e074db792ba">消息/事件传递 机制  参考</a></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS 调试技巧]]></title>
-    <link href="iginkgo.cn/%E8%B0%83%E8%AF%95.html"/>
-    <updated>2018-03-13T19:04:31+08:00</updated>
-    <id>iginkgo.cn/%E8%B0%83%E8%AF%95.html</id>
-    <content type="html"><![CDATA[
-<p>调试技巧总结</p>
-
-<!--more-->
-
-<p>1 <code>command + 6</code> -&gt; new -&gt; Exception Breakpoint<br/>
-然后在 action选项中选择 <code>debuger command</code> 在对应的输入框里输入 <code>po $arg1</code></p>
-
-<p>效果：会在发生exception（崩溃）前进入断点并进行打印。 <br/>
-这在实际项目中数组越界的错误定位是非常有帮助和的。因为控制台打印的信息是堆栈信息，不能直接定位到这里。</p>
-
-<p>2  <code>command + 6</code> -&gt; new -&gt; Symbolic breakpoint<br/>
-在Symbol中输入 <code>UIViewAlertForUnsatisfiableConstraints</code><br/>
-系统运行时出现 对应Symbol时就会进行剥啄</p>
-
-<p>参考文章<br/>
- <a href="http://www.cocoachina.com/ios/20150805/12842.html">http://www.cocoachina.com/ios/20150805/12842.html</a></p>
 
 ]]></content>
   </entry>
