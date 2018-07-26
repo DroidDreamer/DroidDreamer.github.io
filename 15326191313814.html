@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Macros_2 - iginkgo在路上
+  autoRelease Pool 总结 - iginkgo在路上
   
   </title>
   
@@ -107,12 +107,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Macros_2</h1>
+          <h1>autoRelease Pool 总结</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2018/3/13</span>
+          <span class="date">2018/7/26</span>
 
+          <span>posted in&nbsp;</span> 
           
+              <span class="posted-in"><a href='iOS.html'>iOS</a></span>
            
          
           <span class="comments">
@@ -127,21 +129,145 @@
       <div class="article-content">
       <span id="more"></span><!-- more -->
 
-<p>宏的展开顺序</p>
+<ul>
+<li>
+<a href="#toc_0">基本知识点</a>
+</li>
+<li>
+<a href="#toc_1">使用方式</a>
+</li>
+<li>
+<a href="#toc_2">原理</a>
+</li>
+<li>
+<a href="#toc_3">使用场景</a>
+</li>
+<li>
+<a href="#toc_4">疑问</a>
+</li>
+<li>
+<a href="#toc_5">参考文章</a>
+</li>
+</ul>
 
-<p>遇到宏名后(1)<br/><br/>
-检查对应的宏体中是否含有#和##运算符<br/>
-无——处理宏参数（实参）<br/>
-    遇到宏名，回到(1)<br/>
-    没有遇到，在宏体中用实参字符串替换形式参数，再检查是否遇到宏名(4)<br/>
- ...<br/>
-有——不检查宏参数，在宏体中用实参字符串替换形式参数，再检查是否含有宏名(3)<br/>
-    遇到宏名，回到(1)<br/>
-    没有遇到，结束(5)</p>
 
-<h2 id="toc_0">短路表达式</h2>
+<p>主要iOS的研发生涯是使用Swift作为主力语言进行实现的,在项目中也基本没有遇到手动使用autorelease的情况。但是因为这是iOS相关的底层一点的知识，因此书写此文章，作为学习的记录。如果文中有疏漏和错误，也欢迎大家指正。</p>
 
-<p><a href="http://blog.163.com/m13591120447_1/blog/static/21637918920137811837285/">参考资料</a></p>
+<h2 id="toc_0">基本知识点</h2>
+
+<blockquote>
+<p>Each NSThread object, including the application’s main thread, has an NSRunLoop object automatically created for it as needed.</p>
+</blockquote>
+
+<p>我们可以知道每一个线程，包括主线程，都会拥有一个专属的 NSRunLoop 对象，并且会在有需要的时候自动创建</p>
+
+<blockquote>
+<p>The Application Kit creates an autorelease pool on the main thread at the beginning of every cycle of the event loop, and drains it at the end, thereby releasing any autoreleased objects generated while processing an event.</p>
+</blockquote>
+
+<p>在主线程的 NSRunLoop 的每个 event loop 开始前，系统会自动创建一个 自动释放池 ，并在 event loop 结束时 drain掉 当前的自动释放池，因而在处理完时间之后，会对池中的对象进行释放操作</p>
+
+<blockquote>
+<p>Each thread (including the main thread) maintains its own stack of NSAutoreleasePool objects.</p>
+</blockquote>
+
+<p>每个线程都会维护自己的 自动释放池的栈</p>
+
+<p>同一个对象可以多次加入自动释放池</p>
+
+<p>在自动释放池要销毁时，会向池内的所有对象发送release消息</p>
+
+<h2 id="toc_1">使用方式</h2>
+
+<ol>
+<li>在MRC的模式下，需要手动创建一个自动释放池。
+对于需要加入池中进行管理的对象，调用 <code>[obj autorelease]</code></li>
+<li><p>在ARC的模式下</p>
+
+<pre><code>//OC 代码
+@autorelease{   
+  //code
+}
+</code></pre>
+
+<pre><code>//swift 代码
+
+autorelease {
+   //code
+}
+
+</code></pre></li>
+</ol>
+
+<h2 id="toc_2">原理</h2>
+
+<p>每一个线程都会持有一个管理自动释放池的栈，对于该线程中每一个新创建的自动释放池，都会自动加入到栈顶。</p>
+
+<p>对于OC中的代码</p>
+
+<pre><code>@autorelease {
+//代码
+}
+</code></pre>
+
+<p>在经过编译器进行处理后，会转换成以下的代码：</p>
+
+<pre><code>void *context = objc_autoreleasePoolPush();
+// {}中的代码
+objc_autoreleasePoolPop(context);
+//context 指的是哨兵
+</code></pre>
+
+<p>实际autoreleasepool的创建之后调用了 AutoreleasePoolPage的方发</p>
+
+<p>我们来看一下<code>AutoReleasePoolPage</code>这个C++实现的代码底做了些什么</p>
+
+<p>AutoreleasePoolPage 是一个4k大小的空间，其基本结构是</p>
+
+<pre><code>//AutoreleasePoolPage
+magic_t const magic; //用于校验AutoreleasePoolPage的结构是否完整
+id *next; //指向最新添加的autoreleased对象的下一个位置，初始化时指向begin()
+pthread_t const thread;  //指向当前指针
+AutoreleasePoolPage *const parent; //指向父节点 因此 第一个节点的parent 值为nil
+AutoreleasePoolPage *child //指向子节点，最后一个节点的child 值为nil
+uint32_t const depth; // 表示深度，从0开始，往后递增1
+unit32_t hiwat;
+</code></pre>
+
+<p>从上方<code>AutoreleasePoolPage</code>的结构代码可以看出，它同时拥有指向父节点和子节点的指针，也就是说它可以用于组成双向链表。<br/>
+而在应用中，<code>AutoreleasePoolPage</code>它4K大小的空间除了保存上面的变量之外，其余的控件都用于保存autorelease的对象指针。当<code>next==begin()</code>时，表示AutoreleasePoolPage为空；当<code>next==end()</code>时，表示AutoreleasePoolPage当前已满，需要添加一个新的AutoreleasePoolPage。并将已满的AutoreleasePoolPage.child指针指向新的page。这样就实现了自动开辟空间来存储autorelease的对象。</p>
+
+<p>当创建一个新的autorelease Pool时，管理autorelease Pool的栈在栈顶添加了新的autorelease Pool时，对应的当前AutorelesePoolPage中的next指向的位置会添加一个哨兵，用于标识此处添加的Autorelease pool。next指针后移， 池中新的autorelease的对象会一次存放在next指针指向的地方。</p>
+
+<p>当需要销毁一个autorelease Pool时，会在AutorelesePoolPage寻找到对应的哨兵的位置，对其向后的所有对象以及以后的AutorelesePoolPage都会执行release操作。</p>
+
+<p>从本质上来说，通过对AutorelesePoolPage的操作，完成了线程中autorelease pool对于添加到池中对象的管理。</p>
+
+<p>并且上面提到的，每个线程中都有一个栈，用于管理autorelease pool，我认为这也是通过 AutorelesePoolPage的双向链表实现的。</p>
+
+<h2 id="toc_3">使用场景</h2>
+
+<ul>
+<li>你编写是命令行工具的代码，而不是基于 UI 框架的代码</li>
+<li>你需要写一个循环，里面会创建很多临时的对象</li>
+<li>这时候你可以在循环内部的代码块里使用一个 @autoreleasepool {}，这样这些对象就能在一次迭代完成后被释放掉。这种方式可以降低内存最大占用</li>
+<li>当你大量使用辅助线程</li>
+<li>你需要在线程的任务代码中创建自己的 @autoreleasepool {}</li>
+</ul>
+
+<h2 id="toc_4">疑问</h2>
+
+<p><a href="https://www.jianshu.com/p/5559bc15490d">文章</a>有一段描述</p>
+
+<blockquote>
+<p>MRC下需要对象调用autorelease才会入池, ARC下可以通过__autoreleasing修饰符, 否则的话看方法名, 非alloc/new/copy/mutableCopy开头的方法编译器都会自动帮我们调用autorelease方法.</p>
+</blockquote>
+
+<h2 id="toc_5">参考文章</h2>
+
+<p>1.<a href="https://blog.sunnyxx.com/2014/10/15/behind-autorelease/">Sunny的这篇文章讲的很详细</a><br/>
+2.<a href="https://blog.ibireme.com/2015/05/18/runloop/">https://blog.ibireme.com/2015/05/18/runloop/</a><br/>
+3.<a href="https://imtangqi.com/2016/04/15/autorelease-pool-in-ios/">https://imtangqi.com/2016/04/15/autorelease-pool-in-ios/</a></p>
 
 
     
@@ -152,16 +278,13 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15209404077015.html" 
-          title="Previous Post: selfControl list">&laquo; selfControl list</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="15209402816526.html" 
-          title="Next Post: Macros_1">Macros_1 &raquo;</a>
+          <a  href="15325341079693.html" 
+          title="Next Post: fastlane相关">fastlane相关 &raquo;</a>
       
       </p>
         </div>

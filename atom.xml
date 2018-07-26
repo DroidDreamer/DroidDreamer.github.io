@@ -4,13 +4,164 @@
   <title><![CDATA[iginkgo在路上]]></title>
   <link href="iginkgo.cn/atom.xml" rel="self"/>
   <link href="iginkgo.cn/"/>
-  <updated>2018-07-26T00:11:49+08:00</updated>
+  <updated>2018-07-26T11:11:36+08:00</updated>
   <id>iginkgo.cn/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[autoRelease Pool 总结]]></title>
+    <link href="iginkgo.cn/15326191313814.html"/>
+    <updated>2018-07-26T23:32:11+08:00</updated>
+    <id>iginkgo.cn/15326191313814.html</id>
+    <content type="html"><![CDATA[
+<span id="more"></span><!-- more -->
+
+<ul>
+<li>
+<a href="#toc_0">基本知识点</a>
+</li>
+<li>
+<a href="#toc_1">使用方式</a>
+</li>
+<li>
+<a href="#toc_2">原理</a>
+</li>
+<li>
+<a href="#toc_3">使用场景</a>
+</li>
+<li>
+<a href="#toc_4">疑问</a>
+</li>
+<li>
+<a href="#toc_5">参考文章</a>
+</li>
+</ul>
+
+
+<p>主要iOS的研发生涯是使用Swift作为主力语言进行实现的,在项目中也基本没有遇到手动使用autorelease的情况。但是因为这是iOS相关的底层一点的知识，因此书写此文章，作为学习的记录。如果文中有疏漏和错误，也欢迎大家指正。</p>
+
+<h2 id="toc_0">基本知识点</h2>
+
+<blockquote>
+<p>Each NSThread object, including the application’s main thread, has an NSRunLoop object automatically created for it as needed.</p>
+</blockquote>
+
+<p>我们可以知道每一个线程，包括主线程，都会拥有一个专属的 NSRunLoop 对象，并且会在有需要的时候自动创建</p>
+
+<blockquote>
+<p>The Application Kit creates an autorelease pool on the main thread at the beginning of every cycle of the event loop, and drains it at the end, thereby releasing any autoreleased objects generated while processing an event.</p>
+</blockquote>
+
+<p>在主线程的 NSRunLoop 的每个 event loop 开始前，系统会自动创建一个 自动释放池 ，并在 event loop 结束时 drain掉 当前的自动释放池，因而在处理完时间之后，会对池中的对象进行释放操作</p>
+
+<blockquote>
+<p>Each thread (including the main thread) maintains its own stack of NSAutoreleasePool objects.</p>
+</blockquote>
+
+<p>每个线程都会维护自己的 自动释放池的栈</p>
+
+<p>同一个对象可以多次加入自动释放池</p>
+
+<p>在自动释放池要销毁时，会向池内的所有对象发送release消息</p>
+
+<h2 id="toc_1">使用方式</h2>
+
+<ol>
+<li>在MRC的模式下，需要手动创建一个自动释放池。
+对于需要加入池中进行管理的对象，调用 <code>[obj autorelease]</code></li>
+<li><p>在ARC的模式下</p>
+
+<pre><code>//OC 代码
+@autorelease{   
+  //code
+}
+</code></pre>
+
+<pre><code>//swift 代码
+
+autorelease {
+   //code
+}
+
+</code></pre></li>
+</ol>
+
+<h2 id="toc_2">原理</h2>
+
+<p>每一个线程都会持有一个管理自动释放池的栈，对于该线程中每一个新创建的自动释放池，都会自动加入到栈顶。</p>
+
+<p>对于OC中的代码</p>
+
+<pre><code>@autorelease {
+//代码
+}
+</code></pre>
+
+<p>在经过编译器进行处理后，会转换成以下的代码：</p>
+
+<pre><code>void *context = objc_autoreleasePoolPush();
+// {}中的代码
+objc_autoreleasePoolPop(context);
+//context 指的是哨兵
+</code></pre>
+
+<p>实际autoreleasepool的创建之后调用了 AutoreleasePoolPage的方发</p>
+
+<p>我们来看一下<code>AutoReleasePoolPage</code>这个C++实现的代码底做了些什么</p>
+
+<p>AutoreleasePoolPage 是一个4k大小的空间，其基本结构是</p>
+
+<pre><code>//AutoreleasePoolPage
+magic_t const magic; //用于校验AutoreleasePoolPage的结构是否完整
+id *next; //指向最新添加的autoreleased对象的下一个位置，初始化时指向begin()
+pthread_t const thread;  //指向当前指针
+AutoreleasePoolPage *const parent; //指向父节点 因此 第一个节点的parent 值为nil
+AutoreleasePoolPage *child //指向子节点，最后一个节点的child 值为nil
+uint32_t const depth; // 表示深度，从0开始，往后递增1
+unit32_t hiwat;
+</code></pre>
+
+<p>从上方<code>AutoreleasePoolPage</code>的结构代码可以看出，它同时拥有指向父节点和子节点的指针，也就是说它可以用于组成双向链表。<br/>
+而在应用中，<code>AutoreleasePoolPage</code>它4K大小的空间除了保存上面的变量之外，其余的控件都用于保存autorelease的对象指针。当<code>next==begin()</code>时，表示AutoreleasePoolPage为空；当<code>next==end()</code>时，表示AutoreleasePoolPage当前已满，需要添加一个新的AutoreleasePoolPage。并将已满的AutoreleasePoolPage.child指针指向新的page。这样就实现了自动开辟空间来存储autorelease的对象。</p>
+
+<p>当创建一个新的autorelease Pool时，管理autorelease Pool的栈在栈顶添加了新的autorelease Pool时，对应的当前AutorelesePoolPage中的next指向的位置会添加一个哨兵，用于标识此处添加的Autorelease pool。next指针后移， 池中新的autorelease的对象会一次存放在next指针指向的地方。</p>
+
+<p>当需要销毁一个autorelease Pool时，会在AutorelesePoolPage寻找到对应的哨兵的位置，对其向后的所有对象以及以后的AutorelesePoolPage都会执行release操作。</p>
+
+<p>从本质上来说，通过对AutorelesePoolPage的操作，完成了线程中autorelease pool对于添加到池中对象的管理。</p>
+
+<p>并且上面提到的，每个线程中都有一个栈，用于管理autorelease pool，我认为这也是通过 AutorelesePoolPage的双向链表实现的。</p>
+
+<h2 id="toc_3">使用场景</h2>
+
+<ul>
+<li>你编写是命令行工具的代码，而不是基于 UI 框架的代码</li>
+<li>你需要写一个循环，里面会创建很多临时的对象</li>
+<li>这时候你可以在循环内部的代码块里使用一个 @autoreleasepool {}，这样这些对象就能在一次迭代完成后被释放掉。这种方式可以降低内存最大占用</li>
+<li>当你大量使用辅助线程</li>
+<li>你需要在线程的任务代码中创建自己的 @autoreleasepool {}</li>
+</ul>
+
+<h2 id="toc_4">疑问</h2>
+
+<p><a href="https://www.jianshu.com/p/5559bc15490d">文章</a>有一段描述</p>
+
+<blockquote>
+<p>MRC下需要对象调用autorelease才会入池, ARC下可以通过__autoreleasing修饰符, 否则的话看方法名, 非alloc/new/copy/mutableCopy开头的方法编译器都会自动帮我们调用autorelease方法.</p>
+</blockquote>
+
+<h2 id="toc_5">参考文章</h2>
+
+<p>1.<a href="https://blog.sunnyxx.com/2014/10/15/behind-autorelease/">Sunny的这篇文章讲的很详细</a><br/>
+2.<a href="https://blog.ibireme.com/2015/05/18/runloop/">https://blog.ibireme.com/2015/05/18/runloop/</a><br/>
+3.<a href="https://imtangqi.com/2016/04/15/autorelease-pool-in-ios/">https://imtangqi.com/2016/04/15/autorelease-pool-in-ios/</a></p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[fastlane相关]]></title>
@@ -126,59 +277,59 @@ var list = [1,3,-2,-5,8,2,-3,6,-2]
 
 <h3 id="toc_1">第一种，暴力遍历所有情况</h3>
 
-<p>遍历每一个起始点和终止点，求两点之间序列的和，保留最大值以及对应的起始点和终止点<br/>
-```<br/>
-var list: [Int] = [2,3,-6,3,5,-2,7,4,-2,-1,2]<br/>
-class Result {<br/>
-    var startIndex: Int<br/>
-    var endIndex: Int<br/>
-    var count: Int</p>
+<p>遍历每一个起始点和终止点，求两点之间序列的和，保留最大值以及对应的起始点和终止点</p>
 
-<pre><code>init(start: Int, end: Int, count: Int) {
-    self.startIndex = start
-    self.endIndex = end
-    self.count = count
+<pre><code>var list: [Int] = [2,3,-6,3,5,-2,7,4,-2,-1,2]
+class Result {
+    var startIndex: Int
+    var endIndex: Int
+    var count: Int
+    
+    init(start: Int, end: Int, count: Int) {
+        self.startIndex = start
+        self.endIndex = end
+        self.count = count
+    }
+}
+
+
+func getResultFor(array: [Int])-&gt; Result {
+    var result = Result(start: -1, end: -1, count: 0)
+    for i in 0..&lt;array.count {
+        let tempResult = getResultFor(startIndex: i, array: array)
+        if result.count &lt; tempResult.count{
+            result = tempResult
+        }
+    }
+    return result
+}
+
+func getResultFor(startIndex: Int, array: [Int])-&gt; Result{
+    var temMax = Int.min
+    var endIndex: Int = -1
+    for j in startIndex..&lt;array.count {
+        let count = getCount(startIndex: startIndex, endIndex: j, array: array)
+        if temMax &lt; count {
+            temMax = count
+            endIndex = j
+        }
+    }
+    return Result(start: startIndex, end: endIndex, count: count)
+}
+
+
+func getCount(startIndex: Int, endIndex: Int, array:[Int])-&gt; Int {
+    if startIndex &lt;= endIndex, array.count &gt; endIndex {
+        var count = 0
+        for i in startIndex...endIndex {
+            count += array[i]
+        }
+        return count
+    }else {
+        fatalError()
+    }
 }
 </code></pre>
-
-<p>}</p>
-
-<p>func getResultFor(array: [Int])-&gt; Result {<br/>
-    var result = Result(start: -1, end: -1, count: 0)<br/>
-    for i in 0..&lt;array.count {<br/>
-        let tempResult = getResultFor(startIndex: i, array: array)<br/>
-        if result.count &lt; tempResult.count{<br/>
-            result = tempResult<br/>
-        }<br/>
-    }<br/>
-    return result<br/>
-}</p>
-
-<p>func getResultFor(startIndex: Int, array: [Int])-&gt; Result{<br/>
-    var temMax = Int.min<br/>
-    var endIndex: Int = -1<br/>
-    for j in startIndex..&lt;array.count {<br/>
-        let count = getCount(startIndex: startIndex, endIndex: j, array: array)<br/>
-        if temMax &lt; count {<br/>
-            temMax = count<br/>
-            endIndex = j<br/>
-        }<br/>
-    }<br/>
-    return Result(start: startIndex, end: endIndex, count: count)<br/>
-}</p>
-
-<p>func getCount(startIndex: Int, endIndex: Int, array:[Int])-&gt; Int {<br/>
-    if startIndex &lt;= endIndex, array.count &gt; endIndex {<br/>
-        var count = 0<br/>
-        for i in startIndex...endIndex {<br/>
-            count += array[i]<br/>
-        }<br/>
-        return count<br/>
-    }else {<br/>
-        fatalError()<br/>
-    }<br/>
-}<br/>
-```</p>
 
 <h3 id="toc_2">第二种，优化一些的算法</h3>
 
@@ -235,7 +386,66 @@ func getResultFor(startIndex: Int, array: [Int])-&gt; Result{
 
 <h3 id="toc_3">第三种，分治算法</h3>
 
-<h3 id="toc_4">第四种</h3>
+<p>求一个数组的最大连续子序列和，如果采用一分为二的角度来看，将数组分为两部分，则可能出现3种情况，就是1.最大子序列在左侧子数组中 2.最大子序列在右侧子数组中 3. 最大子序列横跨中心点，在左右两个子数组中分别占有一部分。<br/>
+对于第1，2中情况，可以直接继续进行递归处理。<br/>
+对于第三种情况， 对于左子数组，从右侧节点为起始点，向左寻找一个终点，使区间和最大。<br/>
+               对于右侧数组，从左侧节点为起始点，向右寻找一个终点，使区间和最大，并将以上两者的和相加，即为最终结果。</p>
+
+<pre><code>var list: [Int] = [2,3,-6,3,5,-2,7,4,-2,-1,2]
+
+func getResult(array: [Int], left: Int, right: Int)-&gt; Int {
+    if left &gt;= right {
+        return array[right] &gt; 0 ? array[right] : 0
+    }
+    
+    var middle = (right + left) / 2
+    let leftMax = getResult(array: array, left: left, right: middle)
+    let rightMax = getResult(array: array, left: middle + 1, right: right)
+    let middleMax = getLeftSubMax(array: array, left: left, middle: middle) + getRightSubMax(array: array, middle: middle + 1, right: right)
+    
+    return Swift.max(leftMax, rightMax, middleMax)
+}
+
+
+func getLeftSubMax(array:[Int], left: Int, middle: Int)-&gt; Int {
+    var max = 0
+    var count = 0
+    var index = middle
+    
+    while (index &gt;= left) {
+        count += array[index]
+        if max &lt; count {
+            max = count
+        }
+        index -= 1
+    }
+    return count
+}
+
+
+func getRightSubMax(array:[Int], middle: Int, right: Int)-&gt; Int {
+    var max = 0
+    var count = 0
+    var index = middle
+
+    while (index &lt;= right) {
+        count += array[index]
+        if max &lt; count {
+            max = count
+        }
+        index += 1
+    }
+    return max
+}
+
+
+
+//最终结果
+getResult(array: list, left: 0, right: list.count - 1)
+
+</code></pre>
+
+<h3 id="toc_4">第四种(该题代码实现有问题)</h3>
 
 <p>整个过程可以延续这么一个思路：<br/>
 对于一个数组 list，对于某个确定的起始点，比如下标start开始，我们想知道子序列是终止在 下标为k的地方好的，还是终止在下标为k+1的位置好呢，这主要看 list[k+1]这个值是否为正。如果为正，那么显然应该吧k+1这个节点收纳进来。如果未负，不能单纯的判断需要抛弃，而是要看从该点之后的累积值是否可以为正。总的来说，就是看从start点开始，到最终哪一天结束的累积增幅最大。这个时候，end点肯定是最优终止点。</p>
@@ -247,6 +457,73 @@ func getResultFor(startIndex: Int, array: [Int])-&gt; Result{
 
 <p>上面的语言比较啰嗦，总的来说，正向遍历一遍，可以找到最佳的终止点。<br/>
 因为这个数组的解法具有对称性。反着做逻辑也是一样的， 反向遍历一遍，可以找到最佳的起始点。</p>
+
+<pre><code>var list: [Int] = [2,3,-6,3,5,-2,7,4,-2,-1,2]
+class Result {
+    var startIndex: Int
+    var endIndex: Int
+    var count: Int
+    
+    init(start: Int, end: Int, count: Int) {
+        self.startIndex = start
+        self.endIndex = end
+        self.count = count
+    }
+}
+
+
+
+func leftToRightSumList(array: [Int])-&gt; [Int] {
+    var sum: [Int] = []
+    var count = 0
+
+    return array.map({ (value) -&gt; Int in
+        count += value
+        return count
+    })
+}
+
+func rightToSumList(array: [Int])-&gt; [Int]{
+    var sum: [Int] = array
+    
+    var index = array.count - 2
+    while (index &gt;= 0) {
+        sum[index] = sum[index] + sum[index+1]
+        index -= 1
+    }
+    return sum
+}
+
+func getIndexWhenValueMax(array: [Int])-&gt; Int {
+    var max = 0
+    var result = 0
+    
+    for index in 0..&lt;array.count {
+        if max &lt; array[index] {
+            max = array[index]
+            result = index
+        }
+    }
+    return result
+    
+}
+
+func getMaxListValue(array: [Int])-&gt; Int {
+    var leftSumList = leftToRightSumList(array: array)
+    var rightSumList = rightToSumList(array: array)
+    var rightIndex = getIndexWhenValueMax(array: leftSumList)
+    var leftIndex = getIndexWhenValueMax(array: rightSumList)
+    var count = 0
+    for index in leftIndex...rightIndex {
+        count += array[index]
+    }
+    return count
+}
+getMaxListValue(array: list)
+
+</code></pre>
+
+<p>时间复杂度 O(n)</p>
 
 <p>总结1: 思维高度决定一个人的境界。<br/>
 总结2: 对称性这个思维工具真的很重要</p>
@@ -275,30 +552,40 @@ for i in (0..&lt;list.size) {
 
 <p>因此需要求sum数组中差值最大的情况。当然，要求下标 right &gt; left</p>
 
-<pre><code>var minValue: Int = Int.max
+<pre><code>var sum: [Int] = []
+for index in 0..&lt;list.count {
+    if index == 0 {
+        sum.append(list[0])
+    }else {
+        sum.append(sum[index-1] + list[index])
+    }
+}
+
+var minValue: Int = 0
 var minValueIndex: Int = 0
 
-var max: Int = Int.min
+var max: Int = 0
 var left: Int = 0
 var right: Int = 0
 
-sum.enmurated.foreach{ (index, value) in
-   if minValue &gt; value {
-    minValue = value
-    minValueIndex = index
-   }
-   
-   let separatedValue = value - minValue
+sum.enumerated().forEach{ (index, value) in
+    if minValue &gt; value {
+        minValue = value
+        minValueIndex = index
+    }
+    
+    let separatedValue = value - minValue
     if separatedValue  &gt; max {
         max = separatedValue
         right = index
-        if left != minValueIndex {
-          left = minValueIndex
+        if left != minValueIndex + 1 {
+            left = minValueIndex + 1
         }
-   }
+    }
 }
 
-//最终， sum[left...right] 会是其结果，其子序列的和为max
+
+//最终，最大和的子序列 起始点下标为 left， 终止点下标为right，其子序列的和为max
 </code></pre>
 
 ]]></content>
@@ -2548,27 +2835,6 @@ int value = ARG_AT(3, 100, 200 ,300, 400)   #实际调用
 <h1 id="toc_13">老版本SohuAuto的例子</h1>
 
 <p><img src="media/15209397332611/7B0EFF139D6668D04041DBFB997E3FD3.jpg" alt="7B0EFF139D6668D04041DBFB997E3FD3"/></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Mac下的常用命令]]></title>
-    <link href="iginkgo.cn/15209393931542.html"/>
-    <updated>2018-03-13T19:09:53+08:00</updated>
-    <id>iginkgo.cn/15209393931542.html</id>
-    <content type="html"><![CDATA[
-<span id="more"></span><!-- more -->
-
-<p>打开/关闭 显示默认的隐藏文件<br/>
-注意：命令执行后，须重新启动<code>finder</code></p>
-
-<pre><code>//打开
-defaults write com.apple.finder AppleShowAllFiles -bool true
-
-//关闭
-defaults write com.apple.finder AppleShowAllFiles -bool false
-</code></pre>
 
 ]]></content>
   </entry>
