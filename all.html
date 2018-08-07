@@ -107,6 +107,54 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15330418099703.html">
+                
+                  <h1>问题记录</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>今天面临出现了2个问题</p>
+
+<ol>
+<li><p>在一个tableView页上，在当前屏幕只显示2个UITableViewCell的情况下， UITableView会针对所有的数据模型，统统创建一遍cell。<br/>
+环境： IphoneX  iOS11 <br/>
+当前页面数据模型有10个， 实际创建的cell实例有10个。<br/>
+期望结果： 初次只会初始化2个cell。<br/>
+注意事项： 1.在其它手机上没有这个问题 2.在问题手机上有些页面也没有这个问题。</p>
+
+<p>处理中</p></li>
+<li><p>对于UIImageView中显示webp缓慢的问题。<br/>
+问题背景：由于图片格式WebP极高的压缩比，可以做到以很小的传输大小实现高清的图片效果， 相比JPEG以及png性能要高很多。因此接口中返回webP作为主要的数据格式。<br/>
+但是对于下载好的NSData，在转换为 UIImage的过程中，100K左右的图片大约耗时50-100ms。 400K左右的webP图片大概耗时1500s，效果极差。<br/>
+当前采用的是第三方的图片加载框架SDWebImage对webP支持的版本。解读了一下它的源代码，图片的下载以及解析过程完全是异步实现，只有在最后放到UIImageView时才会切换到主线程。<br/>
+当前能想到的方案就是在外部webP的大图流入。或是选用其他的图片格式。内部考虑自己实现一套webP图片的解码器，达到高性能的要求。</p></li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/7/31</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='codeDaily.html'>codeDaily</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15326191313814.html">
                 
                   <h1>autoRelease Pool 总结</h1>
@@ -504,68 +552,6 @@ coursera上有一门课程，叫做《Learn How to learn》, 里面介绍了学�
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15282672319466.html">
-                
-                  <h1>踩坑记录</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<!--more-->
-
-<h3 id="toc_0">问题1  使用 Leaks检查项目内存泄漏，崩溃的问题</h3>
-
-<p>问题描述</p>
-
-<p>进入Leaks模拟器或者真机app，进入30s左右就出现崩溃的现象，但是正常运行app没有问题</p>
-
-<p><a href="">参考资料</a><br/>
-最后找到解决方案：<br/>
-进入leaks之后，在开启任务前，<br/>
-通过操作<code>file</code> -&gt; <code>recordOptions</code> -&gt; <code>recordCount</code> 取消选择</p>
-
-<h3 id="toc_1">问题2 对于约束的判定</h3>
-
-<p>应用场景： 一个superview 加入 一个子view-UITableView。<br/>
-在后续需要找到tableView的顶部约束并改变其值，使之发生改变。</p>
-
-<pre><code>  self.view.constraints.foreach { (const) in
-    if const.firstAttribute == NSLayoutAttribute.top.
-        let view = const.firstItem as? UITableView,
-            view = self.tableView {
-            //TODO: 此处已识别，do sth
-            }
-  }
-</code></pre>
-
-<p>在这对关系中 const中的item1是UITableView，item2是superView<br/>
-由于tableView的位置需要通过 superView来进行确定。<br/>
-在最初添加约束时， <code>superView.addConstraints(...)</code></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/6/6</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='codeDaily.html'>codeDaily</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -643,6 +629,12 @@ coursera上有一门课程，叫做《Learn How to learn》, 里面介绍了学�
 	      
 		      
 			      <li class="post">
+			        <a href="15330418099703.html">问题记录</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15326191313814.html">autoRelease Pool 总结</a>
 			      </li>
 		     
@@ -662,12 +654,6 @@ coursera上有一门课程，叫做《Learn How to learn》, 里面介绍了学�
 		      
 			      <li class="post">
 			        <a href="15324828408733.html">对于首页的优化</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15324314483651.html">首页的优化记录</a>
 			      </li>
 		     
 		  

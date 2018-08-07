@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  tools - iginkgo在路上
+  问题记录 - iginkgo在路上
   
   </title>
   
@@ -107,14 +107,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>tools</h1>
+          <h1>问题记录</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2018/3/13</span>
+          <span class="date">2018/7/31</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='%E7%BC%96%E7%A8%8B.html'>编程</a></span>
+              <span class="posted-in"><a href='codeDaily.html'>codeDaily</a></span>
            
          
           <span class="comments">
@@ -127,21 +127,22 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <span id="more"></span><!-- more -->
+      <p>今天面临出现了2个问题</p>
 
-<h2 id="toc_0">code</h2>
+<ol>
+<li><p>在一个tableView页上，在当前屏幕只显示2个UITableViewCell的情况下， UITableView会针对所有的数据模型，统统创建一遍cell。<br/>
+环境： IphoneX  iOS11 <br/>
+当前页面数据模型有10个， 实际创建的cell实例有10个。<br/>
+期望结果： 初次只会初始化2个cell。<br/>
+注意事项： 1.在其它手机上没有这个问题 2.在问题手机上有些页面也没有这个问题。</p>
 
-<p><a href="http://asciiflow.com/">使用注释画图</a><br/>
-<a href="https://www.processon.com/login">绘制流程图</a><br/>
-<a href="https://www.appsight.io/">Find SDKs &amp; services used by iOS mobile apps</a><br/>
-<a href="https://aso100.com/">iOS app排名</a></p>
-
-<h2 id="toc_1">life</h2>
-
-<p><a href="http://ip.taobao.com/index.php">ip地址查询</a><br/>
-<a href="http://app2.sfda.gov.cn/datasearchp/gzcxSearch.do?formRender=cx&amp;page=1">药监局查询正品</a><br/>
-<a href="http://sswz.spb.gov.cn/">快递投诉</a><br/>
-<a href="https://github.com/cn">中国资料数据库 github开源</a></p>
+<p>处理中</p></li>
+<li><p>对于UIImageView中显示webp缓慢的问题。<br/>
+问题背景：由于图片格式WebP极高的压缩比，可以做到以很小的传输大小实现高清的图片效果， 相比JPEG以及png性能要高很多。因此接口中返回webP作为主要的数据格式。<br/>
+但是对于下载好的NSData，在转换为 UIImage的过程中，100K左右的图片大约耗时50-100ms。 400K左右的webP图片大概耗时1500s，效果极差。<br/>
+当前采用的是第三方的图片加载框架SDWebImage对webP支持的版本。解读了一下它的源代码，图片的下载以及解析过程完全是异步实现，只有在最后放到UIImageView时才会切换到主线程。<br/>
+当前能想到的方案就是在外部webP的大图流入。或是选用其他的图片格式。内部考虑自己实现一套webP图片的解码器，达到高性能的要求。</p></li>
+</ol>
 
 
     
@@ -152,16 +153,13 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15209406714961.html" 
-          title="Previous Post: viewController的生命周期">&laquo; viewController的生命周期</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="15209404638621.html" 
-          title="Next Post: 《被讨厌的勇气》">《被讨厌的勇气》 &raquo;</a>
+          <a  href="15326191313814.html" 
+          title="Next Post: autoRelease Pool 总结">autoRelease Pool 总结 &raquo;</a>
       
       </p>
         </div>

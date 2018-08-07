@@ -107,6 +107,68 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15282672319466.html">
+                
+                  <h1>踩坑记录</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<!--more-->
+
+<h3 id="toc_0">问题1  使用 Leaks检查项目内存泄漏，崩溃的问题</h3>
+
+<p>问题描述</p>
+
+<p>进入Leaks模拟器或者真机app，进入30s左右就出现崩溃的现象，但是正常运行app没有问题</p>
+
+<p><a href="">参考资料</a><br/>
+最后找到解决方案：<br/>
+进入leaks之后，在开启任务前，<br/>
+通过操作<code>file</code> -&gt; <code>recordOptions</code> -&gt; <code>recordCount</code> 取消选择</p>
+
+<h3 id="toc_1">问题2 对于约束的判定</h3>
+
+<p>应用场景： 一个superview 加入 一个子view-UITableView。<br/>
+在后续需要找到tableView的顶部约束并改变其值，使之发生改变。</p>
+
+<pre><code>  self.view.constraints.foreach { (const) in
+    if const.firstAttribute == NSLayoutAttribute.top.
+        let view = const.firstItem as? UITableView,
+            view = self.tableView {
+            //TODO: 此处已识别，do sth
+            }
+  }
+</code></pre>
+
+<p>在这对关系中 const中的item1是UITableView，item2是superView<br/>
+由于tableView的位置需要通过 superView来进行确定。<br/>
+在最初添加约束时， <code>superView.addConstraints(...)</code></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/6/6</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='codeDaily.html'>codeDaily</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15209408940888.html">
                 
                   <h1>代码观</h1>
@@ -535,40 +597,6 @@ NSLog(@&quot;%d&quot;, int_a)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15209397332611.html">
-                
-                  <h1>Macros</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>在使用OC开发的项目中，宏是一个绕不开的话题。一个简单易用的宏库能够极大的提高生产力。</p>
-
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="15209397332611.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2018/3/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -646,6 +674,12 @@ NSLog(@&quot;%d&quot;, int_a)
 	      
 		      
 			      <li class="post">
+			        <a href="15330418099703.html">问题记录</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15326191313814.html">autoRelease Pool 总结</a>
 			      </li>
 		     
@@ -665,12 +699,6 @@ NSLog(@&quot;%d&quot;, int_a)
 		      
 			      <li class="post">
 			        <a href="15324828408733.html">对于首页的优化</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15324314483651.html">首页的优化记录</a>
 			      </li>
 		     
 		  
