@@ -1,0 +1,638 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  重构Massive AppDelegate - iginkgo在路上
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="iginkgo在路上" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:iginkgo.cn ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; iginkgo在路上</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+       
+       <li><a href="index.html">HOME</a></li>
+    <li><a href="archives.html">Archives</a></li>
+    <li><a href="about.html">ABOUT</a></li>
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E7%BC%96%E7%A8%8B.html">编程</a></li>
+        
+            <li><a href="%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html">三省吾身</a></li>
+        
+            <li><a href="iOS.html">iOS</a></li>
+        
+            <li><a href="%E8%AF%BB%E4%B9%A6.html">读书</a></li>
+        
+            <li><a href="codeDaily.html">codeDaily</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>重构Massive AppDelegate</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2018/8/21</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>本文是翻译自墙外的一片<a href="http://www.vadimbulavin.com/refactoring-massive-app-delegate/">文章</a>.文章通过分析iOS项目中 <code>AppDelegate</code>中常负担的职能，并将其分为三类，通过引入不同的设计模式将代码进行抽离整合，最终达到单一职能、可重用、已测试的特点。<br/>
+译者也在文章的影响下，对当前进行的项目进行了相应的兼容和实现，最终效果还是很不错的。</p>
+
+<span id="more"></span><!-- more -->
+
+<ul>
+<li>
+<a href="#toc_0">开始</a>
+</li>
+<li>
+<a href="#toc_1">问题</a>
+</li>
+<li>
+<a href="#toc_2">解决方案</a>
+<ul>
+<li>
+<a href="#toc_3">命令模式</a>
+</li>
+<li>
+<a href="#toc_4">组合模式</a>
+</li>
+<li>
+<a href="#toc_5">中介者模式</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_6">总结</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">开始</h2>
+
+<p>App detelgate连接了你的app与系统。通常它都是整个iOS项目的核心部分。通常，伴随着不断的开发，新特性与功能的增加，AppDelegate最终编程很零碎的东西。</p>
+
+<p>通常把所有的代码都加入appdelegate是十分浪费的，因为它乐意影响整个app。因此，保持这个类的干净与整洁对于一个健壮的项目时非常重要的。</p>
+
+<p>本文探讨了让delegate变得简洁、可测、可重用的几点方式</p>
+
+<h2 id="toc_1">问题</h2>
+
+<p>delegate是整个app的根本的地方。负责与系统与其他的app直接打交道。这使得delegate有非常多的任务， 并且很难进行修改以及扩展。</p>
+
+<p><a href="https://developer.apple.com/documentation/uikit/uiapplicationdelegate">苹果官方</a>支持至少要在delegate中持有3种职能。</p>
+
+<p>通过调查大量的开源的app，我总结了通常appDelegate会行使的职能。<br/>
+1. 初始化大量的第三方库<br/>
+2. 初始化 Core Data stack 以及管理迁移<br/>
+3. 配置app的state，用于设置单元测试以及UI测试<br/>
+4. 管理推送 本地推送或者远程推送<br/>
+5. 配置UIAppearance<br/>
+6. 管理UserDataManager：配置初次登录时的flag，保存以及加载数据。<br/>
+7. 配置app的角标<br/>
+8. 管理后台进程<br/>
+9. 管理UI调用栈的配置。选择初始的viewController<br/>
+10.播放声音<br/>
+11. 关系分析文件<br/>
+12. 输出debugLog<br/>
+13. 控制转向问题<br/>
+14. 实现各种代理协议，尤其是第三方的<br/>
+15. 弹出alert  </p>
+
+<h2 id="toc_2">解决方案</h2>
+
+<p>既然我们承认上面这些问题的存在并且这也很重要，那么看一下我们要遵守那些原则</p>
+
+<p>1.维持<a href="https://en.wikipedia.org/wiki/Single_responsibility_principle">单一职责原则</a><br/>
+2.易扩展<br/>
+3.易测试</p>
+
+<h3 id="toc_3">命令模式</h3>
+
+<p>对于每一种delegate的职能，我们创建一个单独的执行类，<br/>
+```<br/>
+protocol Command {<br/>
+    func execute()<br/>
+}</p>
+
+<p>struct RegisiterCommand: Command {<br/>
+    func execute()<br/>
+}</p>
+
+<p>struct SetAppearanceCommand: Command {<br/>
+    ...<br/>
+}</p>
+
+<p>struct InitialViewControllerCommand: Command {<br/>
+ ...<br/>
+} <br/>
+```</p>
+
+<p>然后创建一个统一的管理类进行管理，管理上面这些command的创建以及执行</p>
+
+<pre><code>final class StartupCommandsBuilder {
+    private var window: UIWindow!
+    
+    func setKeyWindow(_ window: UIWindow)-&gt; StartupCommandsBuilder {
+        self.window = window
+        return self
+    }
+    
+    func build()-&gt; [Command] {
+        return [RegisterCommand(),
+                SetAppearanceCommand(),
+                InitialViewControllerCommand(window)
+                ...]
+    }
+}
+</code></pre>
+
+<p>最终在delegate进行配置的时候，</p>
+
+<pre><code>    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -&gt; Bool {
+        StartupCommandsBuilder()
+            .setKeyWindow(window!)
+            .build()
+            .forEach { $0.execute() }
+
+        return true
+    }
+
+</code></pre>
+
+<p>这样将delegate主动调用的工作进行了清晰的切割，并且实现单一职能原则。大大减少了工作工作量</p>
+
+<p>这样做实现了以下的有点：<br/>
+1. 每个command都实现了1个功能<br/>
+2. 不改动delegate代码就可以直接进行添加，<br/>
+3. 每个命令都可以很简单的被单独检测。</p>
+
+<h3 id="toc_4">组合模式</h3>
+
+<p>组合模式使得不同等级的对象可以看成一个实例<br/>
+这里主要处理delegate中的代理工作。</p>
+
+<p>对于所有要调用的代理，分别创建单独的代理模式，最终进行进行处理</p>
+
+<pre><code>typealias AppDelegateType = UIResponder &amp; UIApplicationDelegate
+
+class CompositeAppDelegate: AppDelegateType {
+    private let appDelegates: [AppDelegateType]
+
+    init(appDelegates: [AppDelegateType]) {
+        self.appDelegates = appDelegates
+    }
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -&gt; Bool {
+        appDelegates.forEach { _ = $0.application?(application, didFinishLaunchingWithOptions: launchOptions) }
+        return true
+    }
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        appDelegates.forEach { _ = $0.application?(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken) }
+    }
+}
+</code></pre>
+
+<p>然后实际工作的时候，需要实现的delegate方法</p>
+
+<pre><code class="language-Swift">//最终每个delegate的实现方法
+class PushNotificationsAppDelegate: AppDelegateType {
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        // Registered successfully
+    }
+}
+
+class StartupConfiguratorAppDelegate: AppDelegateType {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -&gt; Bool {
+        // Perform startup configurations, e.g. build UI stack, setup UIApperance
+        return true
+    }
+}
+
+class ThirdPartiesConfiguratorAppDelegate: AppDelegateType {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -&gt; Bool {
+        // Setup third parties
+        return true
+    }
+}
+</code></pre>
+
+<p>最终，我们通过一个工厂模式建立创建的逻辑。<br/>
+AppDelegate 创建了组合代理，并把他们给所有适合的地方调用</p>
+
+<pre><code>enum AppDelegateFactory {
+    static func makeDefault() -&gt; AppDelegateType {
+        return CompositeAppDelegate(appDelegates: [PushNotificationsAppDelegate(), StartupConfiguratorAppDelegate(), ThirdPartiesConfiguratorAppDelegate()])
+    }
+}
+
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    var window: UIWindow?
+    let appDelegate = AppDelegateFactory.makeDefault()
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -&gt; Bool {
+        _ = appDelegate.application?(application, didFinishLaunchingWithOptions: launchOptions)
+        return true
+    }
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        appDelegate.application?(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
+    }
+}
+</code></pre>
+
+<p>这样最终达到的效果是<br/>
+1. 每一个子delegate都只行使同一个职能。<br/>
+2. 添加新的任务以及delegate很容易， 这并不需要修改主体代码<br/>
+3. 所有的代理都很容易进行隔离测试</p>
+
+<h3 id="toc_5">中介者模式</h3>
+
+<p><a href="http://www.vadimbulavin.com/mediator-pattern-case-study/">中介对象</a>通过一个非常隐蔽非直关的形式实现交互。</p>
+
+<p>现在通过实现一个<code>AppLifecycleMediator</code>来传播<code>UIApplication</code>的生命周期事件给各个观察者。这些观察者必须遵守<code>AppLifecycleListener</code>协议</p>
+
+<pre><code>// MARK: - AppLifecycleListener  app的生命周期事件
+protocol AppLifecycleListener {
+    func onAppWillEnterForeground()
+    func onAppDidEnterBackground()
+    func onAppDidFinishLaunching()
+}
+
+// MARK: - Mediator
+class AppLifecycleMediator: NSObject {
+    private let listeners: [AppLifecycleListener]
+
+    init(listeners: [AppLifecycleListener]) {
+        self.listeners = listeners
+        super.init()
+        subscribe()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self) //在销毁时取消监听
+    }
+
+    private func subscribe() {
+        NotificationCenter.default.addObserver(self, selector: #selector(onAppWillEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onAppDidEnterBackground), name: .UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onAppDidFinishLaunching), name: .UIApplicationDidFinishLaunching, object: nil)
+    }
+
+    @objc private func onAppWillEnterForeground() {
+        listeners.forEach { $0.onAppWillEnterForeground() }
+    }
+
+    @objc private func onAppDidEnterBackground() {
+        listeners.forEach { $0.onAppDidEnterBackground() }
+    }
+
+    @objc private func onAppDidFinishLaunching() {
+        listeners.forEach { $0.onAppDidFinishLaunching() }
+    }
+}
+
+extension AppLifecycleMediator {
+    static func makeDefaultMediator() -&gt; AppLifecycleMediator {
+        let listener1 = ...
+        let listener2 = ...
+        return AppLifecycleMediator(listeners: [listener1, listener2])
+    }
+}
+</code></pre>
+
+<p>通过一行代码完成在Appdelegate中的添加</p>
+
+<pre><code>@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    var window: UIWindow?
+
+    let mediator = AppLifecycleMediator.makeDefaultMediator()
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -&gt; Bool {
+        return true
+    }
+}
+</code></pre>
+
+<p>中介对象自动的注册了对于所有事件的观察。在AppDelegate只要初始化一次，就能使其正常的工作<br/>
+最终满足了文章开头的要求：<br/>
+1. 每个监听器都只有一个功能<br/>
+2. 不修改appdelegate的代码，很轻易的添加新的观察者/监听器<br/>
+3. 每个观察者， 又叫做协调器，可以很容易的做隔离测试。</p>
+
+<h2 id="toc_6">总结</h2>
+
+<p>我们都承认大部分的<code>AppDelegate</code>都非理性的大，过度复杂，行使了过多的职能。我们把这些叫做<code>Massive App Delegates</code><br/>
+通过接入这些设计模式，<code>Massive App Delegate</code>可以被分割成多个类，每个类实现单一职能，这样也易于隔离测试。<br/>
+这样的代码非常易于修改，不会因为改动造成大量的连带反应。最终非常的领过，易于被抽离以及重用。</p>
+
+<p><a href="http://www.vadimbulavin.com/refactoring-massive-app-delegate/">原文地址</a></p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15330418099703.html" 
+          title="Next Post: 问题记录">问题记录 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <div id="container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+ // id: '页面 ID', // 可选。默认为 location.href
+  owner: 'DroidDreamer',
+  repo: 'DroidDreamer.github.io',
+  oauth: {
+    client_id: 'd58d0c05e62ad0adbc84',
+    client_secret: '9e184212ad06d13c281fae1bf4508f3a9f5684e5',
+  },
+})
+gitment.render('container')
+</script>
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>iginkgo在路上</h1>
+                <div class="site-des">漫漫人生路</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E7%BC%96%E7%A8%8B.html"><strong>编程</strong></a>
+        
+            <a href="%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html"><strong>三省吾身</strong></a>
+        
+            <a href="iOS.html"><strong>iOS</strong></a>
+        
+            <a href="%E8%AF%BB%E4%B9%A6.html"><strong>读书</strong></a>
+        
+            <a href="codeDaily.html"><strong>codeDaily</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15348619116019.html">重构Massive AppDelegate</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15330418099703.html">问题记录</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15326191313814.html">autoRelease Pool 总结</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15325341079693.html">fastlane相关</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15325305399890.html">最大值连续子序列</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    <script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

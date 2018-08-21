@@ -107,29 +107,16 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15330418099703.html">
+                <a class="clearlink" href="15348619116019.html">
                 
-                  <h1>问题记录</h1>
+                  <h1>重构Massive AppDelegate</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>今天面临出现了2个问题</p>
+                        	<p>本文是翻译自墙外的一片<a href="http://www.vadimbulavin.com/refactoring-massive-app-delegate/">文章</a>.文章通过分析iOS项目中 <code>AppDelegate</code>中常负担的职能，并将其分为三类，通过引入不同的设计模式将代码进行抽离整合，最终达到单一职能、可重用、已测试的特点。<br/>
+译者也在文章的影响下，对当前进行的项目进行了相应的兼容和实现，最终效果还是很不错的。</p>
 
-<ol>
-<li><p>在一个tableView页上，在当前屏幕只显示2个UITableViewCell的情况下， UITableView会针对所有的数据模型，统统创建一遍cell。<br/>
-环境： IphoneX  iOS11 <br/>
-当前页面数据模型有10个， 实际创建的cell实例有10个。<br/>
-期望结果： 初次只会初始化2个cell。<br/>
-注意事项： 1.在其它手机上没有这个问题 2.在问题手机上有些页面也没有这个问题。</p>
-
-<p>处理中</p></li>
-<li><p>对于UIImageView中显示webp缓慢的问题。<br/>
-问题背景：由于图片格式WebP极高的压缩比，可以做到以很小的传输大小实现高清的图片效果， 相比JPEG以及png性能要高很多。因此接口中返回webP作为主要的数据格式。<br/>
-但是对于下载好的NSData，在转换为 UIImage的过程中，100K左右的图片大约耗时50-100ms。 400K左右的webP图片大概耗时1500s，效果极差。<br/>
-当前采用的是第三方的图片加载框架SDWebImage对webP支持的版本。解读了一下它的源代码，图片的下载以及解析过程完全是异步实现，只有在最后放到UIImageView时才会切换到主线程。<br/>
-当前能想到的方案就是在外部webP的大图流入。或是选用其他的图片格式。内部考虑自己实现一套webP图片的解码器，达到高性能的要求。</p></li>
-</ol>
 
                         
                       </div>
@@ -137,7 +124,39 @@
                 </a>
                 <div class="read-more clearfix">
                   <div class="more-left left">
-                  
+                   <a href="15348619116019.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2018/8/21</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15330418099703.html">
+                
+                  <h1>问题记录</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                   <a href="15330418099703.html">Read more</a>&nbsp;&nbsp; 
                     <span class="date">2018/7/31</span>
                     <span>posted in&nbsp;</span> 
           				  
@@ -520,38 +539,6 @@ coursera上有一门课程，叫做《Learn How to learn》, 里面介绍了学�
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15282735197620.html">
-                
-                  <h1>WWDC 2018 Swift 4.2 新特性</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="15282735197620.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2018/6/6</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -629,6 +616,12 @@ coursera上有一门课程，叫做《Learn How to learn》, 里面介绍了学�
 	      
 		      
 			      <li class="post">
+			        <a href="15348619116019.html">重构Massive AppDelegate</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15330418099703.html">问题记录</a>
 			      </li>
 		     
@@ -648,12 +641,6 @@ coursera上有一门课程，叫做《Learn How to learn》, 里面介绍了学�
 		      
 			      <li class="post">
 			        <a href="15325305399890.html">最大值连续子序列</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15324828408733.html">对于首页的优化</a>
 			      </li>
 		     
 		  

@@ -107,6 +107,38 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15282735197620.html">
+                
+                  <h1>WWDC 2018 Swift 4.2 新特性</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                   <a href="15282735197620.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2018/6/6</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15282672319466.html">
                 
                   <h1>踩坑记录</h1>
@@ -432,171 +464,6 @@
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15209402816526.html">
-                
-                  <h1>Macros_1</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>宏 第一部分</p>
-
-<!--more-->
-
-<h3 id="toc_0">宏的基本概念</h3>
-
-<p>*注意：本文中讲述的宏以及相关例子都是在iOS环境下使用的。<br/>
-百度定义</p>
-
-<blockquote>
-<p>一种批量处理的成为。它是一种规则或者模式，用于说明输入如何根据预定义的规则转换为对应的输出。</p>
-</blockquote>
-
-<p>WikiPedia定义</p>
-
-<blockquote>
-<p>一种批量处理的称谓。宏是一种抽象，根据一系列预定义的规则替换一定的文本。</p>
-</blockquote>
-
-<p>在我本人看来，宏是在<strong>预处理</strong>阶段，根据相应规则进行文本替换的一套机制。<br/>
-&lt;!--more--&gt;</p>
-
-<h3 id="toc_1">宏的基本用途</h3>
-
-<ul>
-<li>署名</li>
-<li>宏展开</li>
-<li>预编译判断</li>
-</ul>
-
-<p>宏的署名算是在OC编写iOS代码时，使用非常广泛的一种宏的应用了。可以用来定义一定的常量或者字符串，用于进行全局调用。</p>
-
-<pre><code>#define M_PI  3.14159265358979323846264338327950288
-</code></pre>
-
-<p>宏展开的实例</p>
-
-<pre><code>#define TRUE_AND_LOG(condition)         \
-    do {                                \
-        if(condition) {                 \
-          NSLog(@&quot;your condition&#39;&quot;#condition&quot;&#39; is true&quot;);\
-        }                               \
-     }while(0)   
-     
-
-TRUE_AND_LOG(1 + 1 == 2);     
-#最后会输出  “your condition 1 + 1 == 2 is true”
-</code></pre>
-
-<p>预编译判断的实例</p>
-
-<pre><code>#静态判断   IF(判断条件)(为真时候的表达式)(为假时候的表达式)
-#define IF(CONDITION) _CONCAT(_IF, CONDITION)
-#define _CONSUME(...)  
-#define _expand(...) __VA_ARGS__
-#define _IF1(...) __VA_ARGS__ _CONSUME
-#define _IF0(...) _EXPEND
-</code></pre>
-
-<p>本例实现的效果是，在判断条件为1(真)时，返回‘为真的表达式’。判断条件为0(假)时，返回<code>为假的表达式</code></p>
-
-<h3 id="toc_2">宏中的基本符号</h3>
-
-<ul>
-<li><code>#</code></li>
-<li><code>##</code></li>
-<li><code>__FILE__</code> 和 <code>__LINE__</code> </li>
-<li><code>...</code> 以及 <code>__VA_ARGS__</code></li>
-<li><code>##__VA_ARGS__</code></li>
-</ul>
-
-<p>下面具体讲解一下各种符号的具体用法：</p>
-
-<hr/>
-
-<p><code>#</code>符号是用于把宏的参数字符串化。例如：</p>
-
-<pre><code>#define NUMBER_ONE 1
-#define STRINGFY(PARA)  # PARA
-
- STRINGFY(NUMBER_ONE)  //调用代码
- //结果  “NUMBER_ONE”
-</code></pre>
-
-<p>很多人质疑为何返回的结果不是 “1”，其实这与宏的展开方式有关系，详细请大家看 这二篇文章。</p>
-
-<hr/>
-
-<p><code>##</code>符号表示把左右两边的宏进行文本上的连接。</p>
-
-<pre><code>#define DEF_VAR(type, name) type type##_##name
-
-DEF_VAR(int， a) = 5
-NSLog(@&quot;%d&quot;, int_a)
-
-</code></pre>
-
-<p>上述相当于 <code>int##_##a</code> 得到 <code>int_a</code>。</p>
-
-<hr/>
-
-<p><code>...</code>和<code>__VA_ARGS__</code><br/>
-其中<code>...</code>用于在函数声明部分表示可变参数。它只会作为参数出现在小括号中。<br/>
-<code>__VA_ARGS__</code>则用于函数的解释部分，同样表示 <code>...</code>所代表的可变参数<br/>
-例如</p>
-
-<pre><code>#define TOTO(NAME, ...)  NAME[__VA_ARGS__]
-</code></pre>
-
-<p><code>...</code>只能出现在函数的声明部分，<code>__VA_ARGS__</code>只能出现在右侧的解释部分。二者共同表示可变参数。</p>
-
-<hr/>
-
-<p>在OC语言环境下，有一些预定义好的默认宏，用于表示当前的环境</p>
-
-<p><code>__FILE__</code> 表示当前代码所处的文件全路径 <br/>
-<code>__LINE__</code> 表示当前代码所处的行号 <br/>
-<code>__DATE__</code> 表示预编译时的日期<br/>
-<code>__TIME__</code> 表示预编译时的时间<br/>
-<code>__TIMESTAMP__</code> 预编译的时间戳<br/>
-<code>__FUNCTION__</code> 当前函数</p>
-
-<hr/>
-
-<p><code>##__VA_ARGS__</code>用于可变参数个数为0时，去除前面的逗号<br/>
-例如</p>
-
-<pre><code>#define ABC(format, ...)    print(format, __VA_ARGS__);
-</code></pre>
-
-<p>如果上述可变参数个数为0时，则会出现<br/>
-<code>ABC(&quot;%S&quot;)</code> -&gt; <code>print(&quot;%s&quot;,);</code>这样的情况，出现bug。<br/>
-使用 <code>##__VA_ARGS__</code>可以去除前面的逗号，避免出现这个问题。</p>
-
-<p><strong>文章粗陋，如有疏漏，希望可以联系笔者交流。</strong></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/3/13</span>
-                    
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -674,6 +541,12 @@ NSLog(@&quot;%d&quot;, int_a)
 	      
 		      
 			      <li class="post">
+			        <a href="15348619116019.html">重构Massive AppDelegate</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15330418099703.html">问题记录</a>
 			      </li>
 		     
@@ -693,12 +566,6 @@ NSLog(@&quot;%d&quot;, int_a)
 		      
 			      <li class="post">
 			        <a href="15325305399890.html">最大值连续子序列</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15324828408733.html">对于首页的优化</a>
 			      </li>
 		     
 		  
