@@ -107,6 +107,143 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15350236247070.html">
+                
+                  <h1>论UITableView的dequeueReusableCell方法</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>为什么会想到讨论这个问题呢？以前在使用UITableView的时候，也曾有过疑问，那就是同样是在tableView的缓存中获取cell，下面的两个方法究竟有何不同</p>
+
+<pre><code>func dequeueReusableCell(withIdentifier: String, for: IndexPath) -&gt; UITableViewCell
+
+func dequeueReusableCell(withIdentifier identifier: String) -&gt; UITableViewCell?
+
+</code></pre>
+
+<p>根据官网<a href="https://developer.apple.com/documentation/uikit/uitableview/1614878-dequeuereusablecell">有IndexPath</a>以及<a href="https://developer.apple.com/documentation/uikit/uitableview/1614891-dequeuereusablecell">无IndexPath</a>上的说法，</p>
+
+<p>两者的介绍非常的相似，一个tableView通常会维持一个队列的cel，用以给dataSource复用。调用这个方法时，就是要求tableView返回一个新的cell。如果队列中有现成的cell，那可以直接拿出来复用。如果没有现成的cell，可以通过注册的nib file或者是class重新创建。<br/>
+ 如果是通过注册的class进行创建，则需要调用方法<code>init(style: reuseIdentifier:)</code>方法进行创建。对于基于nib的class，则是直接通过nib文件进行创建。如果存在可以直接复用的cell，则会调用cell的<code>prepareForReuse()</code>方法。</p>
+
+<p>那么看起来，这两个方法仅仅有两点不一样</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center">dequeueReusableCell(withIdentifier: String, for: IndexPath)</th>
+<th style="text-align: center">dequeueReusableCell(withIdentifier: String)</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td style="text-align: center">不能返回nil</td>
+<td style="text-align: center">可以返回nil</td>
+</tr>
+<tr>
+<td style="text-align: center">有indexPath参数</td>
+<td style="text-align: center">没有indexPath参数</td>
+</tr>
+</tbody>
+</table>
+
+<p>那么方法中 indexPath 起到了一个什么样的作用呢？ 我们先来看一下最近作者在项目中遇到的一个问题。</p>
+
+<h2 id="toc_0">问题</h2>
+
+<h3 id="toc_1">问题代码</h3>
+
+<p>问题的背景是一个竖直方向的UITableView， 其中一种cell包裹可以水平滑动的UICollectionView。<br/>
+啥也不说，上代码。</p>
+
+<pre><code> public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell {
+    guard let cell = tableView.dequeueReusableCell(withIdentifier:  FocusRecommentMediaTableViewCell.cellId, for: indexPath) as?    FocusRecommentMediaTableViewCell else {
+        return FocusRecommentMediaTableViewCell()
+    }
+    cell.collectionView.dataSource = self
+    
+    //还有可能是其他类型的cell
+    return cell
+</code></pre>
+
+<p>通过代码我们可以粗略的了解到，当前是一个tableView的返回cell的方法。这个UITableViewCell中又嵌套了一个UICollectionView。</p>
+
+<p>需要提一点的是，我在对应的UITableViewCell的初始化方法中，并没有对其持有UICollectionView的dataSource进行赋值。即 初始化时<code>collectionView.dataSource == nil</code>。</p>
+
+<h3 id="toc_2">意外</h3>
+
+<p>项目中通常跑的都是没有问题的，直到测试到某一个手机 iphone6，iOS9.3<br/>
+此时，在<code>缓慢向下滑动的情况下</code>，系统是没有问题的。<br/>
+在用户快速向下滑动，即将出现此类cell时，会出现崩溃。</p>
+
+<p>问题描述</p>
+
+<pre><code>UICollectionView dataSource is not set
+</code></pre>
+
+<p>在添加了Exception 捕获后，得到以下提示</p>
+
+<pre><code>*** Assertion failure in -[CollectionView _createPreparedSupplementaryViewForElementOfKind:atIndexPath:withLayoutAttributes:applyAttributes:], /BuildRoot/Library/Caches/com.apple.xbs/Sources/UIKit_Sim/UIKit-3512.60.7/UICollectionView.m:1599
+</code></pre>
+
+<p>作者有对更高级的iOS系统进行了测试，发现完全没有这个问题。<br/>
+那既然提示，DataSource没有进行设置，可能是调用时机的问题，因此，比较粗劣的解决方案是，在UITableView进行初始化，并对UICollectionView进行配置时，设置一个临时的dataSource。<br/>
+但是这个解决方案仍然不能解决我的疑惑，经过进一步的定位，发现崩溃的具体位置</p>
+
+<pre><code> guard let cell = tableView.dequeueReusableCell(withIdentifier:  FocusRecommentMediaTableViewCell.cellId, for: indexPath) as?    FocusRecommentMediaTableViewCell else {
+        return FocusRecommentMediaTableViewCell()
+    }
+
+</code></pre>
+
+<p>即在调用<code>tableView.dequeueReusableCell(withIdentifier: for:)</code>方法时发生了崩溃。在这个时候，UITableViewCell还没有返回给cell， UICollectionView还没有设置dataSource。让我好奇的是，这个时机应该是UICollectionView在进行初始化的时候，<code>没有进行reload操作</code>,为何会调用到dataSource，而在iOS9以后则没有这个问题。而且必须是快速滑动的情况才会发生。</p>
+
+<p>这个时候大家就会问了，上面磨磨唧唧说了半天的为题，跟这次的题目有什么关系？<br/>
+是的，将上面的方法换成<code>tableView.dequeueReusableCell(withIdentifier:)</code>,也就是去除掉indexPath这个参数以后，就完全不会出现上面的问题了。</p>
+
+<p>那么关键的问题来了，对于此处非常重要的一个参数 indexPath， 它在此处起了一个什么样的作用？</p>
+
+<p>在developer.apple的文档里， 有一句一笔带过的说明</p>
+
+<blockquote>
+<p>This method uses the index path to perform additional configuration based on the cell’s position in the table view.</p>
+</blockquote>
+
+<p>说的是<code>func dequeueReusableCell(withIdentifier identifier: String, <br/>
+                     for indexPath: IndexPath) -&gt; UITableViewCell</code>这个方法会使用indexPath来进行一些基于cell位置的额外配置。那这是配置是什么呢?</p>
+
+<p>那这个额外的配置是什么呢？</p>
+
+<p>我还要看看</p>
+
+<p>to be continued...</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/8/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15348619116019.html">
                 
                   <h1>重构Massive AppDelegate</h1>
@@ -497,102 +634,6 @@ TopicModel -&gt; IndexProtocol</p>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15209393092903.html">
-                
-                  <h1>iOS 中的MVVM</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<!--more-->
-
-<ul>
-<li>
-<a href="#toc_0">介绍</a>
-</li>
-<li>
-<a href="#toc_1">功能</a>
-</li>
-<li>
-<a href="#toc_2">注意事项</a>
-</li>
-</ul>
-
-
-<h2 id="toc_0">介绍</h2>
-
-<p>MVVM现在也算是移动端比较火热的一种设计模式了。其全称是model、view、viewModel</p>
-
-<p>与MVC相比，只有 viewModel 以及 viewControl的区别。<br/>
-viewModel： 专门用于处理view的数据功能。不涉及任何的图形关系。</p>
-
-<pre><code>**此处插入关系图**
-</code></pre>
-
-<p>而mvc中的 controller则是处于 model与view之间，作为二者之间的逻辑层。接收一方的信息，然后逻辑处理以后影响另外一方。</p>
-
-<p>许多MVC模式的实现也都使用一个View Model 或 Application Model的概念。 Controller是沟通的媒介，架起领域模型和用户界面之间的桥梁。属于表现层。为了View的简单性，controller负责处理或者将领域模型转换为一个View model，这通常叫做数据传输对象（DTO）</p>
-
-<h2 id="toc_1">功能</h2>
-
-<p>MVVM中，<br/>
-model 是数据源<br/>
-view  作为需要在界面上显示的动画<br/>
-viewModel 则需要实现view显示所需要的数据支撑。当然，最基础的来源是model。</p>
-
-<p>具体来说，<br/>
-view实现的具体功能<br/>
-1. 根据数据控制自身view的转换<br/>
-2. 接收用户通过界面操作传递的数据</p>
-
-<p>viewModel的主要功能<br/>
-1. 为view的实现、界面变化、动画效果提供数据支撑<br/>
-2. 处理view接收到的用户进行的交互操作（手势、传感器、网络请求等）、并进行处理和转换</p>
-
-<p>总结来说，viewModel更像是 针对view进行的 数据处理的终端。<br/>
-与其他模式相比，MVVM一个很大的优点就是 逻辑层与UI层进行了分离，非常易于测试（Testable）</p>
-
-<h2 id="toc_2">注意事项</h2>
-
-<p>viewModel中<br/>
-* 不可持有viewController<br/>
-* 不可import UIKit<br/>
-* 不可持有UIKit下的任何东西<br/>
-* 只应是数据</p>
-
-<p>tips：简单版本的mvvm，凡是通过viewModel中数据改变引起UI改变的，需要进行3步处理。<br/>
-1.在viewModel中进行相关callBack或closure的声明<br/>
-2.在viewModel中数据发生变化后，主动触发定义的callBack<br/>
-3.在view中，由于持有viewModel，对viewModel的callBack进行赋值。相当于数据改变后UI变化的逻辑</p>
-
-<p>在实际使用RxSwift的情况下，由于其本身实现了监听值变化后的主动触发的功能（相当于上方的第二部分），因而只需进行如下步骤<br/>
-1.viewModel中定义RxSwift可以监听的值<br/>
-2.在view/viewController 中对该值进行监听，设置触发后的变化逻辑。</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/3/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -670,6 +711,12 @@ view实现的具体功能<br/>
 	      
 		      
 			      <li class="post">
+			        <a href="15350236247070.html">论UITableView的dequeueReusableCell方法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15348619116019.html">重构Massive AppDelegate</a>
 			      </li>
 		     
@@ -689,12 +736,6 @@ view实现的具体功能<br/>
 		      
 			      <li class="post">
 			        <a href="15325341079693.html">fastlane相关</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15325305399890.html">最大值连续子序列</a>
 			      </li>
 		     
 		  

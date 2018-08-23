@@ -4,13 +4,128 @@
   <title><![CDATA[iginkgo在路上]]></title>
   <link href="iginkgo.cn/atom.xml" rel="self"/>
   <link href="iginkgo.cn/"/>
-  <updated>2018-08-21T22:34:02+08:00</updated>
+  <updated>2018-08-23T20:43:29+08:00</updated>
   <id>iginkgo.cn/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[论UITableView的dequeueReusableCell方法]]></title>
+    <link href="iginkgo.cn/15350236247070.html"/>
+    <updated>2018-08-23T19:27:04+08:00</updated>
+    <id>iginkgo.cn/15350236247070.html</id>
+    <content type="html"><![CDATA[
+<p>为什么会想到讨论这个问题呢？以前在使用UITableView的时候，也曾有过疑问，那就是同样是在tableView的缓存中获取cell，下面的两个方法究竟有何不同</p>
+
+<pre><code>func dequeueReusableCell(withIdentifier: String, for: IndexPath) -&gt; UITableViewCell
+
+func dequeueReusableCell(withIdentifier identifier: String) -&gt; UITableViewCell?
+
+</code></pre>
+
+<p>根据官网<a href="https://developer.apple.com/documentation/uikit/uitableview/1614878-dequeuereusablecell">有IndexPath</a>以及<a href="https://developer.apple.com/documentation/uikit/uitableview/1614891-dequeuereusablecell">无IndexPath</a>上的说法，</p>
+
+<p>两者的介绍非常的相似，一个tableView通常会维持一个队列的cel，用以给dataSource复用。调用这个方法时，就是要求tableView返回一个新的cell。如果队列中有现成的cell，那可以直接拿出来复用。如果没有现成的cell，可以通过注册的nib file或者是class重新创建。<br/>
+ 如果是通过注册的class进行创建，则需要调用方法<code>init(style: reuseIdentifier:)</code>方法进行创建。对于基于nib的class，则是直接通过nib文件进行创建。如果存在可以直接复用的cell，则会调用cell的<code>prepareForReuse()</code>方法。</p>
+
+<p>那么看起来，这两个方法仅仅有两点不一样</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center">dequeueReusableCell(withIdentifier: String, for: IndexPath)</th>
+<th style="text-align: center">dequeueReusableCell(withIdentifier: String)</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td style="text-align: center">不能返回nil</td>
+<td style="text-align: center">可以返回nil</td>
+</tr>
+<tr>
+<td style="text-align: center">有indexPath参数</td>
+<td style="text-align: center">没有indexPath参数</td>
+</tr>
+</tbody>
+</table>
+
+<p>那么方法中 indexPath 起到了一个什么样的作用呢？ 我们先来看一下最近作者在项目中遇到的一个问题。</p>
+
+<h2 id="toc_0">问题</h2>
+
+<h3 id="toc_1">问题代码</h3>
+
+<p>问题的背景是一个竖直方向的UITableView， 其中一种cell包裹可以水平滑动的UICollectionView。<br/>
+啥也不说，上代码。</p>
+
+<pre><code> public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell {
+    guard let cell = tableView.dequeueReusableCell(withIdentifier:  FocusRecommentMediaTableViewCell.cellId, for: indexPath) as?    FocusRecommentMediaTableViewCell else {
+        return FocusRecommentMediaTableViewCell()
+    }
+    cell.collectionView.dataSource = self
+    
+    //还有可能是其他类型的cell
+    return cell
+</code></pre>
+
+<p>通过代码我们可以粗略的了解到，当前是一个tableView的返回cell的方法。这个UITableViewCell中又嵌套了一个UICollectionView。</p>
+
+<p>需要提一点的是，我在对应的UITableViewCell的初始化方法中，并没有对其持有UICollectionView的dataSource进行赋值。即 初始化时<code>collectionView.dataSource == nil</code>。</p>
+
+<h3 id="toc_2">意外</h3>
+
+<p>项目中通常跑的都是没有问题的，直到测试到某一个手机 iphone6，iOS9.3<br/>
+此时，在<code>缓慢向下滑动的情况下</code>，系统是没有问题的。<br/>
+在用户快速向下滑动，即将出现此类cell时，会出现崩溃。</p>
+
+<p>问题描述</p>
+
+<pre><code>UICollectionView dataSource is not set
+</code></pre>
+
+<p>在添加了Exception 捕获后，得到以下提示</p>
+
+<pre><code>*** Assertion failure in -[CollectionView _createPreparedSupplementaryViewForElementOfKind:atIndexPath:withLayoutAttributes:applyAttributes:], /BuildRoot/Library/Caches/com.apple.xbs/Sources/UIKit_Sim/UIKit-3512.60.7/UICollectionView.m:1599
+</code></pre>
+
+<p>作者有对更高级的iOS系统进行了测试，发现完全没有这个问题。<br/>
+那既然提示，DataSource没有进行设置，可能是调用时机的问题，因此，比较粗劣的解决方案是，在UITableView进行初始化，并对UICollectionView进行配置时，设置一个临时的dataSource。<br/>
+但是这个解决方案仍然不能解决我的疑惑，经过进一步的定位，发现崩溃的具体位置</p>
+
+<pre><code> guard let cell = tableView.dequeueReusableCell(withIdentifier:  FocusRecommentMediaTableViewCell.cellId, for: indexPath) as?    FocusRecommentMediaTableViewCell else {
+        return FocusRecommentMediaTableViewCell()
+    }
+
+</code></pre>
+
+<p>即在调用<code>tableView.dequeueReusableCell(withIdentifier: for:)</code>方法时发生了崩溃。在这个时候，UITableViewCell还没有返回给cell， UICollectionView还没有设置dataSource。让我好奇的是，这个时机应该是UICollectionView在进行初始化的时候，<code>没有进行reload操作</code>,为何会调用到dataSource，而在iOS9以后则没有这个问题。而且必须是快速滑动的情况才会发生。</p>
+
+<p>这个时候大家就会问了，上面磨磨唧唧说了半天的为题，跟这次的题目有什么关系？<br/>
+是的，将上面的方法换成<code>tableView.dequeueReusableCell(withIdentifier:)</code>,也就是去除掉indexPath这个参数以后，就完全不会出现上面的问题了。</p>
+
+<p>那么关键的问题来了，对于此处非常重要的一个参数 indexPath， 它在此处起了一个什么样的作用？</p>
+
+<p>在developer.apple的文档里， 有一句一笔带过的说明</p>
+
+<blockquote>
+<p>This method uses the index path to perform additional configuration based on the cell’s position in the table view.</p>
+</blockquote>
+
+<p>说的是<code>func dequeueReusableCell(withIdentifier identifier: String, <br/>
+                     for indexPath: IndexPath) -&gt; UITableViewCell</code>这个方法会使用indexPath来进行一些基于cell位置的额外配置。那这是配置是什么呢?</p>
+
+<p>那这个额外的配置是什么呢？</p>
+
+<p>我还要看看</p>
+
+<p>to be continued...</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[重构Massive AppDelegate]]></title>
@@ -2501,33 +2616,6 @@ viewControllerB  viewDidAppear()
 <li>到底本质上是什么东西导致了这个做法如此**？</li>
 <li>与这个问题类似的还有其他问题吗？</li>
 </ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Macros_2]]></title>
-    <link href="iginkgo.cn/15209403224294.html"/>
-    <updated>2018-03-13T19:25:22+08:00</updated>
-    <id>iginkgo.cn/15209403224294.html</id>
-    <content type="html"><![CDATA[
-<span id="more"></span><!-- more -->
-
-<p>宏的展开顺序</p>
-
-<p>遇到宏名后(1)<br/><br/>
-检查对应的宏体中是否含有#和##运算符<br/>
-无——处理宏参数（实参）<br/>
-    遇到宏名，回到(1)<br/>
-    没有遇到，在宏体中用实参字符串替换形式参数，再检查是否遇到宏名(4)<br/>
- ...<br/>
-有——不检查宏参数，在宏体中用实参字符串替换形式参数，再检查是否含有宏名(3)<br/>
-    遇到宏名，回到(1)<br/>
-    没有遇到，结束(5)</p>
-
-<h2 id="toc_0">短路表达式</h2>
-
-<p><a href="http://blog.163.com/m13591120447_1/blog/static/21637918920137811837285/">参考资料</a></p>
 
 ]]></content>
   </entry>

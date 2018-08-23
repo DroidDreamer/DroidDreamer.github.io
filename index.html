@@ -107,6 +107,143 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15350236247070.html">
+                
+                  <h1>论UITableView的dequeueReusableCell方法</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>为什么会想到讨论这个问题呢？以前在使用UITableView的时候，也曾有过疑问，那就是同样是在tableView的缓存中获取cell，下面的两个方法究竟有何不同</p>
+
+<pre><code>func dequeueReusableCell(withIdentifier: String, for: IndexPath) -&gt; UITableViewCell
+
+func dequeueReusableCell(withIdentifier identifier: String) -&gt; UITableViewCell?
+
+</code></pre>
+
+<p>根据官网<a href="https://developer.apple.com/documentation/uikit/uitableview/1614878-dequeuereusablecell">有IndexPath</a>以及<a href="https://developer.apple.com/documentation/uikit/uitableview/1614891-dequeuereusablecell">无IndexPath</a>上的说法，</p>
+
+<p>两者的介绍非常的相似，一个tableView通常会维持一个队列的cel，用以给dataSource复用。调用这个方法时，就是要求tableView返回一个新的cell。如果队列中有现成的cell，那可以直接拿出来复用。如果没有现成的cell，可以通过注册的nib file或者是class重新创建。<br/>
+ 如果是通过注册的class进行创建，则需要调用方法<code>init(style: reuseIdentifier:)</code>方法进行创建。对于基于nib的class，则是直接通过nib文件进行创建。如果存在可以直接复用的cell，则会调用cell的<code>prepareForReuse()</code>方法。</p>
+
+<p>那么看起来，这两个方法仅仅有两点不一样</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center">dequeueReusableCell(withIdentifier: String, for: IndexPath)</th>
+<th style="text-align: center">dequeueReusableCell(withIdentifier: String)</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td style="text-align: center">不能返回nil</td>
+<td style="text-align: center">可以返回nil</td>
+</tr>
+<tr>
+<td style="text-align: center">有indexPath参数</td>
+<td style="text-align: center">没有indexPath参数</td>
+</tr>
+</tbody>
+</table>
+
+<p>那么方法中 indexPath 起到了一个什么样的作用呢？ 我们先来看一下最近作者在项目中遇到的一个问题。</p>
+
+<h2 id="toc_0">问题</h2>
+
+<h3 id="toc_1">问题代码</h3>
+
+<p>问题的背景是一个竖直方向的UITableView， 其中一种cell包裹可以水平滑动的UICollectionView。<br/>
+啥也不说，上代码。</p>
+
+<pre><code> public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell {
+    guard let cell = tableView.dequeueReusableCell(withIdentifier:  FocusRecommentMediaTableViewCell.cellId, for: indexPath) as?    FocusRecommentMediaTableViewCell else {
+        return FocusRecommentMediaTableViewCell()
+    }
+    cell.collectionView.dataSource = self
+    
+    //还有可能是其他类型的cell
+    return cell
+</code></pre>
+
+<p>通过代码我们可以粗略的了解到，当前是一个tableView的返回cell的方法。这个UITableViewCell中又嵌套了一个UICollectionView。</p>
+
+<p>需要提一点的是，我在对应的UITableViewCell的初始化方法中，并没有对其持有UICollectionView的dataSource进行赋值。即 初始化时<code>collectionView.dataSource == nil</code>。</p>
+
+<h3 id="toc_2">意外</h3>
+
+<p>项目中通常跑的都是没有问题的，直到测试到某一个手机 iphone6，iOS9.3<br/>
+此时，在<code>缓慢向下滑动的情况下</code>，系统是没有问题的。<br/>
+在用户快速向下滑动，即将出现此类cell时，会出现崩溃。</p>
+
+<p>问题描述</p>
+
+<pre><code>UICollectionView dataSource is not set
+</code></pre>
+
+<p>在添加了Exception 捕获后，得到以下提示</p>
+
+<pre><code>*** Assertion failure in -[CollectionView _createPreparedSupplementaryViewForElementOfKind:atIndexPath:withLayoutAttributes:applyAttributes:], /BuildRoot/Library/Caches/com.apple.xbs/Sources/UIKit_Sim/UIKit-3512.60.7/UICollectionView.m:1599
+</code></pre>
+
+<p>作者有对更高级的iOS系统进行了测试，发现完全没有这个问题。<br/>
+那既然提示，DataSource没有进行设置，可能是调用时机的问题，因此，比较粗劣的解决方案是，在UITableView进行初始化，并对UICollectionView进行配置时，设置一个临时的dataSource。<br/>
+但是这个解决方案仍然不能解决我的疑惑，经过进一步的定位，发现崩溃的具体位置</p>
+
+<pre><code> guard let cell = tableView.dequeueReusableCell(withIdentifier:  FocusRecommentMediaTableViewCell.cellId, for: indexPath) as?    FocusRecommentMediaTableViewCell else {
+        return FocusRecommentMediaTableViewCell()
+    }
+
+</code></pre>
+
+<p>即在调用<code>tableView.dequeueReusableCell(withIdentifier: for:)</code>方法时发生了崩溃。在这个时候，UITableViewCell还没有返回给cell， UICollectionView还没有设置dataSource。让我好奇的是，这个时机应该是UICollectionView在进行初始化的时候，<code>没有进行reload操作</code>,为何会调用到dataSource，而在iOS9以后则没有这个问题。而且必须是快速滑动的情况才会发生。</p>
+
+<p>这个时候大家就会问了，上面磨磨唧唧说了半天的为题，跟这次的题目有什么关系？<br/>
+是的，将上面的方法换成<code>tableView.dequeueReusableCell(withIdentifier:)</code>,也就是去除掉indexPath这个参数以后，就完全不会出现上面的问题了。</p>
+
+<p>那么关键的问题来了，对于此处非常重要的一个参数 indexPath， 它在此处起了一个什么样的作用？</p>
+
+<p>在developer.apple的文档里， 有一句一笔带过的说明</p>
+
+<blockquote>
+<p>This method uses the index path to perform additional configuration based on the cell’s position in the table view.</p>
+</blockquote>
+
+<p>说的是<code>func dequeueReusableCell(withIdentifier identifier: String, <br/>
+                     for indexPath: IndexPath) -&gt; UITableViewCell</code>这个方法会使用indexPath来进行一些基于cell位置的额外配置。那这是配置是什么呢?</p>
+
+<p>那这个额外的配置是什么呢？</p>
+
+<p>我还要看看</p>
+
+<p>to be continued...</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/8/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15348619116019.html">
                 
                   <h1>重构Massive AppDelegate</h1>
@@ -493,52 +630,6 @@ TopicModel -&gt; IndexProtocol</p>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15319270059690.html">
-                
-                  <h1>随想系列(-)</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>最近走上上班的路上，常常会触发一些联想。这可能就是乱七八糟的书多了，就会触发跨区域的传输。</p>
-
-<p>今天思考了个问题， <strong>人为什么要学习呢？</strong><br/>
-最近两天也在刷算法的一些问题。发现很多问题的解决确实是需要一些奇思妙想，这些天马行空的思想需要一个卓越的大脑来实现。然而大部分算法的实现都是有<strong>套路</strong>的。作为普通劳动力里的我，也就只能通过不断的接触和实践才能慢慢掌握。<br/>
-这里就把解题的人分为两种类型：聪明人和平庸的人。 <br/>
-针对一个问题，聪明人可能直接给出答案，平庸的人呢，要针对给出的细节，进行反复的思考。<br/>
-这里就体现了不同的人，他的思维深度和广度。<br/>
-思维的深度指的是，针对一个一些底层条件和细节，是否能够推断出高层次的结论，进而由这些高层次的结论，推断出想要的结果。 这个已知条件实现的“升级”，也就是我们平时常说的知识点了。对于不了解这些知识点的人，对于那些底层的细节，也都是束手无策的。<br/>
-我又想到以前讨论的很火热的一个问题”现在搜索软件已经这么方便了，可以直接在网络搜索我需要的结果，那我还要花时间学习，有必要吗?“  我的结论是——非常有必要。<br/>
-coursera上有一门课程，叫做《Learn How to learn》, 里面介绍了学习知识的一种理论： 我们学习的东西在大脑中就是一个点，与该知识相关的知识就是另外一个点，当我们学习并深化之后，两个点就会建立一个连接，在大脑思考问题时，考虑到某个点，就很自然的通过连接到达其他的相关知识点。这就是推论、联想。连接是可以通过不断的思考，练习来强化的。这样，随着点的越来越多，连接的越来越多，最终形成了牢固的知识体系。我们在考虑一个问题的时候，可以藉由这个知识网络到达体系内的任意一点。这也代表了在某一个领域内的广度和深度。而这一点是很难通过网络引擎来替代。<br/>
-回到解题的问题上来，知识体系丰富的人，对于现有的条件，很容易在网络中寻找相关的信息，利用这些相关信息来处理问题。而体系狭窄，萎缩的人，想破脑袋也很难想的出来，临时使用搜索引擎，针对相关的知识进行学习，其挑选、吸收的过程就需要很大的成本。</p>
-
-<p>我当前希望自己做的，就是不断强化和延伸这样的知识网络。</p>
-
-<p>第二个想法呢， 每天做一件让自己赞叹的事情吧。让自己的一天显得与众不同。<br/>
-第三个想法呢 克服习惯的惯性，克服欲望。完成一个完整的流程，好好的做完一件事。</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/7/18</span>
-                    
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -616,6 +707,12 @@ coursera上有一门课程，叫做《Learn How to learn》, 里面介绍了学�
 	      
 		      
 			      <li class="post">
+			        <a href="15350236247070.html">论UITableView的dequeueReusableCell方法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15348619116019.html">重构Massive AppDelegate</a>
 			      </li>
 		     
@@ -635,12 +732,6 @@ coursera上有一门课程，叫做《Learn How to learn》, 里面介绍了学�
 		      
 			      <li class="post">
 			        <a href="15325341079693.html">fastlane相关</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15325305399890.html">最大值连续子序列</a>
 			      </li>
 		     
 		  
