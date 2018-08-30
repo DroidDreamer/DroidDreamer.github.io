@@ -162,33 +162,48 @@
 <a href="#toc_6">行为统一：</a>
 </li>
 <li>
-<a href="#toc_7">错误处理</a>
+<a href="#toc_7">代码污染</a>
 </li>
 <li>
-<a href="#toc_8">改动不是对代码的提升</a>
+<a href="#toc_8">重复代码-&gt;抽取</a>
 </li>
 <li>
-<a href="#toc_9">效率/性能</a>
+<a href="#toc_9">开闭原则</a>
+</li>
+<li>
+<a href="#toc_10">面向接口</a>
+</li>
+<li>
+<a href="#toc_11">健壮</a>
+</li>
+<li>
+<a href="#toc_12">错误处理</a>
+</li>
+<li>
+<a href="#toc_13">改动不是对代码的提升</a>
+</li>
+<li>
+<a href="#toc_14">效率/性能</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_10">代码风格</a>
+<a href="#toc_15">代码风格</a>
 <ul>
 <li>
-<a href="#toc_11">可读性</a>
+<a href="#toc_16">可读性</a>
 </li>
 <li>
-<a href="#toc_12">命名</a>
+<a href="#toc_17">命名</a>
 </li>
 <li>
-<a href="#toc_13">函数长度/类长度</a>
+<a href="#toc_18">函数长度/类长度</a>
 </li>
 <li>
-<a href="#toc_14">注释</a>
+<a href="#toc_19">注释</a>
 </li>
 <li>
-<a href="#toc_15">参数个数</a>
+<a href="#toc_20">参数个数</a>
 </li>
 </ul>
 </li>
@@ -253,13 +268,22 @@
 <li>缓存是否统一</li>
 <li>错误处理是否统一</li>
 <li>错误提示是否统一</li>
-<li>弹出框是否统一
-##### 代码污染
-代码是否对其他模块强耦合
-##### 重复代码-&gt;抽取
-##### 开闭原则
-##### 面向接口
-##### 健壮</li>
+<li>弹出框是否统一</li>
+</ul>
+
+<h5 id="toc_7">代码污染</h5>
+
+<p>代码是否对其他模块强耦合</p>
+
+<h5 id="toc_8">重复代码-&gt;抽取</h5>
+
+<h5 id="toc_9">开闭原则</h5>
+
+<h5 id="toc_10">面向接口</h5>
+
+<h5 id="toc_11">健壮</h5>
+
+<ul>
 <li>是否考虑线程安全</li>
 <li>数据访问是否一致</li>
 <li>边界处理是否是完整</li>
@@ -271,41 +295,41 @@
 。。。。。。</li>
 </ul>
 
-<h5 id="toc_7">错误处理</h5>
+<h5 id="toc_12">错误处理</h5>
 
-<h5 id="toc_8">改动不是对代码的提升</h5>
+<h5 id="toc_13">改动不是对代码的提升</h5>
 
 <p>新的改动是打补丁，让代码质量继续恶化，还是对代码质量做了修复</p>
 
-<h5 id="toc_9">效率/性能</h5>
+<h5 id="toc_14">效率/性能</h5>
 
 <ul>
 <li>关键算法的时间复杂度多少？有没有可能有潜在的性能瓶颈</li>
 <li>客户端程序对频繁消息和较大数据等耗时操作是否处理得当</li>
 </ul>
 
-<h4 id="toc_10">代码风格</h4>
+<h4 id="toc_15">代码风格</h4>
 
-<h5 id="toc_11">可读性</h5>
+<h5 id="toc_16">可读性</h5>
 
 <p>是否可以很轻易的理解代码</p>
 
-<h5 id="toc_12">命名</h5>
+<h5 id="toc_17">命名</h5>
 
 <p>对可读性很重要<br/>
 是否跟系统命名冲突<br/>
 英语用词尽量准确</p>
 
-<h5 id="toc_13">函数长度/类长度</h5>
+<h5 id="toc_18">函数长度/类长度</h5>
 
 <p>函数太长不好阅读<br/>
 类太长检查是否违反<code>单一职责</code></p>
 
-<h5 id="toc_14">注释</h5>
+<h5 id="toc_19">注释</h5>
 
 <p>恰到好处的注释，不是注释越多越好</p>
 
-<h5 id="toc_15">参数个数</h5>
+<h5 id="toc_20">参数个数</h5>
 
 <p>不要太多，一般不要超过三个</p>
 
@@ -422,6 +446,12 @@ gitment.render('container')
 	      
 		      
 			      <li class="post">
+			        <a href="15356370719300.html">KVO的简单理解</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15350236247070.html">论UITableView的dequeueReusableCell方法</a>
 			      </li>
 		     
@@ -441,12 +471,6 @@ gitment.render('container')
 		      
 			      <li class="post">
 			        <a href="15326191313814.html">autoRelease Pool 总结</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15325341079693.html">fastlane相关</a>
 			      </li>
 		     
 		  

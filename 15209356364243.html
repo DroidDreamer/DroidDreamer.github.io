@@ -152,8 +152,6 @@ Objective—C语言与其他语言不同，必须通过查询类型信息，才�
 <p>虽然<code>[instance class]</code>方法可以查询对象的类型信息，但是还是建议使用<code>isKindOfClass</code>这样的类型信息查询方法。因为这个方法可以正确的处理那些使用了消息传递机制的对象。比方说某个对象可能会把其的所有选择子（selector）都转发给另一个对象(开启了消息转发功能)<strong>。这样的对象叫做”代理(proxy)“，此种对象所属的类均以NSProxy为根类（root class）。通常情况下，如果在此种代理对象上调用class方法，那么返回的是代理对象本身（NSProxy的子类），而非接受代理的对象所属的类。然而，若是改用“isKindOfClass:”这样的类型信息查询方法，那么代理对象就会把这条消息转给“接受代理的对象（proxy object）”。也就是说，这条消息（指isKindOfClass:）的返回值与直接接受代理的对象身上查询其类型信息所得的结果相同。因此，这样查出来的类对象与直接通过class方法所返回的那个类对象不同，class方法所返回类表示发起代理的对象，而非接受代理的对象。</strong>  </p>
 </blockquote>
 
-<h1 id="toc_2">加粗部分没看懂</h1>
-
 <p><a href="http://www.jianshu.com/p/374b570e1920">原文出处</a></p>
 
 
@@ -267,6 +265,12 @@ gitment.render('container')
 	      
 		      
 			      <li class="post">
+			        <a href="15356370719300.html">KVO的简单理解</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15350236247070.html">论UITableView的dequeueReusableCell方法</a>
 			      </li>
 		     
@@ -286,12 +290,6 @@ gitment.render('container')
 		      
 			      <li class="post">
 			        <a href="15326191313814.html">autoRelease Pool 总结</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15325341079693.html">fastlane相关</a>
 			      </li>
 		     
 		  

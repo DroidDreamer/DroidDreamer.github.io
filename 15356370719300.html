@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  对于首页的优化 - iginkgo在路上
+  KVO的简单理解 - iginkgo在路上
   
   </title>
   
@@ -107,10 +107,10 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>对于首页的优化</h1>
+          <h1>KVO的简单理解</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2018/7/25</span>
+          <span class="date">2018/8/30</span>
 
           <span>posted in&nbsp;</span> 
           
@@ -127,97 +127,90 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <!-- 进行中 -->
+      <span id="more"></span><!-- more -->
 
-<p>当前页面中存在的问题</p>
+<h2 id="toc_0">首先罗列一下当前已知的点</h2>
 
-<pre><code>switch model.style {
-case .news: 
-    let cell = tableView.dequeue(&quot;newsCell&quot;) //config
-    //...配置
-    return cell
-case .video:
-     let cell = tableView.dequeue(&quot;videosCell&quot;) //config
-    //...配置
-    return cell
-case .pic:
-     let cell = tableView.dequeue(&quot;picsCell&quot;) //config
-    //...配置
-    return cell
-case .beauty:
-     let cell = tableView.dequeue(&quot;beautyCell&quot;) //config
-    //...配置
-    return cell
-case .bigImage:
-     let cell = tableView.dequeue(&quot;bigImageCell&quot;) //config
-    //...配置
-    return cell
-default: ...
-}
+<ol>
+<li>iOS中的KVO是是基于runtime的</li>
+<li>某个类的属性首次添加KVO后，会生成一个派生类<code>NSKVONotifying_类名</code>。在派生类中重写被观察的属性的set方法，以此来实现真正的通知</li>
+<li>对象第一次被观察后，该对象的<code>isa</code>指针会指向新生成的派生类。从而确保被监控的属性值发生改变时，调用的是派生类的setter方法。</li>
+</ol>
+
+<h2 id="toc_1">验证一下</h2>
+
+<pre><code>   Person *person = [[Person alloc] init];
+    [person addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew|
+    NSKeyValueObservingOptionOld  context:NULL];
+    NSLog(@&quot;person-&gt;isa:%@&quot;,object_getClass(person));
+    NSLog(@&quot;person class:%@&quot;,[person class]);
 </code></pre>
 
-<p>实际页面涉及到的cell种类不止这些，并且在未来的开发过程中会随着app特性的增加而增长，因为每次需要维护和更新时对整个大的代码块进行修改就编程一个非常杂乱的过程，稍有不慎还会影响整体的逻辑。那这里我们需要利用协议的特性进行设计。<a href="https://xiaozhuanlan.com/topic/2537681490">相关参考</a></p>
+<p><img src="media/15356370719300/15356412308181.jpg" alt=""/></p>
 
-<p>实际项目中定义了一个协议，用来表示整个的数据类型</p>
+<p>那么有一个问题是， class方法和object_getclass方法都应该是获取元类的方法，有什么不一样的？为什么获取的结果不一样呢？<br/>
+//TODO:</p>
 
-<pre><code class="language-表示我们的基本类型以及转换后的类型">protocol ParseMessageType{
-    associatetype: Original
-    associatetype: ParseResult
-}
+<p>继续执行一下</p>
+
+<pre><code>  [person removeObserver:self forKeyPath:@&quot;name&quot;];
+    NSLog(@&quot;person-&gt;isa:%@&quot;,object_getClass(person));
+    NSLog(@&quot;person class:%@&quot;,[person class]);
 </code></pre>
 
-<p>那<code>Original</code>-&gt;<code>ParseResult</code>的转换步骤通过一个 parser来完成， 叫做<code>MessageParser</code></p>
+<p><img src="media/15356370719300/15356414025816.jpg" alt=""/></p>
 
-<pre><code>protocol MessageParser {
- 
- associatetype: Message
- associatetype: Target: ParaseMessageType where Message == Target.Original
-    func parse(messgae: Message)-&gt; Target.ParsedResult
+<p>此时可以看到，输出的结果中，两个方法都编程了person</p>
+
+<p>这里说明在对实例<code>person</code>进行监听以后，生成了一个新的派生类<code>NSKVONotifying_Person</code></p>
+
+<p><strong>注意</strong>： 再次进行监听时， 如果已经生成了<code>NSKVONotifying_Person</code>这个派生类，不会在此基础上形成新的派生类了。</p>
+
+<h2 id="toc_2">问题 Category添加的属性能否进行KVO？</h2>
+
+<p>不能</p>
+
+<pre><code>
+@implementation Person (Category)
+static char *CloudoxKey = &quot;CloudoxKey&quot;;
+
+-(void)setCloudox:(NSString *)cloudox{
+    objc_setAssociatedObject(self, CloudoxKey, cloudox, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
+
+-(NSString *)cloudox{
+    return objc_getAssociatedObject(self, CloudoxKey);
+}
+@end
+</code></pre>
+
+<pre><code>//在调用的viewController中
+
+  [person addObserver:self forKeyPath:@&quot;CloudoxKey&quot; options:NSKeyValueObservingOptionNew|
+    NSKeyValueObservingOptionOld context:NULL];
+
+    person.cloudox = @&quot;11&quot;;
+    person.cloudox = @&quot;22&quot;;
+
+
 
 </code></pre>
 
-<p>对于Target遵守 ParaseMessageType 的协议， 并且它的 original和message一致， 这就对parse方法的返回值进行了限定，编译过程中进行类型检查时会进行严格的类型匹配。</p>
+<pre><code>//输出代码
 
-<p>在具体MessageType实现的过程中</p>
 
-<pre><code>final class ParsedChatMessage: ParsedMessageType {
-    let output: NSAttributedString
-    let original: ChatMessage
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary&lt;NSKeyValueChangeKey,id&gt; *)change context:(void *)context {
+    if([keyPath isEqualToString:@&quot;CloudoxKey&quot;] || [keyPath isEqualToString:@&quot;age&quot;] ){
+        NSLog(@&quot;\\noldnum:%@ newnum:%@&quot;,
+              [change valueForKey:@&quot;old&quot;],
+              [change valueForKey:@&quot;new&quot;]);
+    }
     
-    init(message: ChatMessage){
-        original = messgae
-        let parser = Parser()
-        self.output = parser.parse(message: message)
-    }
 }
-
-struct Parser: MessageParser {
-    typealias Target = ParsedChatMessage
-    func parse(message: ChatMeaasge)-&gt; NSAttributeString {
-     let reuslt = ...
-     return .init(attributedString: result...)
-    }
-}
-
 
 </code></pre>
 
-<p>那么实际中的本地效果呢：</p>
-
-<p>FeedModel   IndexProtocol   cellViewModel1  cellViewModel2cellViewModel3</p>
-
-<p>在 feedModel，<br/>
-在feedModel中实现fakeModel<br/>
-FeedModel-&gt; IndexProtocol<br/>
-fakeModel-&gt; IndexProtocol<br/>
-TopicModel -&gt; IndexProtocol</p>
-
-<p>对应的不同的cell， </p>
-
-<p>此外，需要进一步实践的</p>
-
-<p><a href="http://xiaozhuanlan.com/topic/6104325798">delegate改进</a></p>
+<p>结果是没有任何响应。表示这样是不能进行KVO的。</p>
 
 
     
@@ -228,16 +221,13 @@ TopicModel -&gt; IndexProtocol</p>
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15325305399890.html" 
-          title="Previous Post: 最大值连续子序列">&laquo; 最大值连续子序列</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="15324314483651.html" 
-          title="Next Post: 首页的优化记录">首页的优化记录 &raquo;</a>
+          <a  href="15350236247070.html" 
+          title="Next Post: 论UITableView的dequeueReusableCell方法">论UITableView的dequeueReusableCell方法 &raquo;</a>
       
       </p>
         </div>
