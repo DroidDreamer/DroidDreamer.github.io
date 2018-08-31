@@ -137,7 +137,7 @@
 <li>对象第一次被观察后，该对象的<code>isa</code>指针会指向新生成的派生类。从而确保被监控的属性值发生改变时，调用的是派生类的setter方法。</li>
 </ol>
 
-<h2 id="toc_1">验证一下</h2>
+<h2 id="toc_1">KVO的实例验证</h2>
 
 <pre><code>   Person *person = [[Person alloc] init];
     [person addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew|
@@ -149,9 +149,9 @@
 <p><img src="media/15356370719300/15356412308181.jpg" alt=""/></p>
 
 <p>那么有一个问题是， class方法和object_getclass方法都应该是获取元类的方法，有什么不一样的？为什么获取的结果不一样呢？<br/>
-//TODO:</p>
+class 本身也是获取实例元类型的方法，但是在实现时KVO时，class的方法被底层改写， 因此看到的会依旧指向原生的类。</p>
 
-<p>继续执行一下</p>
+<p><strong>取消KVO之后</strong>，看一下diamante以及最终效果</p>
 
 <pre><code>  [person removeObserver:self forKeyPath:@&quot;name&quot;];
     NSLog(@&quot;person-&gt;isa:%@&quot;,object_getClass(person));
@@ -160,15 +160,16 @@
 
 <p><img src="media/15356370719300/15356414025816.jpg" alt=""/></p>
 
-<p>此时可以看到，输出的结果中，两个方法都编程了person</p>
+<p>此时可以看到，输出的结果中，两个方法都变成了person</p>
 
-<p>这里说明在对实例<code>person</code>进行监听以后，生成了一个新的派生类<code>NSKVONotifying_Person</code></p>
+<p>这里说明在对实例<code>person</code>进行监听以后，生成了一个新的派生类<code>NSKVONotifying_Person</code>，在取消监听之后，其isa指针的指向由派生类回到了原始的类。</p>
 
 <p><strong>注意</strong>： 再次进行监听时， 如果已经生成了<code>NSKVONotifying_Person</code>这个派生类，不会在此基础上形成新的派生类了。</p>
 
-<h2 id="toc_2">问题 Category添加的属性能否进行KVO？</h2>
+<h2 id="toc_2">分类中新添<strong>属性</strong>的KVO</h2>
 
-<p>不能</p>
+<p>通常，如果希望在category中添加属性时， 会使用基于runtime的关联值的方式进行实现。使用<code>objc_getAssociatedObject</code>,<code>objc_setAssociatedObject</code>这两个方式来实现get和set方法。<br/>
+那么对于这种情况实现的属性，在进行KVO时，能否正常的获取呢？答案是可以的。</p>
 
 <pre><code>
 @implementation Person (Category)
@@ -210,7 +211,7 @@ static char *CloudoxKey = &quot;CloudoxKey&quot;;
 
 </code></pre>
 
-<p>结果是没有任何响应。表示这样是不能进行KVO的。</p>
+<p>最终在属性值发生变动时，也是可以看到对应的输出的。</p>
 
 
     
