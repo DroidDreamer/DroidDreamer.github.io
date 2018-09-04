@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  算法_最长递增子序列 - iginkgo在路上
+  KVO代码测试以及探究 - iginkgo在路上
   
   </title>
   
@@ -107,14 +107,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>算法_最长递增子序列</h1>
+          <h1>KVO代码测试以及探究</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2018/3/13</span>
+          <span class="date">2018/9/4</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='%E7%BC%96%E7%A8%8B.html'>编程</a></span>
+              <span class="posted-in"><a href='iOS.html'>iOS</a></span>
            
          
           <span class="comments">
@@ -127,64 +127,204 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p><strong>问题：给定一个数组，求出该数组的最长递增子序列的长度以及个数</strong></p>
+      <p>之前对于KVO的实现，都仅仅限于修改了对应属性的<code>set</code>方法的实现，使得在该方法使用前与使用后分别触发不同的方法。现在作者想仔细的看一下具体的细节</p>
 
 <span id="more"></span><!-- more -->
 
-<p>示例：<br/>
- <code><br/>
- [1,3,5,4,7] <br/>
- 返回结果为(4，2) //其中长度为4，结果为2<br/>
- 其最长递增子序列分别为[1,3,5,7]和[1,3,4,7] <br/>
-</code></p>
+<h2 id="toc_0">打印一下基本信息</h2>
 
-<p>最终代码</p>
+<p>说是实现的对方法的替换，那实际上是怎么做到的呢？<br/>
+```<br/>
+Person *person1 = [[Person alloc] init];<br/>
+    Person *person2 = [[Person alloc] init];<br/>
+    NSLog(@&quot;添加观察前两个对象的实例 %@, %@ &quot;, person1, person2); //打印实例的地址<br/>
+    NSLog(@&quot;添加观察前两个对象的类 %@, %@ &quot;, [person1 class], [person2 class]); //使用class方法获取类<br/>
+    NSLog(@&quot;添加观察前，两个对象的类 objc_getClass:%@, %@&quot;, object_getClass(person1), object_getClass(person2));//使用objc_getClass 获取类</p>
 
-<pre><code class="language-swift">/// 返回最长递增子序列的长度以及其个数
-///
-/// - Parameter data: 带统计的参数
-/// - Returns: 最长递增子序列的长度以及其个数
-func calculateLIS(data: [Int])-&gt; (length: Int, count: Int) {
-    
-    /// 当前全局最长的递增子序列的长度
-    var maxLength: Int = 0
-    
-    /// 存放以该index为结尾的最长递增子序列的长度
-    var dp: [Int]  =  data.map { (_) -&gt; Int in
-        return 1
-    }
-    
-    
-    /// 存放以该index为结尾的最长递增子序列的个数
-    var ans: [Int] = data.map { (_) -&gt; Int in
-        return 1
-    }
-    print(&quot;1111&quot;)
-    data.enumerated().forEach { (index, value) in
-        
-        for i in 0..&lt;index {
-            print(&quot;\(index)   \(i)&quot;)
-            if data[i] &lt; data[index] {
-                if dp[i] + 1 &gt; dp[index] {
-                    ans[index] = ans[i]
-                    dp[index] = dp[i] + 1
-                    maxLength = max(maxLength, dp[index])
-                } else if dp[i] + 1 == dp[index] {
-                    ans[index] += ans[i]
-                }
-            }
-        }
-    }
-    
-    let count = data.enumerated().filter { (index,value) -&gt; Bool in
-        return dp[index] == maxLength
-        }.reduce(0) { (result, tuple) -&gt; Int in
-            return result + ans[tuple.offset]
-    }
-    
-    return (maxLength,count)
-}
+<pre><code>[person1 addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew context:NULL];
+NSLog(@&quot;添加观察后两个对象的实例 %@, %@ &quot;, person1, person2);
+NSLog(@&quot;添加观察后两个对象的类 %@, %@ &quot;, [person1 class], [person2 class]);
+NSLog(@&quot;添加观察后两个对象的类 objc_getClass:%@, %@&quot;, object_getClass(person1), object_getClass(person2));
 </code></pre>
+
+<pre><code>
+输入的结果：
+![](media/15360544284777/15360571965777.jpg)
+
+由以上的结论可以知道几件事情：
+1.添加KVO之后，实例对象的地址并没有发生改变
+2.添加KVO之后，`[instance class]`获取元类依旧指向person， 但是`object_getClass(instance)`来获取元类则是NSKVONotifying_Person。其中`class`方法拿到的是一个假的结果。`object_getClass`返回的才是一个真正的类型。
+
+
+## 打印一下具体的IMP
+那既然已经知道KVO机制本身是修改了观察元素的IMP，也就是具体的实现，我们打印一下具体的IMP究竟是否发生了改变
+
+</code></pre>
+
+<pre><code>Person *person1 = [[Person alloc] init];
+Person *person2 = [[Person alloc] init];
+
+SEL sel = @selector(setName:);
+
+IMP imp1 = [person1 methodForSelector:sel];
+IMP imp2 = [person2 methodForSelector:sel];
+
+NSLog(@&quot;添加观察前的的Imp分别是 person1: %p, person2: %p&quot;, imp1, imp2);
+
+[person1 addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew context:NULL];
+
+imp1 = [person1 methodForSelector:sel];
+imp2 = [person2 methodForSelector:sel];
+
+NSLog(@&quot;添加观察后的Imp分别是 person1: %p, person2: %p&quot;, imp1, imp2);
+</code></pre>
+
+<pre><code>
+最后的输出：
+
+![](media/15360544284777/15360602518137.jpg)
+
+可以看到，person1在属性name添加了KVO之后，其set方法的IMP发生了变化。
+
+结论： 对于属性添加KVO方法后， 其具体的实现会发生改变。
+
+## 继续探究一下， imp发生了哪些变化
+
+在上方代码段的结尾处添加了断点，进行输出打印
+
+![](media/15360544284777/15360604856835.jpg)
+
+结论：
+添加KVO后，属性的set方法变为`_NssetObjectValueAndNotify`方法。
+而未添加KVO的属性的set方法依旧是 `setName:`
+
+## NSKVONotifying_Person与Person的关系
+从上面得到的结论是， person的实例在添加了KVO后，其元类型变为`NSKVONotifying_Person`,那么当前这两个类到底是什么关系呢？
+
+在代码段的最后添加如下代码：
+
+</code></pre>
+
+<pre><code>NSLog(@&quot;%@ 的父类型为 %@&quot;, object_getClass(person1), class_getSuperclass(object_getClass(person1)));
+NSLog(@&quot;%@ 的父类型为 %@&quot;, object_getClass(person2), class_getSuperclass(object_getClass(person2)));
+</code></pre>
+
+<pre><code>
+打印后的结果表示
+  ![](media/15360544284777/15360609310566.jpg)
+
+结论： 添加KVO后新生成的NSKVONotifying_Person为 person的派生类。
+
+那么最终生成这个新的派生类与原来的Person又有什么不一样呢？
+
+
+
+在代码段最后添加
+
+</code></pre>
+
+<pre><code>NSString *list1 = [self printPersonMethods:object_getClass(person1)];
+NSString *list2 = [self printPersonMethods:object_getClass(person2)];
+
+NSLog(@&quot;%@&quot;, list1);
+NSLog(@&quot;%@&quot;, list2);
+</code></pre>
+
+<pre><code>
+![](media/15360544284777/15360665467454.jpg)
+
+最终输出的结果是
+![](media/15360544284777/15360666460967.jpg)
+可以看到，在派生类中`NSKVONotifying_Person`多了几个方法。其内部也有一个setName：的方法，应该是重写了其父类`Person`中的setName：方法。
+重写了dealloc是为了做一些KVO相关的内存释放的操作
+重写class方法是隐藏了NSKVONotifying_Person这个类的存在。让外界以为依然是Person相关的类。
+
+
+## KVO添加以及取消时候的isa指针
+
+</code></pre>
+
+<p>Person *person = [[Person alloc] init];<br/>
+    [person addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew|<br/>
+    NSKeyValueObservingOptionOld  context:NULL];<br/>
+    NSLog(@&quot;person-&gt;isa:%@&quot;,object_getClass(person));<br/>
+    NSLog(@&quot;person class:%@&quot;,[person class]);<br/>
+```</p>
+
+<p><img src="media/15356370719300/15356412308181.jpg" alt=""/></p>
+
+<p>那么有一个问题是， class方法和object_getclass方法都应该是获取元类的方法，有什么不一样的？为什么获取的结果不一样呢？<br/>
+class 本身也是获取实例元类型的方法，但是在实现时KVO时，class的方法被底层改写， 因此看到的会依旧指向原生的类。</p>
+
+<p><strong>取消KVO之后</strong>，看一下最终效果</p>
+
+<pre><code>  [person removeObserver:self forKeyPath:@&quot;name&quot;];
+    NSLog(@&quot;person-&gt;isa:%@&quot;,object_getClass(person));
+    NSLog(@&quot;person class:%@&quot;,[person class]);
+</code></pre>
+
+<p><img src="media/15356370719300/15356414025816.jpg" alt=""/></p>
+
+<p>此时可以看到，输出的结果中，两个方法都变成了person</p>
+
+<h2 id="toc_1">分类中新添<strong>属性</strong>的KVO</h2>
+
+<p>通常，如果希望在category中添加属性时， 会使用基于runtime的关联值的方式进行实现。使用<code>objc_getAssociatedObject</code>,<code>objc_setAssociatedObject</code>这两个方式来实现get和set方法。<br/>
+那么对于这种情况实现的属性，在进行KVO时，能否正常的获取呢？答案是可以的。</p>
+
+<pre><code>
+@implementation Person (Category)
+static char *CloudoxKey = &quot;CloudoxKey&quot;;
+
+-(void)setCloudox:(NSString *)cloudox{
+    objc_setAssociatedObject(self, CloudoxKey, cloudox, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+-(NSString *)cloudox{
+    return objc_getAssociatedObject(self, CloudoxKey);
+}
+@end
+</code></pre>
+
+<pre><code>//在调用的viewController中
+
+  [person addObserver:self forKeyPath:@&quot;CloudoxKey&quot; options:NSKeyValueObservingOptionNew|
+    NSKeyValueObservingOptionOld context:NULL];
+
+    person.cloudox = @&quot;11&quot;;
+    person.cloudox = @&quot;22&quot;;
+
+
+
+</code></pre>
+
+<pre><code>//输出代码
+
+
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary&lt;NSKeyValueChangeKey,id&gt; *)change context:(void *)context {
+    if([keyPath isEqualToString:@&quot;CloudoxKey&quot;] || [keyPath isEqualToString:@&quot;age&quot;] ){
+        NSLog(@&quot;\\noldnum:%@ newnum:%@&quot;,
+              [change valueForKey:@&quot;old&quot;],
+              [change valueForKey:@&quot;new&quot;]);
+    }
+    
+}
+
+</code></pre>
+
+<h2 id="toc_2">总结</h2>
+
+<ol>
+<li>iOS中的KVO是是基于runtime的</li>
+<li>某个类的属性首次添加KVO后，会生成一个派生类<code>NSKVONotifying_类名</code>。在派生类中重写被观察的属性的set方法，以此来实现真正的通知。新的类也重写的销毁以及class方法，用于掩护派生类的存在</li>
+<li>对象第一次被观察后，该对象的<code>isa</code>指针会指向新生成的派生类。从而确保被监控的属性值发生改变时，调用的是派生类的setter方法。</li>
+<li>使用关联值的方法在分类中实现属性，在赋值时是可以触发KVO的。</li>
+</ol>
+
+<h2 id="toc_3">参考文档</h2>
+
+<p><a href="https://www.jianshu.com/p/0aa83ac521ba">https://www.jianshu.com/p/0aa83ac521ba</a><br/>
+<a href="https://www.jianshu.com/p/dc89f0a2d1ac">https://www.jianshu.com/p/dc89f0a2d1ac</a></p>
 
 
     
@@ -195,16 +335,13 @@ func calculateLIS(data: [Int])-&gt; (length: Int, count: Int) {
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15209385419836.html" 
-          title="Previous Post: 书籍清单">&laquo; 书籍清单</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="15209356364243.html" 
-          title="Next Post: 实例_类_元类">实例_类_元类 &raquo;</a>
+          <a  href="15350236247070.html" 
+          title="Next Post: 论UITableView的dequeueReusableCell方法">论UITableView的dequeueReusableCell方法 &raquo;</a>
       
       </p>
         </div>
