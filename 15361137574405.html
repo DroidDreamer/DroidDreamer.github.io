@@ -1,0 +1,628 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  RxCocoa中的代码hook解析 - iginkgo在路上
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="iginkgo在路上" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:iginkgo.cn ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; iginkgo在路上</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+       
+       <li><a href="index.html">HOME</a></li>
+    <li><a href="archives.html">Archives</a></li>
+    <li><a href="about.html">ABOUT</a></li>
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E7%BC%96%E7%A8%8B.html">编程</a></li>
+        
+            <li><a href="%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html">三省吾身</a></li>
+        
+            <li><a href="iOS.html">iOS</a></li>
+        
+            <li><a href="%E8%AF%BB%E4%B9%A6.html">读书</a></li>
+        
+            <li><a href="codeDaily.html">codeDaily</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>RxCocoa中的代码hook解析</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2018/9/5</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <span id="more"></span><!-- more -->
+
+<ul>
+<li>
+<a href="#toc_0">介绍</a>
+</li>
+<li>
+<a href="#toc_1">Let&#39;s go</a>
+</li>
+<li>
+<a href="#toc_2">MessageSentProxy</a>
+</li>
+<li>
+<a href="#toc_3">registerMessageInterceptor(selector)</a>
+</li>
+<li>
+<a href="#toc_4">解读方法的hook</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">介绍</h2>
+
+<p>在RxCocoa的代码中，对于<code>NSObject</code>的扩展中，有这两个代码，</p>
+
+<pre><code>public func sentMessage(_ selector: Selector) -&gt; Observable&lt;[Any]&gt;
+public func methodInvoked(_ selector: Selector) -&gt; Observable&lt;[Any]&gt;
+</code></pre>
+
+<p>他们分别实现的是在参数<code>selector</code>对应的方法执行前和执行后，分别发出信号，并可以使用RxSwift的监听模式进行监听。</p>
+
+<p>下面是使用效果：</p>
+
+<pre><code>import UIKit
+import RxSwift
+import RxCocoa
+
+class ViewController: UIViewController {
+    private let bag = DisposeBag()
+
+    override func viewDidLoad() {
+        self.rx.sentMessage(#selector(ViewController.viewWillAppear(_:))).asObservable().subscribe { (_) in
+            print(&quot;sendMessage&quot;)
+        }.disposed(by: bag)
+        
+        self.rx.methodInvoked(#selector(ViewController.viewWillAppear(_:))).asObservable().subscribe { (_) in
+            print(&quot;methodInvoked&quot;)
+        }.disposed(by: bag)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print(&quot;viewWillAppear&quot;)
+    }
+}
+</code></pre>
+
+<p>输出结果<br/>
+<img src="media/15361137574405/15361338672279.jpg" alt=""/></p>
+
+<p>最终的效果是在该方法的执行前与执行后的两个时间点进行了hook，插入了其他的方法。</p>
+
+<p>下面我们就剖析一下，RxCocoa究竟做了些什么。<br/>
+本文会从外部调用的方法<code>setMessage</code>开始，一步步查看内部的具体的实现。</p>
+
+<h2 id="toc_1">Let&#39;s go</h2>
+
+<p>简单剖析一下上面的代码，它们分别是对于两个Observable进行了监听(<a href="https://github.com/ReactiveX/RxSwift">RxSwift的介绍</a>)。换句话说，在实际的实现过程中，<br/>
+selector对应的方法在即将执行前肯定是要触发setMessage所对应的Observable并发出信号。<br/>
+selector对应的方法在执行完成肯定要触发methodInvoked所对应的Observable并发出信号。</p>
+
+<p>当然，这都是我们基于当前的调用方法给出的推测，那看看实际都做了些什么。</p>
+
+<p>首先看<code>setMessage</code>所对应的方法的具体实现。</p>
+
+<pre><code>   public func sentMessage(_ selector: Selector) -&gt; Observable&lt;[Any]&gt; {
+        return synchronized {
+            // in case of dealloc selector replay subject behavior needs to be used
+            if selector == deallocSelector {
+                return deallocating.map { _ in [] }
+            }
+
+            do {
+                let proxy: MessageSentProxy = try registerMessageInterceptor(selector) 
+                return proxy.messageSent.asObservable()
+            }
+            catch let e {
+                return Observable.error(e)
+            }
+        }
+    }
+</code></pre>
+
+<p>上面的代码有2行是核心。</p>
+
+<p><code>let proxy: MessageSentProxy = try registerMessageInterceptor(selector)</code><br/>
+<code>proxy.messageSent.asObservable()</code> </p>
+
+<p>其中第一行代码实现的功能是： 为该selector创建一个代理对象，如果已经有了，则直接返回<br/>
+第二行代码，则是返回messageSent的信号源，它能保证在恰当的时候出发信号。</p>
+
+<p>下面分别要对这两个代码进行具体的分析</p>
+
+<h2 id="toc_2">MessageSentProxy</h2>
+
+<p>贴一下MessageSentProxy的具体的代码</p>
+
+<pre><code>fileprivate final class MessageSentProxy
+        : MessageInterceptorSubject
+        , RXMessageSentObserver {
+        typealias E = [AnyObject]
+
+        let messageSent = PublishSubject&lt;[Any]&gt;() //message所对应的subject（Observable），也就是被观察者
+        let methodInvoked = PublishSubject&lt;[Any]&gt;()//invoked 所对应的被观察者
+
+        @objc var targetImplementation: IMP = RX_default_target_implementation()
+
+        var isActive: Bool {
+            return targetImplementation != RX_default_target_implementation()
+        }
+
+        init() {
+        }
+
+        @objc func messageSent(withArguments arguments: [Any]) -&gt; Void {
+            messageSent.on(.next(arguments))
+        }
+
+        @objc func methodInvoked(withArguments arguments: [Any]) -&gt; Void {
+            methodInvoked.on(.next(arguments))
+        }
+
+        deinit {
+            messageSent.on(.completed)
+            methodInvoked.on(.completed)
+        }
+    }
+</code></pre>
+
+<p>从上面可以看出，<code>MessageSentProxy</code>这个类分别持有了名为<code>messageSent</code>以及<code>methodInvoked</code>的两个被观察者。<br/>
+应该可以看出，他们分别对应着selector前后的触发时机，对这两个参数进行监听，也就是变相的监听了selector触发的前后的时机。</p>
+
+<p>其中内部的<code>messageSent(withArguments arguments: [Any])</code>以及<code>methodInvoked(withArguments arguments: [Any])</code>方法分别促使两个被观察者发出信号。</p>
+
+<p>两个方法分别用@objc进行修饰，标明两个方法都可以被OC的调用机制触发。</p>
+
+<p>那当前可以整理出的触发顺序是：<br/>
+1. MessageSentProxy中<code>messageSent(withArguments arguments: [Any])</code>发放被调用<br/>
+2. MessageSentProxy中<code>messageSent = PublishSubject&lt;[Any]&gt;()</code>触发onNext信号<br/>
+3. 外部对于<code>messageSent</code>的监听事件触发</p>
+
+<p>那好，继续深究一下。</p>
+
+<h2 id="toc_3">registerMessageInterceptor(selector)</h2>
+
+<p>上面讲到<code>registerMessageInterceptor(selector)</code>方法是通过selector来创建一个MessageSentProxy，用来实现Observable。 由于同一个selector可能有2个监听事件<code>sentMessage</code>以及<code>methodInvoke</code>, 而两者都是通过同一个<code>MessageSentProxy</code>来实现。因此最终一个selector对应于一个MessageSentProxy,也不需要进行反复的创建。<br/>
+那究竟做了哪些事情呢？</p>
+
+<pre><code> //该方法保证了，在同一个target上 同一个selector 只会有 一个MessageInterceptorSubject与之绑定。
+    fileprivate func registerMessageInterceptor&lt;T: MessageInterceptorSubject&gt;(_ selector: Selector) throws -&gt; T {
+        let rxSelector = RX_selector(selector) //添加前缀，生成一个新的selector 当前只有名字
+        let selectorReference = RX_reference_from_selector(rxSelector) 
+
+        let subject: T
+        if let existingSubject = objc_getAssociatedObject(base, selectorReference) as? T { //如果这个selector有关联值的话， 赋值给subject
+            subject = existingSubject
+        }
+        else { //如果没有，则创建一个Subject对象，把它关联给当前的base
+            subject = T()
+            objc_setAssociatedObject(
+                base,
+                selectorReference,
+                subject,
+                .OBJC_ASSOCIATION_RETAIN_NONATOMIC
+            )
+        }
+
+        if subject.isActive { // 表示其内部的IMP 其实已经赋值了， 否则就是还没有赋值。
+            return subject
+        }
+
+        var error: NSError?
+        let targetImplementation = RX_ensure_observing(base, selector, &amp;error)
+        if targetImplementation == nil {
+            throw error?.rxCocoaErrorForTarget(base) ?? RxCocoaError.unknown
+        }
+
+        subject.targetImplementation = targetImplementation!
+
+        return subject
+</code></pre>
+
+<p>上面的代码做了大概几件事：<br/>
+1.将MessageInterceptorSubject，也就是该方法调用处的MessageSentProxy通过selector与当前的对象进行绑定。</p>
+
+<p>2.如果对应的selector已经绑定过了，则获取已绑定的MessageSentProxy。<br/>
+这是由于对应同一个selector，我们可能有sentMessage以及methodInvoke两个监听事件，两个监听事件由于可以使用同一个MessageSentProxy，避免重复工作。<br/>
+3.开始hook对应的selector，进行插入操作<br/>
+核心代码<br/>
+<code>let targetImplementation = RX_ensure_observing(base, selector, &amp;error)</code></p>
+
+<h2 id="toc_4">解读方法的hook</h2>
+
+<p>这也是当前这个过程中最核心的部分。<br/>
+还记得KVO是怎么实现的吗？如果不记得，可以在看一下(<a href="15360544284777.html">KVO代码测试以及探究</a>)</p>
+
+<p>继续向下深究<code>RX_ensure_observing(base, selector, &amp;error)</code>,并且删除用于行，留下核心代码</p>
+
+<pre><code>/**
+ This is the main entry point for observing messages sent to arbitrary objects.
+ */
+-(IMP __nullable)ensurePrepared:(id __nonnull)target forObserving:(SEL __nonnull)selector error:(NSErrorParam)error {
+    Method instanceMethod = class_getInstanceMethod([target class], selector); //根据target sel 获取method
+
+        Class __nullable swizzlingImplementorClass = [self prepareTargetClassForObserving:target error:error];
+        if (swizzlingImplementorClass == nil) {
+            return nil;
+        }
+
+        NSString *methodEncoding = RX_method_encoding(instanceMethod);
+        RXInterceptWithOptimizedObserver optimizedIntercept = optimizedObserversByMethodEncoding[methodEncoding];
+
+        if (!RX_method_has_supported_return_type(instanceMethod)) {
+            RX_THROW_ERROR([NSError errorWithDomain:RXObjCRuntimeErrorDomain
+                                               code:RXObjCRuntimeErrorObservingMessagesWithUnsupportedReturnType
+                                           userInfo:nil], nil);
+        }
+
+        // optimized interception method
+        if (optimizedIntercept != nil) {
+            IMP interceptorIMPForSelector = [self interceptorImplementationForSelector:selector forClass:swizzlingImplementorClass];
+            if (interceptorIMPForSelector != nil) {
+                return interceptorIMPForSelector;
+            }
+
+            if (!optimizedIntercept(self, swizzlingImplementorClass, selector, error)) {
+                return nil;
+            }
+
+            interceptorIMPForSelector = [self interceptorImplementationForSelector:selector forClass:swizzlingImplementorClass];
+            if (interceptorIMPForSelector != nil) {
+                return interceptorIMPForSelector;
+            }
+        }
+        // default fallback to observing by forwarding messages
+        else {
+            if ([self forwardingSelector:selector forClass:swizzlingImplementorClass]) {
+                return RX_default_target_implementation();
+            }
+
+            if (![self observeByForwardingMessages:swizzlingImplementorClass
+                                          selector:selector
+                                            target:target
+                                             error:error]) {
+                return nil;
+            }
+
+            if ([self forwardingSelector:selector forClass:swizzlingImplementorClass]) {
+                return RX_default_target_implementation();
+            }
+        }
+    
+
+    RX_THROW_ERROR([NSError errorWithDomain:RXObjCRuntimeErrorDomain
+                                       code:RXObjCRuntimeErrorUnknown
+                                   userInfo:nil], nil);
+}
+
+</code></pre>
+
+<p>那实际是如何fake出一个新的派生的class来取代原来的class呢？</p>
+
+<pre><code>-(Class __nullable)prepareTargetClassForObserving:(id __nonnull)target error:(NSErrorParam)error
+</code></pre>
+
+<p>这个方法做了一下几件事<br/>
+1.如果已经有了， 则直接返回（通过关联值进行关联）<br/>
+2.如果class方法与object_getClass获取的元类型不一样，判断是否为KVO，若不是，默认无法处理，返回错误<br/>
+3.生成最终的fakeClass， 并与关联类型进行绑定。</p>
+
+<p>其中，这个fakeClass就类似于KVO机制中的<code>NSKVONotifying_类名</code>. 都是起到一个替换的作用，让实际方法执行的selector被重写，执行的起始以及结尾分别加入触发。</p>
+
+<p>那说到底，还是没有说，具体这两个方法在细节上是如何插入对应的节点的(捂脸)。</p>
+
+<p>有关于fakeClass的具体实现过程，我会在下一篇文章中进行详细的描述。</p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15360544284777.html" 
+          title="Next Post: KVO代码测试以及探究">KVO代码测试以及探究 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <div id="container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+ // id: '页面 ID', // 可选。默认为 location.href
+  owner: 'DroidDreamer',
+  repo: 'DroidDreamer.github.io',
+  oauth: {
+    client_id: 'd58d0c05e62ad0adbc84',
+    client_secret: '9e184212ad06d13c281fae1bf4508f3a9f5684e5',
+  },
+})
+gitment.render('container')
+</script>
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>iginkgo在路上</h1>
+                <div class="site-des">漫漫人生路</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E7%BC%96%E7%A8%8B.html"><strong>编程</strong></a>
+        
+            <a href="%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html"><strong>三省吾身</strong></a>
+        
+            <a href="iOS.html"><strong>iOS</strong></a>
+        
+            <a href="%E8%AF%BB%E4%B9%A6.html"><strong>读书</strong></a>
+        
+            <a href="codeDaily.html"><strong>codeDaily</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15361137574405.html">RxCocoa中的代码hook解析</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15360544284777.html">KVO代码测试以及探究</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15350236247070.html">论UITableView的dequeueReusableCell方法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15348619116019.html">重构Massive AppDelegate</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15330418099703.html">问题记录</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    <script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>
