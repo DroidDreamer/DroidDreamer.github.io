@@ -76,6 +76,8 @@
     <li><label>Categories</label></li>
 
         
+            <li><a href="%E4%B8%80%E5%91%A8%E8%A7%81%E9%97%BB.html">一周见闻</a></li>
+        
             <li><a href="%E7%BC%96%E7%A8%8B.html">编程</a></li>
         
             <li><a href="%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html">三省吾身</a></li>
@@ -316,7 +318,7 @@ static char *CloudoxKey = &quot;CloudoxKey&quot;;
 
 <ol>
 <li>iOS中的KVO是是基于runtime的</li>
-<li>某个类的属性首次添加KVO后，会生成一个派生类<code>NSKVONotifying_类名</code>。在派生类中重写被观察的属性的set方法，以此来实现真正的通知。新的类也重写的销毁以及class方法，用于掩护派生类的存在</li>
+<li>某个类的属性首次添加KVO后，会生成一个派生类 <code>NSKVONotifying_类名</code> 。在派生类中重写被观察的属性的set方法，以此来实现真正的通知。新的类也重写的销毁以及class方法，用于掩护派生类的存在</li>
 <li>对象第一次被观察后，该对象的<code>isa</code>指针会指向新生成的派生类。从而确保被监控的属性值发生改变时，调用的是派生类的setter方法。</li>
 <li>使用关联值的方法在分类中实现属性，在赋值时是可以触发KVO的。</li>
 </ol>
@@ -336,7 +338,7 @@ static char *CloudoxKey = &quot;CloudoxKey&quot;;
         <p class="text-left" style="padding:15px 0px;">
       
           <a href="15361137574405.html" 
-          title="Previous Post: RxCocoa中的代码hook解析">&laquo; RxCocoa中的代码hook解析</a>
+          title="Previous Post: RxCocoa中的 AOP 实现">&laquo; RxCocoa中的 AOP 实现</a>
       
         </p>
         </div>
@@ -412,6 +414,8 @@ gitment.render('container')
 
       	<p class="cat-list">
         
+            <a href="%E4%B8%80%E5%91%A8%E8%A7%81%E9%97%BB.html"><strong>一周见闻</strong></a>
+        
             <a href="%E7%BC%96%E7%A8%8B.html"><strong>编程</strong></a>
         
             <a href="%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html"><strong>三省吾身</strong></a>
@@ -437,7 +441,13 @@ gitment.render('container')
 	      
 		      
 			      <li class="post">
-			        <a href="15361137574405.html">RxCocoa中的代码hook解析</a>
+			        <a href="15366742578883.html">2018.09.10-2018.09.16</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15361137574405.html">RxCocoa中的 AOP 实现</a>
 			      </li>
 		     
 		  
@@ -456,12 +466,6 @@ gitment.render('container')
 		      
 			      <li class="post">
 			        <a href="15348619116019.html">重构Massive AppDelegate</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15330418099703.html">问题记录</a>
 			      </li>
 		     
 		  

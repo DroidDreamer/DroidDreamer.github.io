@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  RxCocoa中的代码hook解析 - iginkgo在路上
+  RxCocoa中的 AOP 实现 - iginkgo在路上
   
   </title>
   
@@ -76,6 +76,8 @@
     <li><label>Categories</label></li>
 
         
+            <li><a href="%E4%B8%80%E5%91%A8%E8%A7%81%E9%97%BB.html">一周见闻</a></li>
+        
             <li><a href="%E7%BC%96%E7%A8%8B.html">编程</a></li>
         
             <li><a href="%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html">三省吾身</a></li>
@@ -107,7 +109,7 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>RxCocoa中的代码hook解析</h1>
+          <h1>RxCocoa中的 AOP 实现</h1>
      
         <div class="read-more clearfix">
           <span class="date">2018/9/5</span>
@@ -148,17 +150,23 @@
 </ul>
 
 
+<blockquote>
+<p>在软件业，AOP为 Aspect Oriented Programming 的缩写，意为：面向切面编程，通过预编译方式和运行期动态代理实现程序功能的统一维护的一种技术。</p>
+</blockquote>
+
 <h2 id="toc_0">介绍</h2>
 
-<p>在RxCocoa的代码中，对于<code>NSObject</code>的扩展中，有这两个代码，</p>
+<p>在 RxCocoa 的代码中，对于 <code>NSObject</code> 的扩展中，有这两个代码，实现了对于实例方法的 AOP</p>
 
-<pre><code>public func sentMessage(_ selector: Selector) -&gt; Observable&lt;[Any]&gt;
+<pre><code class="language-swift">
+public func sentMessage(_ selector: Selector) -&gt; Observable&lt;[Any]&gt;
 public func methodInvoked(_ selector: Selector) -&gt; Observable&lt;[Any]&gt;
+
 </code></pre>
 
-<p>他们分别实现的是在参数<code>selector</code>对应的方法执行前和执行后，分别发出信号，并可以使用RxSwift的监听模式进行监听。</p>
+<p>在本质上说，它们对 <code>selector</code> 的触发时机进行监听，并分别在 <code>selector</code> 触发前、触发后插入自定义的方法。</p>
 
-<p>下面是使用效果：</p>
+<p>下面是具体的使用场景：</p>
 
 <pre><code>import UIKit
 import RxSwift
@@ -166,13 +174,12 @@ import RxCocoa
 
 class ViewController: UIViewController {
     private let bag = DisposeBag()
-
     override func viewDidLoad() {
-        self.rx.sentMessage(#selector(ViewController.viewWillAppear(_:))).asObservable().subscribe { (_) in
+self.rx.sentMessage(#selector(ViewController.viewWillAppear(_:))).asObservable().subscribe { (_) in
             print(&quot;sendMessage&quot;)
         }.disposed(by: bag)
         
-        self.rx.methodInvoked(#selector(ViewController.viewWillAppear(_:))).asObservable().subscribe { (_) in
+self.rx.methodInvoked(#selector(ViewController.viewWillAppear(_:))).asObservable().subscribe { (_) in
             print(&quot;methodInvoked&quot;)
         }.disposed(by: bag)
     }
@@ -187,20 +194,19 @@ class ViewController: UIViewController {
 <p>输出结果<br/>
 <img src="media/15361137574405/15361338672279.jpg" alt=""/></p>
 
-<p>最终的效果是在该方法的执行前与执行后的两个时间点进行了hook，插入了其他的方法。</p>
+<p>最终的效果是在该方法的执行前与执行后的两个时间点插入了对应的方法。</p>
 
-<p>下面我们就剖析一下，RxCocoa究竟做了些什么。<br/>
-本文会从外部调用的方法<code>setMessage</code>开始，一步步查看内部的具体的实现。</p>
+<p>下面我们就剖析一下，RxCocoa 究竟做了些什么。<br/>
+本文会从外部调用的方法 <code>setMessage</code> 开始，一步步查看内部的具体的实现。</p>
 
 <h2 id="toc_1">Let&#39;s go</h2>
 
-<p>简单剖析一下上面的代码，它们分别是对于两个Observable进行了监听(<a href="https://github.com/ReactiveX/RxSwift">RxSwift的介绍</a>)。换句话说，在实际的实现过程中，<br/>
-selector对应的方法在即将执行前肯定是要触发setMessage所对应的Observable并发出信号。<br/>
-selector对应的方法在执行完成肯定要触发methodInvoked所对应的Observable并发出信号。</p>
+<p>简单剖析一下上面的代码，它们分别是对于两个 Observable 进行了监听 (<a href="https://github.com/ReactiveX/RxSwift">RxSwift的介绍</a>)。换句话说，在实际的实现过程中，<br/>
+selector 对应的方法在即将执行前肯定是要触发 setMessage 所对应的 Observable 并发出信号。<br/>
+selector 对应的方法在执行完成肯定要触发 methodInvoked 所对应的 Observable 并发出信号。<br/>
+当然，这都是我们基于当前的调用方法给出的推测，那看看实际都做了些什么。</p>
 
-<p>当然，这都是我们基于当前的调用方法给出的推测，那看看实际都做了些什么。</p>
-
-<p>首先看<code>setMessage</code>所对应的方法的具体实现。</p>
+<p>首先看 <code>setMessage</code> 所对应的方法的具体实现。</p>
 
 <pre><code>   public func sentMessage(_ selector: Selector) -&gt; Observable&lt;[Any]&gt; {
         return synchronized {
@@ -225,14 +231,13 @@ selector对应的方法在执行完成肯定要触发methodInvoked所对应的Ob
 <p><code>let proxy: MessageSentProxy = try registerMessageInterceptor(selector)</code><br/>
 <code>proxy.messageSent.asObservable()</code> </p>
 
-<p>其中第一行代码实现的功能是： 为该selector创建一个代理对象，如果已经有了，则直接返回<br/>
-第二行代码，则是返回messageSent的信号源，它能保证在恰当的时候出发信号。</p>
-
-<p>下面分别要对这两个代码进行具体的分析</p>
+<p>其中第一行代码实现的功能是：为该selector创建或者获取一个代理对象。<br/>
+第二行代码，则是返回 messageSent 的信号源，它能保证在恰当的时候出发信号。<br/>
+下面分别要对这两个代码进行具体的分析。</p>
 
 <h2 id="toc_2">MessageSentProxy</h2>
 
-<p>贴一下MessageSentProxy的具体的代码</p>
+<p>贴一下MessageSentProxy的具体的代码：</p>
 
 <pre><code>fileprivate final class MessageSentProxy
         : MessageInterceptorSubject
@@ -266,23 +271,23 @@ selector对应的方法在执行完成肯定要触发methodInvoked所对应的Ob
     }
 </code></pre>
 
-<p>从上面可以看出，<code>MessageSentProxy</code>这个类分别持有了名为<code>messageSent</code>以及<code>methodInvoked</code>的两个被观察者。<br/>
-应该可以看出，他们分别对应着selector前后的触发时机，对这两个参数进行监听，也就是变相的监听了selector触发的前后的时机。</p>
+<p>从上面可以看出，<code>MessageSentProxy</code> 这个类分别持有了名为 <code>messageSent</code> 以及 <code>methodInvoked</code> 的两个被观察者。<br/>
+应该可以看出，他们分别对应着 selector 前后的触发时机，对这两个参数进行监听，也就是变相的监听了selector 触发的前后的时机。</p>
 
-<p>其中内部的<code>messageSent(withArguments arguments: [Any])</code>以及<code>methodInvoked(withArguments arguments: [Any])</code>方法分别促使两个被观察者发出信号。</p>
+<p>其中内部的 <code>messageSent(withArguments arguments: [Any])</code> 以及 <code>methodInvoked(withArguments arguments: [Any])</code> 方法分别调用并促使两个被观察者发出信号。</p>
 
-<p>两个方法分别用@objc进行修饰，标明两个方法都可以被OC的调用机制触发。</p>
+<p>两个方法分别用 @objc 进行修饰，标明两个方法都可以被 OC 的调用机制触发。</p>
 
 <p>那当前可以整理出的触发顺序是：<br/>
-1. MessageSentProxy中<code>messageSent(withArguments arguments: [Any])</code>发放被调用<br/>
-2. MessageSentProxy中<code>messageSent = PublishSubject&lt;[Any]&gt;()</code>触发onNext信号<br/>
-3. 外部对于<code>messageSent</code>的监听事件触发</p>
+1. MessageSentProxy 中 <code>messageSent(withArguments arguments: [Any])</code> 方法被调用<br/>
+2. MessageSentProxy 中 <code>messageSent = PublishSubject&lt;[Any]&gt;()</code> 触发 onNext 信号<br/>
+3. 外部对于 <code>messageSent</code> 的监听事件触发</p>
 
 <p>那好，继续深究一下。</p>
 
 <h2 id="toc_3">registerMessageInterceptor(selector)</h2>
 
-<p>上面讲到<code>registerMessageInterceptor(selector)</code>方法是通过selector来创建一个MessageSentProxy，用来实现Observable。 由于同一个selector可能有2个监听事件<code>sentMessage</code>以及<code>methodInvoke</code>, 而两者都是通过同一个<code>MessageSentProxy</code>来实现。因此最终一个selector对应于一个MessageSentProxy,也不需要进行反复的创建。<br/>
+<p>上面讲到 <code>registerMessageInterceptor(selector)</code> 方法是通过 selector 来创建一个MessageSentProxy, 用来实现 Observable. 由于同一个 selector 可能有2个监听事件  <code>sentMessage</code> 以及 <code>methodInvoke</code>, 而两者都是通过同一个 <code>MessageSentProxy</code> 来实现。因此最终一个selector对应于一个 MessageSentProxy, 也不需要进行反复的创建。<br/>
 那究竟做了哪些事情呢？</p>
 
 <pre><code> //该方法保证了，在同一个target上 同一个selector 只会有 一个MessageInterceptorSubject与之绑定。
@@ -320,11 +325,10 @@ selector对应的方法在执行完成肯定要触发methodInvoked所对应的Ob
 </code></pre>
 
 <p>上面的代码做了大概几件事：<br/>
-1.将MessageInterceptorSubject，也就是该方法调用处的MessageSentProxy通过selector与当前的对象进行绑定。</p>
-
-<p>2.如果对应的selector已经绑定过了，则获取已绑定的MessageSentProxy。<br/>
-这是由于对应同一个selector，我们可能有sentMessage以及methodInvoke两个监听事件，两个监听事件由于可以使用同一个MessageSentProxy，避免重复工作。<br/>
-3.开始hook对应的selector，进行插入操作<br/>
+1.将 MessageInterceptorSubject，也就是该方法调用处的 MessageSentProxy 通过 selector 与当前的对象进行绑定。<br/>
+2.如果对应的 selector 已经绑定过了，则获取已绑定的 MessageSentProxy.<br/>
+这是由于对应同一个selector，我们可能有 sentMessage 以及 methodInvoke 两个监听事件，两个监听事件可以使用同一个MessageSentProxy, 避免重复工作。<br/>
+3.开始 hook 对应的 selector，进行插入操作<br/>
 核心代码<br/>
 <code>let targetImplementation = RX_ensure_observing(base, selector, &amp;error)</code></p>
 
@@ -397,21 +401,19 @@ selector对应的方法在执行完成肯定要触发methodInvoked所对应的Ob
 
 </code></pre>
 
-<p>那实际是如何fake出一个新的派生的class来取代原来的class呢？</p>
+<p>那实际是如何 fake 出一个新的派生类来取代原来的 class 呢？</p>
 
 <pre><code>-(Class __nullable)prepareTargetClassForObserving:(id __nonnull)target error:(NSErrorParam)error
 </code></pre>
 
-<p>这个方法做了一下几件事<br/>
-1.如果已经有了， 则直接返回（通过关联值进行关联）<br/>
-2.如果class方法与object_getClass获取的元类型不一样，判断是否为KVO，若不是，默认无法处理，返回错误<br/>
-3.生成最终的fakeClass， 并与关联类型进行绑定。</p>
+<p>这个方法做了以下几件事<br/>
+1.如果已经有了对应的派生类， 则直接返回（通过关联值进行关联）<br/>
+2.如果 class 方法与 object_getClass 获取的类型不一样，判断是否为 KVO，若不是，默认无法处理，返回错误。<br/>
+3.生成最终的 fakeClass， 并与关联类型进行绑定。</p>
 
-<p>其中，这个fakeClass就类似于KVO机制中的<code>NSKVONotifying_类名</code>. 都是起到一个替换的作用，让实际方法执行的selector被重写，执行的起始以及结尾分别加入触发。</p>
-
-<p>那说到底，还是没有说，具体这两个方法在细节上是如何插入对应的节点的(捂脸)。</p>
-
-<p>有关于fakeClass的具体实现过程，我会在下一篇文章中进行详细的描述。</p>
+<p>其中，这个 fakeClass 就类似于KVO机制中的 <code>NSKVONotifying_类名</code>. 都是起到一个替换的作用，让实际方法执行的 selector 被重写，执行的起始以及结尾分别加入触发。<br/>
+那说到底，还是没有说，具体这两个方法在细节上是如何插入对应的节点的(捂脸)。<br/>
+有关于 fakeClass 的具体实现过程，我会在下一篇文章中进行详细的描述。</p>
 
 
     
@@ -421,6 +423,9 @@ selector对应的方法在执行完成肯定要触发methodInvoked所对应的Ob
       <div class="row">
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="15366742578883.html" 
+          title="Previous Post: 2018.09.10-2018.09.16">&laquo; 2018.09.10-2018.09.16</a>
       
         </p>
         </div>
@@ -496,6 +501,8 @@ gitment.render('container')
 
       	<p class="cat-list">
         
+            <a href="%E4%B8%80%E5%91%A8%E8%A7%81%E9%97%BB.html"><strong>一周见闻</strong></a>
+        
             <a href="%E7%BC%96%E7%A8%8B.html"><strong>编程</strong></a>
         
             <a href="%E4%B8%89%E7%9C%81%E5%90%BE%E8%BA%AB.html"><strong>三省吾身</strong></a>
@@ -521,7 +528,13 @@ gitment.render('container')
 	      
 		      
 			      <li class="post">
-			        <a href="15361137574405.html">RxCocoa中的代码hook解析</a>
+			        <a href="15366742578883.html">2018.09.10-2018.09.16</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15361137574405.html">RxCocoa中的 AOP 实现</a>
 			      </li>
 		     
 		  
@@ -540,12 +553,6 @@ gitment.render('container')
 		      
 			      <li class="post">
 			        <a href="15348619116019.html">重构Massive AppDelegate</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15330418099703.html">问题记录</a>
 			      </li>
 		     
 		  
