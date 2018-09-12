@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  论UITableView的dequeueReusableCell方法 - iginkgo在路上
+  论 UITableView 的 dequeueReusableCell 方法 - iginkgo在路上
   
   </title>
   
@@ -109,7 +109,7 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>论UITableView的dequeueReusableCell方法</h1>
+          <h1>论 UITableView 的 dequeueReusableCell 方法</h1>
      
         <div class="read-more clearfix">
           <span class="date">2018/8/23</span>
@@ -129,7 +129,7 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>由一个项目中的问题想到的...</p>
+      <p>由一个项目中的问题想到的。</p>
 
 <span id="more"></span><!-- more -->
 
@@ -138,13 +138,11 @@
 <pre><code>func dequeueReusableCell(withIdentifier: String, for: IndexPath) -&gt; UITableViewCell
 
 func dequeueReusableCell(withIdentifier identifier: String) -&gt; UITableViewCell?
-
 </code></pre>
 
-<p>根据官网<a href="https://developer.apple.com/documentation/uikit/uitableview/1614878-dequeuereusablecell">有IndexPath</a>以及<a href="https://developer.apple.com/documentation/uikit/uitableview/1614891-dequeuereusablecell">无IndexPath</a>上的说法，</p>
-
-<p>两者的介绍非常的相似，一个tableView通常会维持一个队列的cel，用以给dataSource复用。调用这个方法时，就是要求tableView返回一个新的cell。如果队列中有现成的cell，那可以直接拿出来复用。如果没有现成的cell，可以通过注册的nib file或者是class重新创建。<br/>
- 如果是通过注册的class进行创建，则需要调用方法<code>init(style: reuseIdentifier:)</code>方法进行创建。对于基于nib的class，则是直接通过nib文件进行创建。如果存在可以直接复用的cell，则会调用cell的<code>prepareForReuse()</code>方法。</p>
+<p>根据官网<a href="https://developer.apple.com/documentation/uikit/uitableview/1614878-dequeuereusablecell">有IndexPath</a>以及<a href="https://developer.apple.com/documentation/uikit/uitableview/1614891-dequeuereusablecell">无IndexPath</a>上的说法，<br/>
+ 两者的介绍非常的相似，一个 tableView 通常会维持一个队列的 cell，用以给dataSource复用。调用这个方法时，就是要求 tableView 返回一个新的 cell。如果队列中有现成的 cell，那可以直接拿出来复用。如果没有现成的 cell，可以通过注册的 nib file 或者是 class 重新创建。<br/>
+ 如果是通过注册的class进行创建，则需要调用方法 <code>init(style: reuseIdentifier:)</code> 方法进行创建。对于基于 nib 的 class，则是直接通过nib文件进行创建。如果存在可以直接复用的cell，则会调用cell的 <code>prepareForReuse()</code> 方法。</p>
 
 <p>那么看起来，这两个方法仅仅有两点不一样</p>
 
@@ -168,15 +166,16 @@ func dequeueReusableCell(withIdentifier identifier: String) -&gt; UITableViewCel
 </tbody>
 </table>
 
-<p><strong>需要注意的是</strong>，在tableView中以及进行了注册的方法<code>register</code>之后，当前系统在两个方法都会在缓存列表中没有可复用的cell时自动创建， 而不像早期的介绍那样：在没有可复用的cell时， 没有indexPath参数的方法需要手动创建一个cell。 而另外一个方法中系统会自动创建。</p>
+<p><strong>需要注意的是</strong>，通常会有老一些的说法，说是在有 indexPath 的方法中，如果已经对该 cell 进行了注册，则肯定会返回一个对应类型的cell。 而另外一个没有 indexPath 的方法中，则不会自动创建，需要用户进行手动创建。<br/>
+在最新的文档中，两个方法的说明都分别说明，只有对于 cell 进行了注册，则无论哪个 dequeue 的方法都会返回一个对应的 cell。</p>
 
-<p>那么方法中 indexPath 起到了一个什么样的作用呢？ 我们先来看一下最近作者在项目中遇到的一个问题。</p>
+<p>那么到这里，作者就会有一个疑问了，indexPath 起到了一个什么样的作用呢？ 我们先来看一下最近作者在项目中遇到的一个问题。</p>
 
 <h2 id="toc_0">问题</h2>
 
 <h3 id="toc_1">问题代码</h3>
 
-<p>问题的背景是一个竖直方向的UITableView， 其中一种cell包裹可以水平滑动的UICollectionView。<br/>
+<p>问题的背景是一个竖直方向的 UITableView， 其中一种 cell 包裹可以水平滑动的UICollectionView。<br/>
 啥也不说，上代码。</p>
 
 <pre><code> public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell {
@@ -189,34 +188,28 @@ func dequeueReusableCell(withIdentifier identifier: String) -&gt; UITableViewCel
     return cell
 </code></pre>
 
-<p>通过代码我们可以粗略的了解到，当前是一个tableView的返回cell的方法。这个UITableViewCell中又嵌套了一个UICollectionView。</p>
-
-<p>需要提一点的是，我在对应的UITableViewCell的初始化方法中，并没有对其持有UICollectionView的dataSource进行赋值。即 初始化时<code>collectionView.dataSource == nil</code>。</p>
+<p>通过代码我们可以粗略的了解到，当前是一个 tableView 的返回 cell 的方法。这个 UITableViewCell 中又嵌套了一个 UICollectionView。<br/>
+需要提一点的是，我在对应的 UITableViewCell 的初始化方法中，并没有对其持有 UICollectionView 的 dataSource 进行赋值。即初始化时 <code>collectionView.dataSource == nil</code>。</p>
 
 <h3 id="toc_2">意外</h3>
 
-<p>项目中通常跑的都是没有问题的，直到测试到某一个手机 iphone6，iOS9.3<br/>
+<p>项目中通常跑的都是没有问题的，直到测试到某一个手机 iphone6, iOS9.3<br/>
 此时，在<code>缓慢向下滑动的情况下</code>，系统是没有问题的。<br/>
-在用户快速向下滑动，即将出现此类cell时，会出现崩溃。</p>
+在用户快速向下滑动，即将出现此类 cell 时，会出现崩溃。</p>
 
-<p>问题描述</p>
-
-<pre><code>UICollectionView dataSource is not set
-</code></pre>
-
-<p>在添加了Exception 捕获后，得到以下提示</p>
+<p>问题描述： <code>UICollectionView dataSource is not set</code>.<br/>
+在添加了Exception 捕获后，得到以下提示:</p>
 
 <pre><code>*** Assertion failure in -[CollectionView _createPreparedSupplementaryViewForElementOfKind:atIndexPath:withLayoutAttributes:applyAttributes:], /BuildRoot/Library/Caches/com.apple.xbs/Sources/UIKit_Sim/UIKit-3512.60.7/UICollectionView.m:1599
 </code></pre>
 
 <p>作者有对更高级的iOS系统进行了测试，发现完全没有这个问题。<br/>
 那既然提示，DataSource没有进行设置，可能是调用时机的问题，因此，比较粗劣的解决方案是，在UITableView进行初始化，并对UICollectionView进行配置时，设置一个临时的dataSource。<br/>
-但是这个解决方案仍然不能解决我的疑惑，经过进一步的定位，发现崩溃的具体位置</p>
+但是这个解决方案仍然不能解决我的疑惑，经过进一步的定位，发现崩溃的具体位置:</p>
 
 <pre><code> guard let cell = tableView.dequeueReusableCell(withIdentifier:  FocusRecommentMediaTableViewCell.cellId, for: indexPath) as?    FocusRecommentMediaTableViewCell else {
         return FocusRecommentMediaTableViewCell()
     }
-
 </code></pre>
 
 <p>即在调用<code>tableView.dequeueReusableCell(withIdentifier: for:)</code>方法时发生了崩溃。在这个时候，UITableViewCell还没有返回给cell， UICollectionView还没有设置dataSource。让我好奇的是，这个时机应该是UICollectionView在进行初始化的时候，<code>没有进行reload操作</code>,为何会调用到dataSource，而在iOS9以后则没有这个问题。而且必须是快速滑动的情况才会发生。</p>
@@ -233,13 +226,9 @@ func dequeueReusableCell(withIdentifier identifier: String) -&gt; UITableViewCel
 </blockquote>
 
 <p>说的是<code>func dequeueReusableCell(withIdentifier identifier: String, <br/>
-                     for indexPath: IndexPath) -&gt; UITableViewCell</code>这个方法会使用indexPath来进行一些基于cell位置的额外配置。那这是配置是什么呢?</p>
-
-<p>那这个额外的配置是什么呢？</p>
-
-<p>我还要看看</p>
-
-<p>to be continued...</p>
+                     for indexPath: IndexPath) -&gt; UITableViewCell</code>这个方法会使用indexPath来进行一些基于cell位置的额外配置。那这是配置是什么呢?<br/>
+我还要看看！<br/>
+to be continued...</p>
 
 
     
@@ -372,7 +361,7 @@ gitment.render('container')
 		  
 		      
 			      <li class="post">
-			        <a href="15350236247070.html">论UITableView的dequeueReusableCell方法</a>
+			        <a href="15350236247070.html">论 UITableView 的 dequeueReusableCell 方法</a>
 			      </li>
 		     
 		  

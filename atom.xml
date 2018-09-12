@@ -4,7 +4,7 @@
   <title><![CDATA[iginkgo在路上]]></title>
   <link href="iginkgo.cn/atom.xml" rel="self"/>
   <link href="iginkgo.cn/"/>
-  <updated>2018-09-12T20:06:50+08:00</updated>
+  <updated>2018-09-12T21:51:27+08:00</updated>
   <id>iginkgo.cn/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -331,134 +331,113 @@ selector 对应的方法在执行完成肯定要触发 methodInvoked 所对应�
     <updated>2018-09-04T17:47:08+08:00</updated>
     <id>iginkgo.cn/15360544284777.html</id>
     <content type="html"><![CDATA[
-<p>之前对于KVO的实现，都仅仅限于修改了对应属性的<code>set</code>方法的实现，使得在该方法使用前与使用后分别触发不同的方法。现在作者想仔细的看一下具体的细节</p>
+<p>之前对于 KVO 的实现，都仅仅限于修改了对应属性的 <code>set</code> 方法的实现，使得在该方法使用前与使用后分别触发不同的方法。现在作者想仔细的看一下具体的细节。</p>
 
 <span id="more"></span><!-- more -->
 
 <h2 id="toc_0">打印一下基本信息</h2>
 
-<p>说是实现的对方法的替换，那实际上是怎么做到的呢？<br/>
-```<br/>
-Person *person1 = [[Person alloc] init];<br/>
-    Person *person2 = [[Person alloc] init];<br/>
-    NSLog(@&quot;添加观察前两个对象的实例 %@, %@ &quot;, person1, person2); //打印实例的地址<br/>
-    NSLog(@&quot;添加观察前两个对象的类 %@, %@ &quot;, [person1 class], [person2 class]); //使用class方法获取类<br/>
-    NSLog(@&quot;添加观察前，两个对象的类 objc_getClass:%@, %@&quot;, object_getClass(person1), object_getClass(person2));//使用objc_getClass 获取类</p>
-
-<pre><code>[person1 addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew context:NULL];
-NSLog(@&quot;添加观察后两个对象的实例 %@, %@ &quot;, person1, person2);
-NSLog(@&quot;添加观察后两个对象的类 %@, %@ &quot;, [person1 class], [person2 class]);
-NSLog(@&quot;添加观察后两个对象的类 objc_getClass:%@, %@&quot;, object_getClass(person1), object_getClass(person2));
-</code></pre>
-
-<pre><code>
-输入的结果：
-![](media/15360544284777/15360571965777.jpg)
-
-由以上的结论可以知道几件事情：
-1.添加KVO之后，实例对象的地址并没有发生改变
-2.添加KVO之后，`[instance class]`获取元类依旧指向person， 但是`object_getClass(instance)`来获取元类则是NSKVONotifying_Person。其中`class`方法拿到的是一个假的结果。`object_getClass`返回的才是一个真正的类型。
-
-
-## 打印一下具体的IMP
-那既然已经知道KVO机制本身是修改了观察元素的IMP，也就是具体的实现，我们打印一下具体的IMP究竟是否发生了改变
-
-</code></pre>
+<p>说是实现的对方法的替换，那实际上是怎么做到的呢？</p>
 
 <pre><code>Person *person1 = [[Person alloc] init];
-Person *person2 = [[Person alloc] init];
-
-SEL sel = @selector(setName:);
-
-IMP imp1 = [person1 methodForSelector:sel];
-IMP imp2 = [person2 methodForSelector:sel];
-
-NSLog(@&quot;添加观察前的的Imp分别是 person1: %p, person2: %p&quot;, imp1, imp2);
-
-[person1 addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew context:NULL];
-
-imp1 = [person1 methodForSelector:sel];
-imp2 = [person2 methodForSelector:sel];
-
-NSLog(@&quot;添加观察后的Imp分别是 person1: %p, person2: %p&quot;, imp1, imp2);
+    Person *person2 = [[Person alloc] init];
+    NSLog(@&quot;添加观察前两个对象的实例 %@, %@ &quot;, person1, person2); //打印实例的地址
+    NSLog(@&quot;添加观察前两个对象的类 %@, %@ &quot;, [person1 class], [person2 class]); //使用class方法获取类
+    NSLog(@&quot;添加观察前，两个对象的类 objc_getClass:%@, %@&quot;, object_getClass(person1), object_getClass(person2));//使用objc_getClass 获取类
+    
+    [person1 addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew context:NULL];
+    NSLog(@&quot;添加观察后两个对象的实例 %@, %@ &quot;, person1, person2);
+    NSLog(@&quot;添加观察后两个对象的类 %@, %@ &quot;, [person1 class], [person2 class]);
+    NSLog(@&quot;添加观察后两个对象的类 objc_getClass:%@, %@&quot;, object_getClass(person1), object_getClass(person2));
 </code></pre>
 
-<pre><code>
-最后的输出：
+<p>输入的结果：<br/>
+<img src="media/15360544284777/15360571965777.jpg" alt=""/></p>
 
-![](media/15360544284777/15360602518137.jpg)
+<p>由以上的结论可以知道几件事情：<br/>
+1.添加KVO之后，实例对象的地址并没有发生改变<br/>
+2.添加KVO之后， <code>[instance class]</code> 获取元类依旧指向 person， 但是<code>object_getClass(instance)</code> 来获取元类则是 NSKVONotifying_Person。其中 <code>class</code> 方法拿到的是一个假的结果。<code>object_getClass</code> 返回的才是一个真正的类型。</p>
 
-可以看到，person1在属性name添加了KVO之后，其set方法的IMP发生了变化。
+<h2 id="toc_1">打印一下具体的IMP</h2>
 
-结论： 对于属性添加KVO方法后， 其具体的实现会发生改变。
+<p>那既然已经知道KVO机制本身是修改了观察元素的IMP，也就是具体的实现，我们打印一下具体的IMP究竟是否发生了改变：</p>
 
-## 继续探究一下， imp发生了哪些变化
+<pre><code>    Person *person1 = [[Person alloc] init];
+    Person *person2 = [[Person alloc] init];
 
-在上方代码段的结尾处添加了断点，进行输出打印
-
-![](media/15360544284777/15360604856835.jpg)
-
-结论：
-添加KVO后，属性的set方法变为`_NssetObjectValueAndNotify`方法。
-而未添加KVO的属性的set方法依旧是 `setName:`
-
-## NSKVONotifying_Person与Person的关系
-从上面得到的结论是， person的实例在添加了KVO后，其元类型变为`NSKVONotifying_Person`,那么当前这两个类到底是什么关系呢？
-
-在代码段的最后添加如下代码：
-
+    SEL sel = @selector(setName:);
+    
+    IMP imp1 = [person1 methodForSelector:sel];
+    IMP imp2 = [person2 methodForSelector:sel];
+    
+    NSLog(@&quot;添加观察前的的Imp分别是 person1: %p, person2: %p&quot;, imp1, imp2);
+    
+    [person1 addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew context:NULL];
+    
+    imp1 = [person1 methodForSelector:sel];
+    imp2 = [person2 methodForSelector:sel];
+    
+    NSLog(@&quot;添加观察后的Imp分别是 person1: %p, person2: %p&quot;, imp1, imp2);
 </code></pre>
 
-<pre><code>NSLog(@&quot;%@ 的父类型为 %@&quot;, object_getClass(person1), class_getSuperclass(object_getClass(person1)));
-NSLog(@&quot;%@ 的父类型为 %@&quot;, object_getClass(person2), class_getSuperclass(object_getClass(person2)));
+<p>最后的输出：<br/>
+<img src="media/15360544284777/15360602518137.jpg" alt=""/></p>
+
+<p>可以看到，person1 在属性 name 添加了 KVO 之后，其 set 方法的 IMP 发生了变化。<br/>
+结论： 对于属性添加KVO方法后， 其具体的实现会发生改变。</p>
+
+<h2 id="toc_2">继续探究一下，IMP 发生了哪些变化</h2>
+
+<p>在上方代码段的结尾处添加了断点，进行输出打印:<br/>
+<img src="media/15360544284777/15360604856835.jpg" alt=""/></p>
+
+<p>结论：<br/>
+添加 KVO 后，属性的set方法变为 <code>_NSSetObjectValueAndNotify</code> 方法。<br/>
+而未添加KVO的属性的set方法依旧是 <code>setName:</code>.</p>
+
+<h2 id="toc_3">NSKVONotifying_Person 与 Person 的关系</h2>
+
+<p>从上面得到的结论是，person 的实例属性在添加了 KVO 后，其元类型变为 <code>NSKVONotifying_Person</code>,那么当前这两个类到底是什么关系呢？<br/>
+在代码段的最后添加如下代码：</p>
+
+<pre><code>    NSLog(@&quot;%@ 的父类型为 %@&quot;, object_getClass(person1), class_getSuperclass(object_getClass(person1)));
+    NSLog(@&quot;%@ 的父类型为 %@&quot;, object_getClass(person2), class_getSuperclass(object_getClass(person2)));
 </code></pre>
 
-<pre><code>
-打印后的结果表示
-  ![](media/15360544284777/15360609310566.jpg)
+<p>打印后的结果表示：<br/>
+  <img src="media/15360544284777/15360609310566.jpg" alt=""/></p>
 
-结论： 添加KVO后新生成的NSKVONotifying_Person为 person的派生类。
+<p>结论：添加KVO后新生成的 NSKVONotifying_Person 为 person 的派生类。<br/>
+那么最终生成这个新的派生类与原来的Person又有什么不一样呢？<br/>
+在代码段最后添加：</p>
 
-那么最终生成这个新的派生类与原来的Person又有什么不一样呢？
-
-
-
-在代码段最后添加
-
+<pre><code>    NSString *list1 = [self printPersonMethods:object_getClass(person1)];
+    NSString *list2 = [self printPersonMethods:object_getClass(person2)];
+    NSLog(@&quot;%@&quot;, list1);
+    NSLog(@&quot;%@&quot;, list2);
 </code></pre>
 
-<pre><code>NSString *list1 = [self printPersonMethods:object_getClass(person1)];
-NSString *list2 = [self printPersonMethods:object_getClass(person2)];
+<p><img src="media/15360544284777/15360665467454.jpg" alt=""/></p>
 
-NSLog(@&quot;%@&quot;, list1);
-NSLog(@&quot;%@&quot;, list2);
+<p>最终输出的结果是：<br/>
+<img src="media/15360544284777/15360666460967.jpg" alt=""/><br/>
+可以看到，在派生类中 <code>NSKVONotifying_Person</code> 多了几个方法。其内部也有一个 <code>setName：</code> 的方法，应该是重写了其父类 <code>Person</code> 中的 <code>setName：</code>方法。<br/>
+重写了 <code>dealloc</code> 是为了做一些 KVO 相关的内存释放的操作。<br/>
+重写 <code>class</code> 方法是隐藏了 NSKVONotifying_Person 这个类的存在。让外界以为依然是 Person 相关的类。</p>
+
+<h2 id="toc_4">KVO添加以及取消时的 isa 指针</h2>
+
+<pre><code>   Person *person = [[Person alloc] init];
+    [person addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew|
+    NSKeyValueObservingOptionOld  context:NULL];
+    NSLog(@&quot;person-&gt;isa:%@&quot;,object_getClass(person));
+    NSLog(@&quot;person class:%@&quot;,[person class]);
 </code></pre>
-
-<pre><code>
-![](media/15360544284777/15360665467454.jpg)
-
-最终输出的结果是
-![](media/15360544284777/15360666460967.jpg)
-可以看到，在派生类中`NSKVONotifying_Person`多了几个方法。其内部也有一个setName：的方法，应该是重写了其父类`Person`中的setName：方法。
-重写了dealloc是为了做一些KVO相关的内存释放的操作
-重写class方法是隐藏了NSKVONotifying_Person这个类的存在。让外界以为依然是Person相关的类。
-
-
-## KVO添加以及取消时候的isa指针
-
-</code></pre>
-
-<p>Person *person = [[Person alloc] init];<br/>
-    [person addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew|<br/>
-    NSKeyValueObservingOptionOld  context:NULL];<br/>
-    NSLog(@&quot;person-&gt;isa:%@&quot;,object_getClass(person));<br/>
-    NSLog(@&quot;person class:%@&quot;,[person class]);<br/>
-```</p>
 
 <p><img src="media/15356370719300/15356412308181.jpg" alt=""/></p>
 
-<p>那么有一个问题是， class方法和object_getclass方法都应该是获取元类的方法，有什么不一样的？为什么获取的结果不一样呢？<br/>
-class 本身也是获取实例元类型的方法，但是在实现时KVO时，class的方法被底层改写， 因此看到的会依旧指向原生的类。</p>
+<p>那么有一个问题是，class 方法和 object_getclass 方法都应该是获取元类的方法，有什么不一样的？为什么获取的结果不一样呢？<br/>
+class 本身也是获取实例元类型的方法，但是在实现时 KVO 时，class的方法被派生类重写改写， 因此看到的会依旧指向原生的类。</p>
 
 <p><strong>取消KVO之后</strong>，看一下最终效果</p>
 
@@ -467,17 +446,15 @@ class 本身也是获取实例元类型的方法，但是在实现时KVO时，cl
     NSLog(@&quot;person class:%@&quot;,[person class]);
 </code></pre>
 
-<p><img src="media/15356370719300/15356414025816.jpg" alt=""/></p>
+<p><img src="media/15356370719300/15356414025816.jpg" alt=""/><br/>
+此时可以看到，输出的结果中，两个方法都变成了person。</p>
 
-<p>此时可以看到，输出的结果中，两个方法都变成了person</p>
+<h2 id="toc_5">分类中新添属性的 KVO</h2>
 
-<h2 id="toc_1">分类中新添<strong>属性</strong>的KVO</h2>
-
-<p>通常，如果希望在category中添加属性时， 会使用基于runtime的关联值的方式进行实现。使用<code>objc_getAssociatedObject</code>,<code>objc_setAssociatedObject</code>这两个方式来实现get和set方法。<br/>
+<p>通常，如果希望在Category中添加属性时， 会使用基于 Runtime 的关联值的方式进行实现。使用<code>objc_getAssociatedObject</code> , <code>objc_setAssociatedObject</code> 这两个方式来实现 get 和 set 方法。<br/>
 那么对于这种情况实现的属性，在进行KVO时，能否正常的获取呢？答案是可以的。</p>
 
-<pre><code>
-@implementation Person (Category)
+<pre><code>@implementation Person (Category)
 static char *CloudoxKey = &quot;CloudoxKey&quot;;
 
 -(void)setCloudox:(NSString *)cloudox{
@@ -494,38 +471,30 @@ static char *CloudoxKey = &quot;CloudoxKey&quot;;
 
   [person addObserver:self forKeyPath:@&quot;CloudoxKey&quot; options:NSKeyValueObservingOptionNew|
     NSKeyValueObservingOptionOld context:NULL];
-
     person.cloudox = @&quot;11&quot;;
     person.cloudox = @&quot;22&quot;;
-
-
-
 </code></pre>
 
 <pre><code>//输出代码
-
-
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary&lt;NSKeyValueChangeKey,id&gt; *)change context:(void *)context {
     if([keyPath isEqualToString:@&quot;CloudoxKey&quot;] || [keyPath isEqualToString:@&quot;age&quot;] ){
         NSLog(@&quot;\\noldnum:%@ newnum:%@&quot;,
               [change valueForKey:@&quot;old&quot;],
               [change valueForKey:@&quot;new&quot;]);
-    }
-    
+    }   
 }
-
 </code></pre>
 
-<h2 id="toc_2">总结</h2>
+<h2 id="toc_6">总结</h2>
 
 <ol>
-<li>iOS中的KVO是是基于runtime的</li>
-<li>某个类的属性首次添加KVO后，会生成一个派生类 <code>NSKVONotifying_类名</code> 。在派生类中重写被观察的属性的set方法，以此来实现真正的通知。新的类也重写的销毁以及class方法，用于掩护派生类的存在</li>
-<li>对象第一次被观察后，该对象的<code>isa</code>指针会指向新生成的派生类。从而确保被监控的属性值发生改变时，调用的是派生类的setter方法。</li>
-<li>使用关联值的方法在分类中实现属性，在赋值时是可以触发KVO的。</li>
+<li>iOS中的 KVO 是是基于 runtime 的。</li>
+<li>某个类的属性首次添加 KVO 后，会生成一个派生类 <code>NSKVONotifying_类名</code>。在派生类中重写被观察的属性的 set 方法，以此来实现真正的通知。新的类也重写的销毁以及 class 方法，用于掩护派生类的存在。</li>
+<li>对象第一次被观察后，该对象的 <code>isa</code> 指针会指向新生成的派生类。从而确保被监控的属性值发生改变时，调用的是派生类的 set 方法。</li>
+<li>使用关联值的方法在分类中实现属性，在赋值时是可以触发 KVO 的。</li>
 </ol>
 
-<h2 id="toc_3">参考文档</h2>
+<h2 id="toc_7">参考文档</h2>
 
 <p><a href="https://www.jianshu.com/p/0aa83ac521ba">https://www.jianshu.com/p/0aa83ac521ba</a><br/>
 <a href="https://www.jianshu.com/p/dc89f0a2d1ac">https://www.jianshu.com/p/dc89f0a2d1ac</a></p>
@@ -534,12 +503,12 @@ static char *CloudoxKey = &quot;CloudoxKey&quot;;
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[论UITableView的dequeueReusableCell方法]]></title>
+    <title type="html"><![CDATA[论 UITableView 的 dequeueReusableCell 方法]]></title>
     <link href="iginkgo.cn/15350236247070.html"/>
     <updated>2018-08-23T19:27:04+08:00</updated>
     <id>iginkgo.cn/15350236247070.html</id>
     <content type="html"><![CDATA[
-<p>由一个项目中的问题想到的...</p>
+<p>由一个项目中的问题想到的。</p>
 
 <span id="more"></span><!-- more -->
 
@@ -548,13 +517,11 @@ static char *CloudoxKey = &quot;CloudoxKey&quot;;
 <pre><code>func dequeueReusableCell(withIdentifier: String, for: IndexPath) -&gt; UITableViewCell
 
 func dequeueReusableCell(withIdentifier identifier: String) -&gt; UITableViewCell?
-
 </code></pre>
 
-<p>根据官网<a href="https://developer.apple.com/documentation/uikit/uitableview/1614878-dequeuereusablecell">有IndexPath</a>以及<a href="https://developer.apple.com/documentation/uikit/uitableview/1614891-dequeuereusablecell">无IndexPath</a>上的说法，</p>
-
-<p>两者的介绍非常的相似，一个tableView通常会维持一个队列的cel，用以给dataSource复用。调用这个方法时，就是要求tableView返回一个新的cell。如果队列中有现成的cell，那可以直接拿出来复用。如果没有现成的cell，可以通过注册的nib file或者是class重新创建。<br/>
- 如果是通过注册的class进行创建，则需要调用方法<code>init(style: reuseIdentifier:)</code>方法进行创建。对于基于nib的class，则是直接通过nib文件进行创建。如果存在可以直接复用的cell，则会调用cell的<code>prepareForReuse()</code>方法。</p>
+<p>根据官网<a href="https://developer.apple.com/documentation/uikit/uitableview/1614878-dequeuereusablecell">有IndexPath</a>以及<a href="https://developer.apple.com/documentation/uikit/uitableview/1614891-dequeuereusablecell">无IndexPath</a>上的说法，<br/>
+ 两者的介绍非常的相似，一个 tableView 通常会维持一个队列的 cell，用以给dataSource复用。调用这个方法时，就是要求 tableView 返回一个新的 cell。如果队列中有现成的 cell，那可以直接拿出来复用。如果没有现成的 cell，可以通过注册的 nib file 或者是 class 重新创建。<br/>
+ 如果是通过注册的class进行创建，则需要调用方法 <code>init(style: reuseIdentifier:)</code> 方法进行创建。对于基于 nib 的 class，则是直接通过nib文件进行创建。如果存在可以直接复用的cell，则会调用cell的 <code>prepareForReuse()</code> 方法。</p>
 
 <p>那么看起来，这两个方法仅仅有两点不一样</p>
 
@@ -578,15 +545,16 @@ func dequeueReusableCell(withIdentifier identifier: String) -&gt; UITableViewCel
 </tbody>
 </table>
 
-<p><strong>需要注意的是</strong>，在tableView中以及进行了注册的方法<code>register</code>之后，当前系统在两个方法都会在缓存列表中没有可复用的cell时自动创建， 而不像早期的介绍那样：在没有可复用的cell时， 没有indexPath参数的方法需要手动创建一个cell。 而另外一个方法中系统会自动创建。</p>
+<p><strong>需要注意的是</strong>，通常会有老一些的说法，说是在有 indexPath 的方法中，如果已经对该 cell 进行了注册，则肯定会返回一个对应类型的cell。 而另外一个没有 indexPath 的方法中，则不会自动创建，需要用户进行手动创建。<br/>
+在最新的文档中，两个方法的说明都分别说明，只有对于 cell 进行了注册，则无论哪个 dequeue 的方法都会返回一个对应的 cell。</p>
 
-<p>那么方法中 indexPath 起到了一个什么样的作用呢？ 我们先来看一下最近作者在项目中遇到的一个问题。</p>
+<p>那么到这里，作者就会有一个疑问了，indexPath 起到了一个什么样的作用呢？ 我们先来看一下最近作者在项目中遇到的一个问题。</p>
 
 <h2 id="toc_0">问题</h2>
 
 <h3 id="toc_1">问题代码</h3>
 
-<p>问题的背景是一个竖直方向的UITableView， 其中一种cell包裹可以水平滑动的UICollectionView。<br/>
+<p>问题的背景是一个竖直方向的 UITableView， 其中一种 cell 包裹可以水平滑动的UICollectionView。<br/>
 啥也不说，上代码。</p>
 
 <pre><code> public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell {
@@ -599,34 +567,28 @@ func dequeueReusableCell(withIdentifier identifier: String) -&gt; UITableViewCel
     return cell
 </code></pre>
 
-<p>通过代码我们可以粗略的了解到，当前是一个tableView的返回cell的方法。这个UITableViewCell中又嵌套了一个UICollectionView。</p>
-
-<p>需要提一点的是，我在对应的UITableViewCell的初始化方法中，并没有对其持有UICollectionView的dataSource进行赋值。即 初始化时<code>collectionView.dataSource == nil</code>。</p>
+<p>通过代码我们可以粗略的了解到，当前是一个 tableView 的返回 cell 的方法。这个 UITableViewCell 中又嵌套了一个 UICollectionView。<br/>
+需要提一点的是，我在对应的 UITableViewCell 的初始化方法中，并没有对其持有 UICollectionView 的 dataSource 进行赋值。即初始化时 <code>collectionView.dataSource == nil</code>。</p>
 
 <h3 id="toc_2">意外</h3>
 
-<p>项目中通常跑的都是没有问题的，直到测试到某一个手机 iphone6，iOS9.3<br/>
+<p>项目中通常跑的都是没有问题的，直到测试到某一个手机 iphone6, iOS9.3<br/>
 此时，在<code>缓慢向下滑动的情况下</code>，系统是没有问题的。<br/>
-在用户快速向下滑动，即将出现此类cell时，会出现崩溃。</p>
+在用户快速向下滑动，即将出现此类 cell 时，会出现崩溃。</p>
 
-<p>问题描述</p>
-
-<pre><code>UICollectionView dataSource is not set
-</code></pre>
-
-<p>在添加了Exception 捕获后，得到以下提示</p>
+<p>问题描述： <code>UICollectionView dataSource is not set</code>.<br/>
+在添加了Exception 捕获后，得到以下提示:</p>
 
 <pre><code>*** Assertion failure in -[CollectionView _createPreparedSupplementaryViewForElementOfKind:atIndexPath:withLayoutAttributes:applyAttributes:], /BuildRoot/Library/Caches/com.apple.xbs/Sources/UIKit_Sim/UIKit-3512.60.7/UICollectionView.m:1599
 </code></pre>
 
 <p>作者有对更高级的iOS系统进行了测试，发现完全没有这个问题。<br/>
 那既然提示，DataSource没有进行设置，可能是调用时机的问题，因此，比较粗劣的解决方案是，在UITableView进行初始化，并对UICollectionView进行配置时，设置一个临时的dataSource。<br/>
-但是这个解决方案仍然不能解决我的疑惑，经过进一步的定位，发现崩溃的具体位置</p>
+但是这个解决方案仍然不能解决我的疑惑，经过进一步的定位，发现崩溃的具体位置:</p>
 
 <pre><code> guard let cell = tableView.dequeueReusableCell(withIdentifier:  FocusRecommentMediaTableViewCell.cellId, for: indexPath) as?    FocusRecommentMediaTableViewCell else {
         return FocusRecommentMediaTableViewCell()
     }
-
 </code></pre>
 
 <p>即在调用<code>tableView.dequeueReusableCell(withIdentifier: for:)</code>方法时发生了崩溃。在这个时候，UITableViewCell还没有返回给cell， UICollectionView还没有设置dataSource。让我好奇的是，这个时机应该是UICollectionView在进行初始化的时候，<code>没有进行reload操作</code>,为何会调用到dataSource，而在iOS9以后则没有这个问题。而且必须是快速滑动的情况才会发生。</p>
@@ -643,13 +605,9 @@ func dequeueReusableCell(withIdentifier identifier: String) -&gt; UITableViewCel
 </blockquote>
 
 <p>说的是<code>func dequeueReusableCell(withIdentifier identifier: String, <br/>
-                     for indexPath: IndexPath) -&gt; UITableViewCell</code>这个方法会使用indexPath来进行一些基于cell位置的额外配置。那这是配置是什么呢?</p>
-
-<p>那这个额外的配置是什么呢？</p>
-
-<p>我还要看看</p>
-
-<p>to be continued...</p>
+                     for indexPath: IndexPath) -&gt; UITableViewCell</code>这个方法会使用indexPath来进行一些基于cell位置的额外配置。那这是配置是什么呢?<br/>
+我还要看看！<br/>
+to be continued...</p>
 
 ]]></content>
   </entry>
@@ -660,7 +618,7 @@ func dequeueReusableCell(withIdentifier identifier: String) -&gt; UITableViewCel
     <updated>2018-08-21T22:31:51+08:00</updated>
     <id>iginkgo.cn/15348619116019.html</id>
     <content type="html"><![CDATA[
-<p>本文是翻译自墙外的一片<a href="http://www.vadimbulavin.com/refactoring-massive-app-delegate/">文章</a>.文章通过分析iOS项目中 <code>AppDelegate</code>中常负担的职能，并将其分为三类，通过引入不同的设计模式将代码进行抽离整合，最终达到单一职能、可重用、已测试的特点。<br/>
+<p>本文是翻译自墙外的一片<a href="http://www.vadimbulavin.com/refactoring-massive-app-delegate/">文章</a>。文章通过分析iOS项目中 <code>AppDelegate</code> 中常负担的职能，并将其分为三类，通过引入不同的设计模式将代码进行抽离整合，最终达到单一职能、可重用、易测试的特点。<br/>
 译者也在文章的影响下，对当前进行的项目进行了相应的兼容和实现，最终效果还是很不错的。</p>
 
 <span id="more"></span><!-- more -->
@@ -694,34 +652,33 @@ func dequeueReusableCell(withIdentifier identifier: String) -&gt; UITableViewCel
 
 <h2 id="toc_0">开始</h2>
 
-<p>App detelgate连接了你的app与系统。通常它都是整个iOS项目的核心部分。通常，伴随着不断的开发，新特性与功能的增加，AppDelegate最终编程很零碎的东西。</p>
+<p>AppDetelgate 连接了你的 App 与系统。通常它都是整个 iOS 项目的核心部分。通常，伴随着不断的开发，新特性与功能的增加，AppDelegate 最终变成很零碎的东西。</p>
 
-<p>通常把所有的代码都加入appdelegate是十分浪费的，因为它乐意影响整个app。因此，保持这个类的干净与整洁对于一个健壮的项目时非常重要的。</p>
-
-<p>本文探讨了让delegate变得简洁、可测、可重用的几点方式</p>
+<p>通常把所有的代码都加入 AppDelegate 是十分浪费的，因为它容易影响整个 App。因此，保持这个类的干净与整洁对于一个健壮的项目是非常重要的。<br/>
+本文探讨了让AppDelegate变得简洁、可测、可重用的几点建议。</p>
 
 <h2 id="toc_1">问题</h2>
 
-<p>delegate是整个app的根本的地方。负责与系统与其他的app直接打交道。这使得delegate有非常多的任务， 并且很难进行修改以及扩展。</p>
+<p>AppDelegate 是整个 App 最根本的地方。负责与系统及其它的 App 直接打交道。这使得AppDelegate有非常多的任务， 并且很难进行修改以及扩展。</p>
 
-<p><a href="https://developer.apple.com/documentation/uikit/uiapplicationdelegate">苹果官方</a>支持至少要在delegate中持有3种职能。</p>
+<p><a href="https://developer.apple.com/documentation/uikit/uiapplicationdelegate">苹果官方</a>支持至少要在AppDelegate中行使3种职能。</p>
 
-<p>通过调查大量的开源的app，我总结了通常appDelegate会行使的职能。<br/>
+<p>通过调查大量的开源的App，我总结了通常AppDelegate会行使的职能：<br/>
 1. 初始化大量的第三方库<br/>
 2. 初始化 Core Data stack 以及管理迁移<br/>
-3. 配置app的state，用于设置单元测试以及UI测试<br/>
-4. 管理推送 本地推送或者远程推送<br/>
-5. 配置UIAppearance<br/>
-6. 管理UserDataManager：配置初次登录时的flag，保存以及加载数据。<br/>
-7. 配置app的角标<br/>
+3. 配置 App 的 State，用于设置单元测试以及UI测试<br/>
+4. 管理推送，本地推送或者远程推送<br/>
+5. 配置 UIAppearance<br/>
+6. 管理 UserDataManager：配置初次登录时的 Flag，保存以及加载数据。<br/>
+7. 配置 App 的角标<br/>
 8. 管理后台进程<br/>
-9. 管理UI调用栈的配置。选择初始的viewController<br/>
+9. 管理 UI 调用栈的配置。选择初始的 ViewController<br/>
 10.播放声音<br/>
 11. 关系分析文件<br/>
-12. 输出debugLog<br/>
+12. 输出 DebugLog<br/>
 13. 控制转向问题<br/>
 14. 实现各种代理协议，尤其是第三方的<br/>
-15. 弹出alert  </p>
+15. 弹出 Alert  </p>
 
 <h2 id="toc_2">解决方案</h2>
 
@@ -733,24 +690,24 @@ func dequeueReusableCell(withIdentifier identifier: String) -&gt; UITableViewCel
 
 <h3 id="toc_3">命令模式</h3>
 
-<p>对于每一种delegate的职能，我们创建一个单独的执行类，<br/>
-```<br/>
-protocol Command {<br/>
-    func execute()<br/>
-}</p>
+<p>对于每一种AppDelegate的职能，我们创建一个单独的执行类：</p>
 
-<p>struct RegisiterCommand: Command {<br/>
-    func execute()<br/>
-}</p>
+<pre><code>protocol Command {
+    func execute()
+}
 
-<p>struct SetAppearanceCommand: Command {<br/>
-    ...<br/>
-}</p>
+struct RegisterCommand: Command {
+    func execute()
+}
 
-<p>struct InitialViewControllerCommand: Command {<br/>
- ...<br/>
-} <br/>
-```</p>
+struct SetAppearanceCommand: Command {
+    ...
+}
+
+struct InitialViewControllerCommand: Command {
+ ...
+} 
+</code></pre>
 
 <p>然后创建一个统一的管理类进行管理，管理上面这些command的创建以及执行</p>
 
@@ -778,25 +735,23 @@ protocol Command {<br/>
             .setKeyWindow(window!)
             .build()
             .forEach { $0.execute() }
-
         return true
     }
 
 </code></pre>
 
-<p>这样将delegate主动调用的工作进行了清晰的切割，并且实现单一职能原则。大大减少了工作工作量</p>
+<p>这样将 AppDelegate 主动调用的工作进行了清晰的切割，并且实现单一职能原则。大大减少了工作工作量</p>
 
-<p>这样做实现了以下的有点：<br/>
-1. 每个command都实现了1个功能<br/>
-2. 不改动delegate代码就可以直接进行添加，<br/>
+<p>这样做实现了以下优点：<br/>
+1. 每个 Command 都实现了1个功能<br/>
+2. 不改动 AppDelegate 代码就可以直接进行添加<br/>
 3. 每个命令都可以很简单的被单独检测。</p>
 
 <h3 id="toc_4">组合模式</h3>
 
-<p>组合模式使得不同等级的对象可以看成一个实例<br/>
-这里主要处理delegate中的代理工作。</p>
-
-<p>对于所有要调用的代理，分别创建单独的代理模式，最终进行进行处理</p>
+<p>组合模式使得不同等级的对象可以看成一个实例。<br/>
+这里主要处理 AppDelegate 中的代理工作。<br/>
+对于所有要调用的代理，分别创建单独的代理模式，最终集中进行处理。</p>
 
 <pre><code>typealias AppDelegateType = UIResponder &amp; UIApplicationDelegate
 
@@ -818,7 +773,7 @@ class CompositeAppDelegate: AppDelegateType {
 }
 </code></pre>
 
-<p>然后实际工作的时候，需要实现的delegate方法</p>
+<p>然后实际工作的时候，需要实现的 AppDelegate 方法</p>
 
 <pre><code class="language-Swift">//最终每个delegate的实现方法
 class PushNotificationsAppDelegate: AppDelegateType {
@@ -843,7 +798,7 @@ class ThirdPartiesConfiguratorAppDelegate: AppDelegateType {
 </code></pre>
 
 <p>最终，我们通过一个工厂模式建立创建的逻辑。<br/>
-AppDelegate 创建了组合代理，并把他们给所有适合的地方调用</p>
+AppDelegate 创建了组合代理，并把它们给所有适合的地方调用。</p>
 
 <pre><code>enum AppDelegateFactory {
     static func makeDefault() -&gt; AppDelegateType {
@@ -875,11 +830,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 <h3 id="toc_5">中介者模式</h3>
 
-<p><a href="http://www.vadimbulavin.com/mediator-pattern-case-study/">中介对象</a>通过一个非常隐蔽非直关的形式实现交互。</p>
+<p><a href="http://www.vadimbulavin.com/mediator-pattern-case-study/">中介对象</a> 通过一个非常隐蔽非直观的形式实现交互。</p>
 
-<p>现在通过实现一个<code>AppLifecycleMediator</code>来传播<code>UIApplication</code>的生命周期事件给各个观察者。这些观察者必须遵守<code>AppLifecycleListener</code>协议</p>
+<p>现在通过实现一个 <code>AppLifecycleMediator</code> 来传播 <code>UIApplication</code> 的生命周期事件给各个观察者。这些观察者必须遵守 <code>AppLifecycleListener</code> 协议。</p>
 
-<pre><code>// MARK: - AppLifecycleListener  app的生命周期事件
+<pre><code>// MARK: - AppLifecycleListener  App的生命周期事件
 protocol AppLifecycleListener {
     func onAppWillEnterForeground()
     func onAppDidEnterBackground()
@@ -928,7 +883,7 @@ extension AppLifecycleMediator {
 }
 </code></pre>
 
-<p>通过一行代码完成在Appdelegate中的添加</p>
+<p>通过一行代码完成在AppDelegate中的添加</p>
 
 <pre><code>@UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -945,13 +900,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 <p>中介对象自动的注册了对于所有事件的观察。在AppDelegate只要初始化一次，就能使其正常的工作<br/>
 最终满足了文章开头的要求：<br/>
 1. 每个监听器都只有一个功能<br/>
-2. 不修改appdelegate的代码，很轻易的添加新的观察者/监听器<br/>
-3. 每个观察者， 又叫做协调器，可以很容易的做隔离测试。</p>
+2. 不修改 AppDelegate的代码，很轻易的添加新的观察者/监听器<br/>
+3. 每个观察者，又叫做协调器，可以很容易的做隔离测试。</p>
 
 <h2 id="toc_6">总结</h2>
 
-<p>我们都承认大部分的<code>AppDelegate</code>都非理性的大，过度复杂，行使了过多的职能。我们把这些叫做<code>Massive App Delegates</code><br/>
-通过接入这些设计模式，<code>Massive App Delegate</code>可以被分割成多个类，每个类实现单一职能，这样也易于隔离测试。<br/>
+<p>我们都承认大部分的 <code>AppDelegate</code> 都非理性的大，过度复杂，行使了过多的职能。我们把这些叫做<code>Massive App Delegates</code><br/>
+通过接入这些设计模式，<code>Massive App Delegate</code> 可以被分割成多个类，每个类实现单一职能，这样也易于隔离测试。<br/>
 这样的代码非常易于修改，不会因为改动造成大量的连带反应。最终非常的领过，易于被抽离以及重用。</p>
 
 <p><a href="http://www.vadimbulavin.com/refactoring-massive-app-delegate/">原文地址</a></p>
@@ -988,7 +943,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[autoRelease Pool 总结]]></title>
+    <title type="html"><![CDATA[AutoRelease Pool 总结]]></title>
     <link href="iginkgo.cn/15326191313814.html"/>
     <updated>2018-07-26T23:32:11+08:00</updated>
     <id>iginkgo.cn/15326191313814.html</id>

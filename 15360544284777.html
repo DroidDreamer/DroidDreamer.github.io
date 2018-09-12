@@ -129,134 +129,113 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>之前对于KVO的实现，都仅仅限于修改了对应属性的<code>set</code>方法的实现，使得在该方法使用前与使用后分别触发不同的方法。现在作者想仔细的看一下具体的细节</p>
+      <p>之前对于 KVO 的实现，都仅仅限于修改了对应属性的 <code>set</code> 方法的实现，使得在该方法使用前与使用后分别触发不同的方法。现在作者想仔细的看一下具体的细节。</p>
 
 <span id="more"></span><!-- more -->
 
 <h2 id="toc_0">打印一下基本信息</h2>
 
-<p>说是实现的对方法的替换，那实际上是怎么做到的呢？<br/>
-```<br/>
-Person *person1 = [[Person alloc] init];<br/>
-    Person *person2 = [[Person alloc] init];<br/>
-    NSLog(@&quot;添加观察前两个对象的实例 %@, %@ &quot;, person1, person2); //打印实例的地址<br/>
-    NSLog(@&quot;添加观察前两个对象的类 %@, %@ &quot;, [person1 class], [person2 class]); //使用class方法获取类<br/>
-    NSLog(@&quot;添加观察前，两个对象的类 objc_getClass:%@, %@&quot;, object_getClass(person1), object_getClass(person2));//使用objc_getClass 获取类</p>
-
-<pre><code>[person1 addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew context:NULL];
-NSLog(@&quot;添加观察后两个对象的实例 %@, %@ &quot;, person1, person2);
-NSLog(@&quot;添加观察后两个对象的类 %@, %@ &quot;, [person1 class], [person2 class]);
-NSLog(@&quot;添加观察后两个对象的类 objc_getClass:%@, %@&quot;, object_getClass(person1), object_getClass(person2));
-</code></pre>
-
-<pre><code>
-输入的结果：
-![](media/15360544284777/15360571965777.jpg)
-
-由以上的结论可以知道几件事情：
-1.添加KVO之后，实例对象的地址并没有发生改变
-2.添加KVO之后，`[instance class]`获取元类依旧指向person， 但是`object_getClass(instance)`来获取元类则是NSKVONotifying_Person。其中`class`方法拿到的是一个假的结果。`object_getClass`返回的才是一个真正的类型。
-
-
-## 打印一下具体的IMP
-那既然已经知道KVO机制本身是修改了观察元素的IMP，也就是具体的实现，我们打印一下具体的IMP究竟是否发生了改变
-
-</code></pre>
+<p>说是实现的对方法的替换，那实际上是怎么做到的呢？</p>
 
 <pre><code>Person *person1 = [[Person alloc] init];
-Person *person2 = [[Person alloc] init];
-
-SEL sel = @selector(setName:);
-
-IMP imp1 = [person1 methodForSelector:sel];
-IMP imp2 = [person2 methodForSelector:sel];
-
-NSLog(@&quot;添加观察前的的Imp分别是 person1: %p, person2: %p&quot;, imp1, imp2);
-
-[person1 addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew context:NULL];
-
-imp1 = [person1 methodForSelector:sel];
-imp2 = [person2 methodForSelector:sel];
-
-NSLog(@&quot;添加观察后的Imp分别是 person1: %p, person2: %p&quot;, imp1, imp2);
+    Person *person2 = [[Person alloc] init];
+    NSLog(@&quot;添加观察前两个对象的实例 %@, %@ &quot;, person1, person2); //打印实例的地址
+    NSLog(@&quot;添加观察前两个对象的类 %@, %@ &quot;, [person1 class], [person2 class]); //使用class方法获取类
+    NSLog(@&quot;添加观察前，两个对象的类 objc_getClass:%@, %@&quot;, object_getClass(person1), object_getClass(person2));//使用objc_getClass 获取类
+    
+    [person1 addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew context:NULL];
+    NSLog(@&quot;添加观察后两个对象的实例 %@, %@ &quot;, person1, person2);
+    NSLog(@&quot;添加观察后两个对象的类 %@, %@ &quot;, [person1 class], [person2 class]);
+    NSLog(@&quot;添加观察后两个对象的类 objc_getClass:%@, %@&quot;, object_getClass(person1), object_getClass(person2));
 </code></pre>
 
-<pre><code>
-最后的输出：
+<p>输入的结果：<br/>
+<img src="media/15360544284777/15360571965777.jpg" alt=""/></p>
 
-![](media/15360544284777/15360602518137.jpg)
+<p>由以上的结论可以知道几件事情：<br/>
+1.添加KVO之后，实例对象的地址并没有发生改变<br/>
+2.添加KVO之后， <code>[instance class]</code> 获取元类依旧指向 person， 但是<code>object_getClass(instance)</code> 来获取元类则是 NSKVONotifying_Person。其中 <code>class</code> 方法拿到的是一个假的结果。<code>object_getClass</code> 返回的才是一个真正的类型。</p>
 
-可以看到，person1在属性name添加了KVO之后，其set方法的IMP发生了变化。
+<h2 id="toc_1">打印一下具体的IMP</h2>
 
-结论： 对于属性添加KVO方法后， 其具体的实现会发生改变。
+<p>那既然已经知道KVO机制本身是修改了观察元素的IMP，也就是具体的实现，我们打印一下具体的IMP究竟是否发生了改变：</p>
 
-## 继续探究一下， imp发生了哪些变化
+<pre><code>    Person *person1 = [[Person alloc] init];
+    Person *person2 = [[Person alloc] init];
 
-在上方代码段的结尾处添加了断点，进行输出打印
-
-![](media/15360544284777/15360604856835.jpg)
-
-结论：
-添加KVO后，属性的set方法变为`_NssetObjectValueAndNotify`方法。
-而未添加KVO的属性的set方法依旧是 `setName:`
-
-## NSKVONotifying_Person与Person的关系
-从上面得到的结论是， person的实例在添加了KVO后，其元类型变为`NSKVONotifying_Person`,那么当前这两个类到底是什么关系呢？
-
-在代码段的最后添加如下代码：
-
+    SEL sel = @selector(setName:);
+    
+    IMP imp1 = [person1 methodForSelector:sel];
+    IMP imp2 = [person2 methodForSelector:sel];
+    
+    NSLog(@&quot;添加观察前的的Imp分别是 person1: %p, person2: %p&quot;, imp1, imp2);
+    
+    [person1 addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew context:NULL];
+    
+    imp1 = [person1 methodForSelector:sel];
+    imp2 = [person2 methodForSelector:sel];
+    
+    NSLog(@&quot;添加观察后的Imp分别是 person1: %p, person2: %p&quot;, imp1, imp2);
 </code></pre>
 
-<pre><code>NSLog(@&quot;%@ 的父类型为 %@&quot;, object_getClass(person1), class_getSuperclass(object_getClass(person1)));
-NSLog(@&quot;%@ 的父类型为 %@&quot;, object_getClass(person2), class_getSuperclass(object_getClass(person2)));
+<p>最后的输出：<br/>
+<img src="media/15360544284777/15360602518137.jpg" alt=""/></p>
+
+<p>可以看到，person1 在属性 name 添加了 KVO 之后，其 set 方法的 IMP 发生了变化。<br/>
+结论： 对于属性添加KVO方法后， 其具体的实现会发生改变。</p>
+
+<h2 id="toc_2">继续探究一下，IMP 发生了哪些变化</h2>
+
+<p>在上方代码段的结尾处添加了断点，进行输出打印:<br/>
+<img src="media/15360544284777/15360604856835.jpg" alt=""/></p>
+
+<p>结论：<br/>
+添加 KVO 后，属性的set方法变为 <code>_NSSetObjectValueAndNotify</code> 方法。<br/>
+而未添加KVO的属性的set方法依旧是 <code>setName:</code>.</p>
+
+<h2 id="toc_3">NSKVONotifying_Person 与 Person 的关系</h2>
+
+<p>从上面得到的结论是，person 的实例属性在添加了 KVO 后，其元类型变为 <code>NSKVONotifying_Person</code>,那么当前这两个类到底是什么关系呢？<br/>
+在代码段的最后添加如下代码：</p>
+
+<pre><code>    NSLog(@&quot;%@ 的父类型为 %@&quot;, object_getClass(person1), class_getSuperclass(object_getClass(person1)));
+    NSLog(@&quot;%@ 的父类型为 %@&quot;, object_getClass(person2), class_getSuperclass(object_getClass(person2)));
 </code></pre>
 
-<pre><code>
-打印后的结果表示
-  ![](media/15360544284777/15360609310566.jpg)
+<p>打印后的结果表示：<br/>
+  <img src="media/15360544284777/15360609310566.jpg" alt=""/></p>
 
-结论： 添加KVO后新生成的NSKVONotifying_Person为 person的派生类。
+<p>结论：添加KVO后新生成的 NSKVONotifying_Person 为 person 的派生类。<br/>
+那么最终生成这个新的派生类与原来的Person又有什么不一样呢？<br/>
+在代码段最后添加：</p>
 
-那么最终生成这个新的派生类与原来的Person又有什么不一样呢？
-
-
-
-在代码段最后添加
-
+<pre><code>    NSString *list1 = [self printPersonMethods:object_getClass(person1)];
+    NSString *list2 = [self printPersonMethods:object_getClass(person2)];
+    NSLog(@&quot;%@&quot;, list1);
+    NSLog(@&quot;%@&quot;, list2);
 </code></pre>
 
-<pre><code>NSString *list1 = [self printPersonMethods:object_getClass(person1)];
-NSString *list2 = [self printPersonMethods:object_getClass(person2)];
+<p><img src="media/15360544284777/15360665467454.jpg" alt=""/></p>
 
-NSLog(@&quot;%@&quot;, list1);
-NSLog(@&quot;%@&quot;, list2);
+<p>最终输出的结果是：<br/>
+<img src="media/15360544284777/15360666460967.jpg" alt=""/><br/>
+可以看到，在派生类中 <code>NSKVONotifying_Person</code> 多了几个方法。其内部也有一个 <code>setName：</code> 的方法，应该是重写了其父类 <code>Person</code> 中的 <code>setName：</code>方法。<br/>
+重写了 <code>dealloc</code> 是为了做一些 KVO 相关的内存释放的操作。<br/>
+重写 <code>class</code> 方法是隐藏了 NSKVONotifying_Person 这个类的存在。让外界以为依然是 Person 相关的类。</p>
+
+<h2 id="toc_4">KVO添加以及取消时的 isa 指针</h2>
+
+<pre><code>   Person *person = [[Person alloc] init];
+    [person addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew|
+    NSKeyValueObservingOptionOld  context:NULL];
+    NSLog(@&quot;person-&gt;isa:%@&quot;,object_getClass(person));
+    NSLog(@&quot;person class:%@&quot;,[person class]);
 </code></pre>
-
-<pre><code>
-![](media/15360544284777/15360665467454.jpg)
-
-最终输出的结果是
-![](media/15360544284777/15360666460967.jpg)
-可以看到，在派生类中`NSKVONotifying_Person`多了几个方法。其内部也有一个setName：的方法，应该是重写了其父类`Person`中的setName：方法。
-重写了dealloc是为了做一些KVO相关的内存释放的操作
-重写class方法是隐藏了NSKVONotifying_Person这个类的存在。让外界以为依然是Person相关的类。
-
-
-## KVO添加以及取消时候的isa指针
-
-</code></pre>
-
-<p>Person *person = [[Person alloc] init];<br/>
-    [person addObserver:self forKeyPath:@&quot;name&quot; options:NSKeyValueObservingOptionNew|<br/>
-    NSKeyValueObservingOptionOld  context:NULL];<br/>
-    NSLog(@&quot;person-&gt;isa:%@&quot;,object_getClass(person));<br/>
-    NSLog(@&quot;person class:%@&quot;,[person class]);<br/>
-```</p>
 
 <p><img src="media/15356370719300/15356412308181.jpg" alt=""/></p>
 
-<p>那么有一个问题是， class方法和object_getclass方法都应该是获取元类的方法，有什么不一样的？为什么获取的结果不一样呢？<br/>
-class 本身也是获取实例元类型的方法，但是在实现时KVO时，class的方法被底层改写， 因此看到的会依旧指向原生的类。</p>
+<p>那么有一个问题是，class 方法和 object_getclass 方法都应该是获取元类的方法，有什么不一样的？为什么获取的结果不一样呢？<br/>
+class 本身也是获取实例元类型的方法，但是在实现时 KVO 时，class的方法被派生类重写改写， 因此看到的会依旧指向原生的类。</p>
 
 <p><strong>取消KVO之后</strong>，看一下最终效果</p>
 
@@ -265,17 +244,15 @@ class 本身也是获取实例元类型的方法，但是在实现时KVO时，cl
     NSLog(@&quot;person class:%@&quot;,[person class]);
 </code></pre>
 
-<p><img src="media/15356370719300/15356414025816.jpg" alt=""/></p>
+<p><img src="media/15356370719300/15356414025816.jpg" alt=""/><br/>
+此时可以看到，输出的结果中，两个方法都变成了person。</p>
 
-<p>此时可以看到，输出的结果中，两个方法都变成了person</p>
+<h2 id="toc_5">分类中新添属性的 KVO</h2>
 
-<h2 id="toc_1">分类中新添<strong>属性</strong>的KVO</h2>
-
-<p>通常，如果希望在category中添加属性时， 会使用基于runtime的关联值的方式进行实现。使用<code>objc_getAssociatedObject</code>,<code>objc_setAssociatedObject</code>这两个方式来实现get和set方法。<br/>
+<p>通常，如果希望在Category中添加属性时， 会使用基于 Runtime 的关联值的方式进行实现。使用<code>objc_getAssociatedObject</code> , <code>objc_setAssociatedObject</code> 这两个方式来实现 get 和 set 方法。<br/>
 那么对于这种情况实现的属性，在进行KVO时，能否正常的获取呢？答案是可以的。</p>
 
-<pre><code>
-@implementation Person (Category)
+<pre><code>@implementation Person (Category)
 static char *CloudoxKey = &quot;CloudoxKey&quot;;
 
 -(void)setCloudox:(NSString *)cloudox{
@@ -292,38 +269,30 @@ static char *CloudoxKey = &quot;CloudoxKey&quot;;
 
   [person addObserver:self forKeyPath:@&quot;CloudoxKey&quot; options:NSKeyValueObservingOptionNew|
     NSKeyValueObservingOptionOld context:NULL];
-
     person.cloudox = @&quot;11&quot;;
     person.cloudox = @&quot;22&quot;;
-
-
-
 </code></pre>
 
 <pre><code>//输出代码
-
-
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary&lt;NSKeyValueChangeKey,id&gt; *)change context:(void *)context {
     if([keyPath isEqualToString:@&quot;CloudoxKey&quot;] || [keyPath isEqualToString:@&quot;age&quot;] ){
         NSLog(@&quot;\\noldnum:%@ newnum:%@&quot;,
               [change valueForKey:@&quot;old&quot;],
               [change valueForKey:@&quot;new&quot;]);
-    }
-    
+    }   
 }
-
 </code></pre>
 
-<h2 id="toc_2">总结</h2>
+<h2 id="toc_6">总结</h2>
 
 <ol>
-<li>iOS中的KVO是是基于runtime的</li>
-<li>某个类的属性首次添加KVO后，会生成一个派生类 <code>NSKVONotifying_类名</code> 。在派生类中重写被观察的属性的set方法，以此来实现真正的通知。新的类也重写的销毁以及class方法，用于掩护派生类的存在</li>
-<li>对象第一次被观察后，该对象的<code>isa</code>指针会指向新生成的派生类。从而确保被监控的属性值发生改变时，调用的是派生类的setter方法。</li>
-<li>使用关联值的方法在分类中实现属性，在赋值时是可以触发KVO的。</li>
+<li>iOS中的 KVO 是是基于 runtime 的。</li>
+<li>某个类的属性首次添加 KVO 后，会生成一个派生类 <code>NSKVONotifying_类名</code>。在派生类中重写被观察的属性的 set 方法，以此来实现真正的通知。新的类也重写的销毁以及 class 方法，用于掩护派生类的存在。</li>
+<li>对象第一次被观察后，该对象的 <code>isa</code> 指针会指向新生成的派生类。从而确保被监控的属性值发生改变时，调用的是派生类的 set 方法。</li>
+<li>使用关联值的方法在分类中实现属性，在赋值时是可以触发 KVO 的。</li>
 </ol>
 
-<h2 id="toc_3">参考文档</h2>
+<h2 id="toc_7">参考文档</h2>
 
 <p><a href="https://www.jianshu.com/p/0aa83ac521ba">https://www.jianshu.com/p/0aa83ac521ba</a><br/>
 <a href="https://www.jianshu.com/p/dc89f0a2d1ac">https://www.jianshu.com/p/dc89f0a2d1ac</a></p>
@@ -346,7 +315,7 @@ static char *CloudoxKey = &quot;CloudoxKey&quot;;
       <p class="text-right" style="padding:15px 0px;">
       
           <a  href="15350236247070.html" 
-          title="Next Post: 论UITableView的dequeueReusableCell方法">论UITableView的dequeueReusableCell方法 &raquo;</a>
+          title="Next Post: 论 UITableView 的 dequeueReusableCell 方法">论 UITableView 的 dequeueReusableCell 方法 &raquo;</a>
       
       </p>
         </div>
@@ -459,7 +428,7 @@ gitment.render('container')
 		  
 		      
 			      <li class="post">
-			        <a href="15350236247070.html">论UITableView的dequeueReusableCell方法</a>
+			        <a href="15350236247070.html">论 UITableView 的 dequeueReusableCell 方法</a>
 			      </li>
 		     
 		  

@@ -129,7 +129,7 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>本文是翻译自墙外的一片<a href="http://www.vadimbulavin.com/refactoring-massive-app-delegate/">文章</a>.文章通过分析iOS项目中 <code>AppDelegate</code>中常负担的职能，并将其分为三类，通过引入不同的设计模式将代码进行抽离整合，最终达到单一职能、可重用、已测试的特点。<br/>
+      <p>本文是翻译自墙外的一片<a href="http://www.vadimbulavin.com/refactoring-massive-app-delegate/">文章</a>。文章通过分析iOS项目中 <code>AppDelegate</code> 中常负担的职能，并将其分为三类，通过引入不同的设计模式将代码进行抽离整合，最终达到单一职能、可重用、易测试的特点。<br/>
 译者也在文章的影响下，对当前进行的项目进行了相应的兼容和实现，最终效果还是很不错的。</p>
 
 <span id="more"></span><!-- more -->
@@ -163,34 +163,33 @@
 
 <h2 id="toc_0">开始</h2>
 
-<p>App detelgate连接了你的app与系统。通常它都是整个iOS项目的核心部分。通常，伴随着不断的开发，新特性与功能的增加，AppDelegate最终编程很零碎的东西。</p>
+<p>AppDetelgate 连接了你的 App 与系统。通常它都是整个 iOS 项目的核心部分。通常，伴随着不断的开发，新特性与功能的增加，AppDelegate 最终变成很零碎的东西。</p>
 
-<p>通常把所有的代码都加入appdelegate是十分浪费的，因为它乐意影响整个app。因此，保持这个类的干净与整洁对于一个健壮的项目时非常重要的。</p>
-
-<p>本文探讨了让delegate变得简洁、可测、可重用的几点方式</p>
+<p>通常把所有的代码都加入 AppDelegate 是十分浪费的，因为它容易影响整个 App。因此，保持这个类的干净与整洁对于一个健壮的项目是非常重要的。<br/>
+本文探讨了让AppDelegate变得简洁、可测、可重用的几点建议。</p>
 
 <h2 id="toc_1">问题</h2>
 
-<p>delegate是整个app的根本的地方。负责与系统与其他的app直接打交道。这使得delegate有非常多的任务， 并且很难进行修改以及扩展。</p>
+<p>AppDelegate 是整个 App 最根本的地方。负责与系统及其它的 App 直接打交道。这使得AppDelegate有非常多的任务， 并且很难进行修改以及扩展。</p>
 
-<p><a href="https://developer.apple.com/documentation/uikit/uiapplicationdelegate">苹果官方</a>支持至少要在delegate中持有3种职能。</p>
+<p><a href="https://developer.apple.com/documentation/uikit/uiapplicationdelegate">苹果官方</a>支持至少要在AppDelegate中行使3种职能。</p>
 
-<p>通过调查大量的开源的app，我总结了通常appDelegate会行使的职能。<br/>
+<p>通过调查大量的开源的App，我总结了通常AppDelegate会行使的职能：<br/>
 1. 初始化大量的第三方库<br/>
 2. 初始化 Core Data stack 以及管理迁移<br/>
-3. 配置app的state，用于设置单元测试以及UI测试<br/>
-4. 管理推送 本地推送或者远程推送<br/>
-5. 配置UIAppearance<br/>
-6. 管理UserDataManager：配置初次登录时的flag，保存以及加载数据。<br/>
-7. 配置app的角标<br/>
+3. 配置 App 的 State，用于设置单元测试以及UI测试<br/>
+4. 管理推送，本地推送或者远程推送<br/>
+5. 配置 UIAppearance<br/>
+6. 管理 UserDataManager：配置初次登录时的 Flag，保存以及加载数据。<br/>
+7. 配置 App 的角标<br/>
 8. 管理后台进程<br/>
-9. 管理UI调用栈的配置。选择初始的viewController<br/>
+9. 管理 UI 调用栈的配置。选择初始的 ViewController<br/>
 10.播放声音<br/>
 11. 关系分析文件<br/>
-12. 输出debugLog<br/>
+12. 输出 DebugLog<br/>
 13. 控制转向问题<br/>
 14. 实现各种代理协议，尤其是第三方的<br/>
-15. 弹出alert  </p>
+15. 弹出 Alert  </p>
 
 <h2 id="toc_2">解决方案</h2>
 
@@ -202,24 +201,24 @@
 
 <h3 id="toc_3">命令模式</h3>
 
-<p>对于每一种delegate的职能，我们创建一个单独的执行类，<br/>
-```<br/>
-protocol Command {<br/>
-    func execute()<br/>
-}</p>
+<p>对于每一种AppDelegate的职能，我们创建一个单独的执行类：</p>
 
-<p>struct RegisiterCommand: Command {<br/>
-    func execute()<br/>
-}</p>
+<pre><code>protocol Command {
+    func execute()
+}
 
-<p>struct SetAppearanceCommand: Command {<br/>
-    ...<br/>
-}</p>
+struct RegisterCommand: Command {
+    func execute()
+}
 
-<p>struct InitialViewControllerCommand: Command {<br/>
- ...<br/>
-} <br/>
-```</p>
+struct SetAppearanceCommand: Command {
+    ...
+}
+
+struct InitialViewControllerCommand: Command {
+ ...
+} 
+</code></pre>
 
 <p>然后创建一个统一的管理类进行管理，管理上面这些command的创建以及执行</p>
 
@@ -247,25 +246,23 @@ protocol Command {<br/>
             .setKeyWindow(window!)
             .build()
             .forEach { $0.execute() }
-
         return true
     }
 
 </code></pre>
 
-<p>这样将delegate主动调用的工作进行了清晰的切割，并且实现单一职能原则。大大减少了工作工作量</p>
+<p>这样将 AppDelegate 主动调用的工作进行了清晰的切割，并且实现单一职能原则。大大减少了工作工作量</p>
 
-<p>这样做实现了以下的有点：<br/>
-1. 每个command都实现了1个功能<br/>
-2. 不改动delegate代码就可以直接进行添加，<br/>
+<p>这样做实现了以下优点：<br/>
+1. 每个 Command 都实现了1个功能<br/>
+2. 不改动 AppDelegate 代码就可以直接进行添加<br/>
 3. 每个命令都可以很简单的被单独检测。</p>
 
 <h3 id="toc_4">组合模式</h3>
 
-<p>组合模式使得不同等级的对象可以看成一个实例<br/>
-这里主要处理delegate中的代理工作。</p>
-
-<p>对于所有要调用的代理，分别创建单独的代理模式，最终进行进行处理</p>
+<p>组合模式使得不同等级的对象可以看成一个实例。<br/>
+这里主要处理 AppDelegate 中的代理工作。<br/>
+对于所有要调用的代理，分别创建单独的代理模式，最终集中进行处理。</p>
 
 <pre><code>typealias AppDelegateType = UIResponder &amp; UIApplicationDelegate
 
@@ -287,7 +284,7 @@ class CompositeAppDelegate: AppDelegateType {
 }
 </code></pre>
 
-<p>然后实际工作的时候，需要实现的delegate方法</p>
+<p>然后实际工作的时候，需要实现的 AppDelegate 方法</p>
 
 <pre><code class="language-Swift">//最终每个delegate的实现方法
 class PushNotificationsAppDelegate: AppDelegateType {
@@ -312,7 +309,7 @@ class ThirdPartiesConfiguratorAppDelegate: AppDelegateType {
 </code></pre>
 
 <p>最终，我们通过一个工厂模式建立创建的逻辑。<br/>
-AppDelegate 创建了组合代理，并把他们给所有适合的地方调用</p>
+AppDelegate 创建了组合代理，并把它们给所有适合的地方调用。</p>
 
 <pre><code>enum AppDelegateFactory {
     static func makeDefault() -&gt; AppDelegateType {
@@ -344,11 +341,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 <h3 id="toc_5">中介者模式</h3>
 
-<p><a href="http://www.vadimbulavin.com/mediator-pattern-case-study/">中介对象</a>通过一个非常隐蔽非直关的形式实现交互。</p>
+<p><a href="http://www.vadimbulavin.com/mediator-pattern-case-study/">中介对象</a> 通过一个非常隐蔽非直观的形式实现交互。</p>
 
-<p>现在通过实现一个<code>AppLifecycleMediator</code>来传播<code>UIApplication</code>的生命周期事件给各个观察者。这些观察者必须遵守<code>AppLifecycleListener</code>协议</p>
+<p>现在通过实现一个 <code>AppLifecycleMediator</code> 来传播 <code>UIApplication</code> 的生命周期事件给各个观察者。这些观察者必须遵守 <code>AppLifecycleListener</code> 协议。</p>
 
-<pre><code>// MARK: - AppLifecycleListener  app的生命周期事件
+<pre><code>// MARK: - AppLifecycleListener  App的生命周期事件
 protocol AppLifecycleListener {
     func onAppWillEnterForeground()
     func onAppDidEnterBackground()
@@ -397,7 +394,7 @@ extension AppLifecycleMediator {
 }
 </code></pre>
 
-<p>通过一行代码完成在Appdelegate中的添加</p>
+<p>通过一行代码完成在AppDelegate中的添加</p>
 
 <pre><code>@UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -414,13 +411,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 <p>中介对象自动的注册了对于所有事件的观察。在AppDelegate只要初始化一次，就能使其正常的工作<br/>
 最终满足了文章开头的要求：<br/>
 1. 每个监听器都只有一个功能<br/>
-2. 不修改appdelegate的代码，很轻易的添加新的观察者/监听器<br/>
-3. 每个观察者， 又叫做协调器，可以很容易的做隔离测试。</p>
+2. 不修改 AppDelegate的代码，很轻易的添加新的观察者/监听器<br/>
+3. 每个观察者，又叫做协调器，可以很容易的做隔离测试。</p>
 
 <h2 id="toc_6">总结</h2>
 
-<p>我们都承认大部分的<code>AppDelegate</code>都非理性的大，过度复杂，行使了过多的职能。我们把这些叫做<code>Massive App Delegates</code><br/>
-通过接入这些设计模式，<code>Massive App Delegate</code>可以被分割成多个类，每个类实现单一职能，这样也易于隔离测试。<br/>
+<p>我们都承认大部分的 <code>AppDelegate</code> 都非理性的大，过度复杂，行使了过多的职能。我们把这些叫做<code>Massive App Delegates</code><br/>
+通过接入这些设计模式，<code>Massive App Delegate</code> 可以被分割成多个类，每个类实现单一职能，这样也易于隔离测试。<br/>
 这样的代码非常易于修改，不会因为改动造成大量的连带反应。最终非常的领过，易于被抽离以及重用。</p>
 
 <p><a href="http://www.vadimbulavin.com/refactoring-massive-app-delegate/">原文地址</a></p>
@@ -435,7 +432,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         <p class="text-left" style="padding:15px 0px;">
       
           <a href="15350236247070.html" 
-          title="Previous Post: 论UITableView的dequeueReusableCell方法">&laquo; 论UITableView的dequeueReusableCell方法</a>
+          title="Previous Post: 论 UITableView 的 dequeueReusableCell 方法">&laquo; 论 UITableView 的 dequeueReusableCell 方法</a>
       
         </p>
         </div>
@@ -556,7 +553,7 @@ gitment.render('container')
 		  
 		      
 			      <li class="post">
-			        <a href="15350236247070.html">论UITableView的dequeueReusableCell方法</a>
+			        <a href="15350236247070.html">论 UITableView 的 dequeueReusableCell 方法</a>
 			      </li>
 		     
 		  
