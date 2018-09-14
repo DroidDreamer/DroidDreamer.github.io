@@ -4,13 +4,238 @@
   <title><![CDATA[iginkgo在路上]]></title>
   <link href="iginkgo.cn/atom.xml" rel="self"/>
   <link href="iginkgo.cn/"/>
-  <updated>2018-09-12T21:51:27+08:00</updated>
+  <updated>2018-09-14T22:07:41+08:00</updated>
   <id>iginkgo.cn/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift中的POP——面向协议编程]]></title>
+    <link href="iginkgo.cn/15369184268742.html"/>
+    <updated>2018-09-14T17:47:06+08:00</updated>
+    <id>iginkgo.cn/15369184268742.html</id>
+    <content type="html"><![CDATA[
+<p>Don&#39;t start with a class. Start with a protocol</p>
+
+<span id="more"></span><!-- more -->
+
+<ul>
+<li>
+<a href="#toc_0">为什么要聊这个点</a>
+</li>
+<li>
+<a href="#toc_1">POP 与 OOP的对比</a>
+</li>
+<li>
+<a href="#toc_2">相对于OC， 为什么说Swift是OOP的语言</a>
+<ul>
+<li>
+<a href="#toc_3">Swift中的值类型与引用类型</a>
+</li>
+<li>
+<a href="#toc_4">Swift 中 Protocol 的一些独有特性—— Extension</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_5">local reasoning</a>
+</li>
+<li>
+<a href="#toc_6">一些具体的例子</a>
+<ul>
+<li>
+<a href="#toc_7">Delegate</a>
+</li>
+<li>
+<a href="#toc_8">多态</a>
+</li>
+<li>
+<a href="#toc_9">具体的应用实例</a>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2 id="toc_0">为什么要聊这个点</h2>
+
+<p>2016年在苹果的全球开发者大会WWDC上，一个面向协议的专题上，演讲的开发者说了这样一句话</p>
+
+<blockquote>
+<p>Don&#39;t start with a class. Start with a protocol.<br/>
+这句话曾经引起了强烈的反响。<br/>
+Swift 一直被称之为是一门面向协议编程的语言。加之最在总结iOS开发过程中常用的模式，因此想专门拿出一些时间来考究一下， Swift 与 POP 究竟有何切合之处。</p>
+</blockquote>
+
+<h2 id="toc_1">POP 与 OOP的对比</h2>
+
+<p>要聊 POP， 就不得不说一下<code>面向对象编程</code> OOP -- Object Oriented Program.</p>
+
+<blockquote>
+<p>面向对象编程——Object Oriented Programming，简称OOP，是一种程序设计思想。 OOP把对象作为程序的基本单元，一个对象包含了数据和操作数据的函数。</p>
+</blockquote>
+
+<p>传统的程序设计主张将程序看作一系列函数的集合，或者直接就是一系列对计算机下达的指令。面向对象程序设计中的每一个对象都应该能够接受数据、处理数据并将数据传达给其它对象，因此它们都可以被看作一个小型的“机器”，即对象。<br/>
+面向对象编程具有继承、封装、多态、抽象等特点。</p>
+
+<p>与之相对应的是POP，全称面向协议编程。是一个以协议为核心的编程方式。协议集中表达了某一个特性或者功能。它利用组合的特性可以更好的实现代码的组织。</p>
+
+<p>在iOS 中， OOP 是单继承的，POP是多继承的。<br/>
+由于 OOP 的工作方式，它最好是单继承的。因为多继承会让代码变得非常的混乱。 <br/>
+当我们创建了比较大的类的继承链， 大量的属性或者方法会被继承。当有新的需求或者特性的时候，开发者通常会向继承链的根类（或者是靠近根部的祖先）中添加新特性。对于中层或者是叶子级别的类型则会有更加精细的需求。根类型会倾向于实现一系列的新特性，由于非常多的可能并不有用的特性而变得非常臃肿。 对应的子类型会继承这些并不需要的特性。<br/>
+这些OOP关注的点并不是写在一起的。一个好的开发者需要避免上面的问题。这可能需要花时间去经历。比如说：开发者克服这些功能性臃肿问题，通过添加其它类型的实例作为属性而不是从其它的类中继承过来。这也是多用组合、少用继承的思想</p>
+
+<p>Protocol 是面向协议编程中非常关键的因素。在 Java，C# 等语言上都有接口（Interface）的观念。 iOS中的 Protocol 非常像这些语言的接口，但又不是完全一样。这些 Interface 以及 OC 中的 Protocol 什么都没有实现，它只是声明了要满足的条件， 像是描述一个 <code>蓝图</code>。</p>
+
+<p>OC明确下来， 使用 protocol 来代替接口 interface， protocol可以获取 方法以及属性，但是只有class能够实现 Protocol ， <strong>struct</strong>则不可以。</p>
+
+<h2 id="toc_2">相对于OC， 为什么说Swift是OOP的语言</h2>
+
+<p>Swift这个语言是以协议为基础发展起来的。Swift标准库里有50多个复杂不一的协议，几乎所有的实际类型都是实现了若干协议的。它是以协议为基础组织和建立起来的。这与我们平时所熟知的面向对象的方式很不一样。<br/>
+在Swift之前， Protocol 在 OC 中也是非常重要的。但是与在 OC 中的协议相比，有了长足的进步。总结下来有以下几点：<br/>
+1. Swift中的值类型和引用类型都可以进行实现。<br/>
+2. Swift中实现了一些其它语言都不支持的特性。<br/>
+下面可以详细的说一说具体都有哪些</p>
+
+<h3 id="toc_3">Swift中的值类型与引用类型</h3>
+
+<p>在 OC 中， 只有 class 才能够实现协议， 但是等到 Apple 推出 Swift 这门语言，这个情况得以大大的改观。<br/>
+Swift 在值类型的使用方便进行了优化，引入<code>Copy-On-Write</code>机制，使得值类型只有在被修改的时候才会执行 Copy 操作， 大大提升了性能。这在很大程度上弱化了引用类型的存在意义。因此在Swift中，很大一部分的数据结构都改为用值类型机型实现， 包括<code>String</code>, <code>Array</code>等等。此外，Swift中使用最为普遍的<code>Class</code>, <code>Struct</code>, <code>Enum</code>，只有 <code>Class</code> 是引用类型，其它两个都已经是用值类型进行实现。<br/>
+引用类型在使用上，可能会存在一定的附作用，一个引用被分享后，很可能被不可预料的修改。值类型可以很好的避免这个问题。<br/>
+其中，Swift中实现Protocol的主体已经不仅仅限于Class， 其它的值类型也可以实现。WWDC专门有一期讲相应的<a href="https://developer.apple.com/videos/play/wwdc2016/419/">使用</a></p>
+
+<h3 id="toc_4">Swift 中 Protocol 的一些独有特性—— Extension</h3>
+
+<blockquote>
+<p>协议可以通过扩展来提供方法、初始化方法、下标以及对应类型的计算属性。这使得你可以通过协议来约定一些具体的行为，而不是设置全局的方法或者在具体的某个类中分别进行实现。</p>
+
+<p>通过实现协议的扩展， 所有遵守协议的类型都会自动获取扩展中实现的方法</p>
+
+<p>可以使用协议的扩展来提供方法或者计算属性的默认实现。如果一个实现协议的类型提供了对应的方法或者属性，则类型中具体的实现会取代默认的实现。</p>
+</blockquote>
+
+<h2 id="toc_5">local reasoning</h2>
+
+<p><a href="https://developer.apple.com/videos/play/wwdc2016/419/?time=41">WWDC中的出处</a>中讲到</p>
+
+<blockquote>
+<p>Local reasoning means that when you look at the code, right in front of you, you don’t have to think about how the rest of your code interacts with that one function. You may have had this feeling before and that’s just a name for that feeling. For example, maybe when you just joined a new team and you have tons of code to look at but very little context, can you understand what’s going on in that single function? And so the ability to do that is really important because it makes it easier to maintain, easier to write, and easier to test, and easier to write the code the first time.</p>
+</blockquote>
+
+<p>简单来说就是，但你看到眼前的代码片段，你甚至都不用去看方法剩余的代码片段是如何实现的。这之前你有会有一种感觉，感觉到方法的名字。 比如说，获取当你刚加入一个新的team，你会有大量的代码要看，但是缺乏上下文。你能够从这个单一的方法中推测出会发生什么吗？这是一个很重要的能力，保持代码的简洁、易写易测。</p>
+
+<p>当然，我承认这是一个非常难的能力。尤其是给method取一个恰如其分的名字是编码过程中非常难的一环😅。</p>
+
+<p>拿通用的<code>Array</code>来举个例子， Swift中的 Array 实现了11个协议</p>
+
+<pre><code>BidirectionalCollection, 
+Collection,
+CustomDebugStringConvertible, 
+CustomReflectable, 
+CustomStringConvertible,
+ExpressibleByArrayLiteral, 
+MutableCollection, 
+RandomAccessCollection,
+RangeReplaceableCollection,
+Sequence
+</code></pre>
+
+<p>通常每个协议都会有一个单一的职能。在一个团队新成员来阅读代码时，在他能够流利的阅读代码前， 来到代码的声明处查看一下定义以及实现的协议，就会对具体的功能有一个比较清晰的认识。</p>
+
+<h2 id="toc_6">一些具体的例子</h2>
+
+<h3 id="toc_7">Delegate</h3>
+
+<pre><code>protocol Delelgate {
+    .....
+}
+
+var delegate: Delegate?
+</code></pre>
+
+<p>Protocol在作为代理时， 可以作为具体的某个类型来进行声明和调用。相信小伙伴们对于 iOS 中的 delegate 相关知识点已经不陌生了。</p>
+
+<h3 id="toc_8">多态</h3>
+
+<p>举个例子</p>
+
+<pre><code>protocol BaseProtocol {
+    var protocolName: String { get }
+}
+ 
+protocol CenterProtocol: BaseProtocol {
+    
+}
+ 
+protocol HighProtocol: CenterProtocol {
+    
+}
+ 
+struct BaseLevel : BaseProtocol {
+    var protocolName: String = &quot;BaseLevel&quot;
+}
+ 
+struct CenterLevel : CenterProtocol {
+    var protocolName: String = &quot;CenterLevel&quot;
+}
+ 
+struct HighLevel : HighProtocol {
+    var protocolName: String = &quot;HighLevel&quot;
+}
+ 
+let base = BaseLevel()
+let center = CenterLevel()
+let high = HighLevel()
+ 
+var item: BaseProtocol
+item = base
+print(&quot;\(item)\n&quot;)
+// prints &quot;BaseLevel(protocolName: &quot;BaseLevel&quot;)&quot;
+ 
+topStruct = center
+print(&quot;\(item)\n&quot;)
+// prints &quot;CenterLevel(protocolName: &quot;MiddleStruct&quot;)&quot;
+ 
+topStruct = high
+print(&quot;\(item)\n&quot;)
+// prints &quot;HighLevel(protocolName: &quot;HighLevel&quot;)&quot;
+ 
+let protocolStructs:[Top] = [base,center,high]
+ 
+for protocolStruct in protocolStructs {
+    print(&quot;\(protocolStruct)\n&quot;)
+}
+</code></pre>
+
+<h3 id="toc_9">具体的应用实例</h3>
+
+<pre><code>protocol ViewWithBorder {}
+
+// SAFETY: Constrain &quot;addBorder&quot; only to UIViews.
+extension ViewWithBorder where Self : UIView {
+    func addBorder() -&gt; Void {
+        layer.borderColor = UIColor.green.cgColor
+        layer.borderWidth = 10.0
+    }
+}
+
+class BorderView : UIView, ViewWithBorder {
+}
+</code></pre>
+
+<p>实际调用的过程中，初始化<code>BorderView</code>可以直接调用<code>addBorder()</code>方法</p>
+
+<pre><code>var view = BorderView()
+view.addBorder()
+</code></pre>
+
+<p>此外，基于协议的泛型结构也非常的重要， 比如Array<T>, Stack<T>, Queue<T>等等。</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[2018.09.10-2018.09.16]]></title>
@@ -26,6 +251,10 @@
 
 <p><a href="https://www.youtube.com/watch?v=oJ-mvkA__Yc">视频地址</a><br/>
 工业软件从来都是工业的结晶，而不是IT的产物。 2018年的中兴事件捅开了中国工业软件的黑窟窿，让人们意识到中国的工业软件发展的短板。当前的工业软件，对于中国而言，不止是短板，而且是“断”板</p>
+
+<h2 id="toc_1">9月13日凌晨，苹果发布了新品</h2>
+
+<p>新品手机包括 iPhoneXS、 iPhoneXR， 其中iPhoneXR实现了真正的双卡双待，并大幅度的提高了AR的处理效果，再加上5G时代的来临，我认为AR的爆发已经离我们不远了。 </p>
 
 ]]></content>
   </entry>
@@ -2965,31 +3194,6 @@ viewControllerB  viewDidAppear()
 </blockquote>
 
 <p>loadView与viewDidload的区别是 ，loadView时view还没有生成， viewDidLoad时，view已经生成了。loadView只会被调用一次，但是viewDidLoad可能会被调用多次（view可能多次加载），当view被添加到其他view中之前，会调用viewWillAppear。 当view不再使用时，收到内存警告时，viewController会将view释放并将其指向为nil。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[tools]]></title>
-    <link href="iginkgo.cn/15209405889264.html"/>
-    <updated>2018-03-13T19:29:48+08:00</updated>
-    <id>iginkgo.cn/15209405889264.html</id>
-    <content type="html"><![CDATA[
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_0">code</h2>
-
-<p><a href="http://asciiflow.com/">使用注释画图</a><br/>
-<a href="https://www.processon.com/login">绘制流程图</a><br/>
-<a href="https://www.appsight.io/">Find SDKs &amp; services used by iOS mobile apps</a><br/>
-<a href="https://aso100.com/">iOS app排名</a></p>
-
-<h2 id="toc_1">life</h2>
-
-<p><a href="http://ip.taobao.com/index.php">ip地址查询</a><br/>
-<a href="http://app2.sfda.gov.cn/datasearchp/gzcxSearch.do?formRender=cx&amp;page=1">药监局查询正品</a><br/>
-<a href="http://sswz.spb.gov.cn/">快递投诉</a><br/>
-<a href="https://github.com/cn">中国资料数据库 github开源</a></p>
 
 ]]></content>
   </entry>

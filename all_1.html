@@ -109,6 +109,129 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15324828408733.html">
+                
+                  <h1>对于首页的优化</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<!-- 进行中 -->
+
+<p>当前页面中存在的问题</p>
+
+<pre><code>switch model.style {
+case .news: 
+    let cell = tableView.dequeue(&quot;newsCell&quot;) //config
+    //...配置
+    return cell
+case .video:
+     let cell = tableView.dequeue(&quot;videosCell&quot;) //config
+    //...配置
+    return cell
+case .pic:
+     let cell = tableView.dequeue(&quot;picsCell&quot;) //config
+    //...配置
+    return cell
+case .beauty:
+     let cell = tableView.dequeue(&quot;beautyCell&quot;) //config
+    //...配置
+    return cell
+case .bigImage:
+     let cell = tableView.dequeue(&quot;bigImageCell&quot;) //config
+    //...配置
+    return cell
+default: ...
+}
+</code></pre>
+
+<p>实际页面涉及到的cell种类不止这些，并且在未来的开发过程中会随着app特性的增加而增长，因为每次需要维护和更新时对整个大的代码块进行修改就编程一个非常杂乱的过程，稍有不慎还会影响整体的逻辑。那这里我们需要利用协议的特性进行设计。<a href="https://xiaozhuanlan.com/topic/2537681490">相关参考</a></p>
+
+<p>实际项目中定义了一个协议，用来表示整个的数据类型</p>
+
+<pre><code class="language-表示我们的基本类型以及转换后的类型">protocol ParseMessageType{
+    associatetype: Original
+    associatetype: ParseResult
+}
+</code></pre>
+
+<p>那<code>Original</code>-&gt;<code>ParseResult</code>的转换步骤通过一个 parser来完成， 叫做<code>MessageParser</code></p>
+
+<pre><code>protocol MessageParser {
+ 
+ associatetype: Message
+ associatetype: Target: ParaseMessageType where Message == Target.Original
+    func parse(messgae: Message)-&gt; Target.ParsedResult
+}
+
+</code></pre>
+
+<p>对于Target遵守 ParaseMessageType 的协议， 并且它的 original和message一致， 这就对parse方法的返回值进行了限定，编译过程中进行类型检查时会进行严格的类型匹配。</p>
+
+<p>在具体MessageType实现的过程中</p>
+
+<pre><code>final class ParsedChatMessage: ParsedMessageType {
+    let output: NSAttributedString
+    let original: ChatMessage
+    
+    init(message: ChatMessage){
+        original = messgae
+        let parser = Parser()
+        self.output = parser.parse(message: message)
+    }
+}
+
+struct Parser: MessageParser {
+    typealias Target = ParsedChatMessage
+    func parse(message: ChatMeaasge)-&gt; NSAttributeString {
+     let reuslt = ...
+     return .init(attributedString: result...)
+    }
+}
+
+
+</code></pre>
+
+<p>那么实际中的本地效果呢：</p>
+
+<p>FeedModel   IndexProtocol   cellViewModel1  cellViewModel2cellViewModel3</p>
+
+<p>在 feedModel，<br/>
+在feedModel中实现fakeModel<br/>
+FeedModel-&gt; IndexProtocol<br/>
+fakeModel-&gt; IndexProtocol<br/>
+TopicModel -&gt; IndexProtocol</p>
+
+<p>对应的不同的cell， </p>
+
+<p>此外，需要进一步实践的</p>
+
+<p><a href="http://xiaozhuanlan.com/topic/6104325798">delegate改进</a></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/7/25</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15324314483651.html">
                 
                   <h1>首页的优化记录</h1>
@@ -449,38 +572,6 @@ coursera上有一门课程，叫做《Learn How to learn》, 里面介绍了学�
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15209405889264.html">
-                
-                  <h1>tools</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="15209405889264.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2018/3/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BC%96%E7%A8%8B.html'>编程</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -560,6 +651,12 @@ coursera上有一门课程，叫做《Learn How to learn》, 里面介绍了学�
 	      
 		      
 			      <li class="post">
+			        <a href="15369184268742.html">Swift中的POP——面向协议编程</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15366742578883.html">2018.09.10-2018.09.16</a>
 			      </li>
 		     
@@ -579,12 +676,6 @@ coursera上有一门课程，叫做《Learn How to learn》, 里面介绍了学�
 		      
 			      <li class="post">
 			        <a href="15350236247070.html">论 UITableView 的 dequeueReusableCell 方法</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15348619116019.html">重构Massive AppDelegate</a>
 			      </li>
 		     
 		  
