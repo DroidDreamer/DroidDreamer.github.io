@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  一周见闻 - iginkgo在路上
+  iOS-App内部跳转到推送开关页面 - iginkgo在路上
   
   </title>
   
@@ -100,65 +100,108 @@
        
 
  <script type="text/javascript">
-	$(function(){
-		$('#menu_item_index').addClass('is_active');
-	});
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
 </script>
 <div class="row">
-	<div class="large-8 medium-8 columns">
-		<div class="markdown-body home-categories">
-		
-			<div class="article">
-                <a class="clearlink" href="15366742578883.html">
-                
-                  <h1>2018.09.10-2018.09.16</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>一周见闻</p>
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>iOS-App内部跳转到推送开关页面</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2018/10/9</span>
 
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='iOS.html'>iOS</a></span>
+           
+         
+          <span class="comments">
+            
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="15366742578883.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2018/9/11</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E4%B8%80%E5%91%A8%E8%A7%81%E9%97%BB.html'>一周见闻</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+            
+          </span>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>今天碰到一个需求，是需要使用在app内部点击按钮，直接跳转到推送的开关页面。实际代码如下方所示</p>
+
+<span id="more"></span><!-- more -->
+
+<pre><code> guard let bundleId = Bundle.main.bundleIdentifier else {
+        return
+    }
+    let url1 = URL.init(string: &quot;App-Prefs:root=\(bundleId)&quot;)!
+    let url2 = URL.init(string: UIApplicationOpenSettingsURLString)!
+    
+    if #available(iOS 11.0, *) {
         
-              
+        if UIApplication.shared.canOpenURL(url2){
+            UIApplication.shared.open(url2, options: [:], completionHandler: nil)
+        }
+    }else {
+        if #available(iOS 10.0, *){
+            UIApplication.shared.open(url1, options: [:], completionHandler: nil)
+        }else {
+            UIApplication.shared.openURL(url1)
+        }
+    }
+
+</code></pre>
 
 
-			<div class="row">
-			  <div class="large-6 columns">
-			  <p class="text-left" style="padding-top:25px;">
-			   
-			  </p>
-			  </div>
-			  <div class="large-6 columns">
-			<p class="text-right" style="padding-top:25px;">
-			
-			</p>
-			  </div>
-			</div>
-		</div>
-	</div><!-- large 8 -->
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15371868760783.html" 
+          title="Next Post: Swift POP 应用 （一） UITableViewCell 的注册与获取">Swift POP 应用 （一） UITableViewCell 的注册与获取 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <div id="container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+ // id: '页面 ID', // 可选。默认为 location.href
+  owner: 'DroidDreamer',
+  repo: 'DroidDreamer.github.io',
+  oauth: {
+    client_id: 'd58d0c05e62ad0adbc84',
+    client_secret: '9e184212ad06d13c281fae1bf4508f3a9f5684e5',
+  },
+})
+gitment.render('container')
+</script>
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">
